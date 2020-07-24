@@ -12,15 +12,26 @@ import java.util.HashMap;
  **/
 @Data
 public class ApiContent {
-    public String name;
     public String url;
     public String method;
     public HashMap<String, Object> headers;
     public String connection;
-    //    public String host;
-//    public String jsonParams;
-    public String jsonPath;
+    public String jsonFileName;
     public HashMap<String, String> requestParam;
+    public HashMap<String,String> jsonParam;
+
+    public HashMap<String, String> getJsonParam() {
+        return jsonParam;
+    }
+
+    public void setJsonParam(HashMap<String, String> jsonParam) {
+        this.jsonParam = jsonParam;
+    }
+
+    public void run(){}
+
+
+
 
     public HashMap<String, String> getRequestParam() {
         return requestParam;
@@ -30,13 +41,6 @@ public class ApiContent {
         this.requestParam = requestParam;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
 
     public String getUrl() {
         return url;
@@ -70,23 +74,22 @@ public class ApiContent {
         this.connection = connection;
     }
 
-    public String getJsonPath() {
-        return jsonPath;
+    public String getJsonFileName() {
+        return jsonFileName;
     }
 
-    public void setJsonPath(String jsonPath) {
-        this.jsonPath = jsonPath;
+    public void setJsonFileName(String jsonFileName) {
+        this.jsonFileName = jsonFileName;
     }
 
     @Override
     public String toString() {
         return "ApiContent{" +
-                "name='" + name + '\'' +
-                ", url='" + url + '\'' +
+                "url='" + url + '\'' +
                 ", method='" + method + '\'' +
                 ", headers=" + headers +
                 ", connection='" + connection + '\'' +
-                ", jsonPath='" + jsonPath + '\'' +
+                ", jsonPath='" + jsonFileName + '\'' +
                 ", requestParam=" + requestParam +
                 '}';
     }

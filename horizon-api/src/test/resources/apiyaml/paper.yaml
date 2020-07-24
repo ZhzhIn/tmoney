@@ -1,35 +1,40 @@
 name: 早报
 describle: 早报相关接口测试用例
 contents:
-    - name: getDetail
+    getDetail:
       method: get
       url: /caizhi_miniapi/api/applet/staffCard/detail
       requestParam:
         id: f09a04b775974f98bee9aaed8c492d24
       headers:
         Content-Type: text/plain
-    - name: viewPaper
+    getDetail2:
+      method: get
+      url: /caizhi_miniapi/api/applet/staffCard/detail
+      headers:
+        Content-Type: text/plain
+    viewPaper:
       method: post
       url: /caizhi_miniapi/api/applet/morning/paper/view.do
       headers:
         Content-Type: application/json
-      jsonPath: viewPaper
-    - name: filter
+      jsonFileName: viewPaper
+    filter:
       method: post
       url: "/caizhi_miniapi/api/applet/banner/filter_list.do"
       headers:
         Content-Type: text/plain
-    - name: paperConfigAPI
+    paperConfigAPI:
       method: post
       url: "/caizhi_miniapi/api/applet/finance/config.do"
       headers:
         Content-Type: text/plain
-    - name: paperSaveAPI
+    paperSaveAPI:
       method: post
       url: "/caizhi_miniapi/api/applet/snapshot/save.do"
       headers:
         Content-Type: text/plain
-    - name: paperListAPI
+    paperListAPI:
       method: post
       url: "/caizhi_miniapi/relate/product/v2/list"
       headers:

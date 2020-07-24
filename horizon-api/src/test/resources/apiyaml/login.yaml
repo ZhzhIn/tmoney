@@ -1,13 +1,13 @@
 name: 登录
 describle: 登录相关测试用例
 contents:
-  - name: login
+  login:
     url: /caizhi_miniapi/index/auth.do
     method: get
     requestParam:
       userId: YinZhenZhi
       corpId: ww8c83d949a80b562d
-  - name: testLoginFailure
+  testLoginFailure:
     url: /caizhi_miniapi/index/auth.do
     method: get
     requestParam:

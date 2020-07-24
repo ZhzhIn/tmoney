@@ -1,8 +1,0 @@
-name: xxx
-describle: xxx
-steps:
-  - click: {xpath: "//*[@text='其他企业']"}
-  - click: {xpath: "//*[@text='深圳腾银']"}
-  - click: {id: "com.tencent.wework:id/h9e"}
-  - click: {xpath: "//*[@text='工作台']"}
-  - click: {xpath: "//*[@text='打卡']"}

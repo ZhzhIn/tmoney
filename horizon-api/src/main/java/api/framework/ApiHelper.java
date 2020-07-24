@@ -1,7 +1,7 @@
 package api.framework;
 
-import auto.framework.BasePO;
-import auto.framework.Model;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
@@ -12,6 +12,8 @@ import poexception.APINotFoundException;
 import util.JSONTemplate;
 import util.LoadDefaultConfig;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 
@@ -26,7 +28,32 @@ import static io.restassured.RestAssured.given;
  **/
 @Slf4j
 @Data
-public class ApiPO extends BasePO {
+public class ApiPO {
+
+    public List<ApiContent> getContents(ApiModel ApiModel){
+        return ApiModel.getContents();
+    }
+    public void run(ApiModel ApiModel) {
+
+    }
+    public ApiModel parse(String path ){
+        return null;
+    }
+    public ApiModel load(String path) {
+        ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
+        ApiModel ApiModel = null;
+        try {
+            ApiModel = mapper.readValue(
+//                    BasePage.class.getResourceAsStream(path),
+                    new File(path),
+                    ApiModel.class
+            );
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return ApiModel;
+    }
+
     public static Response parseApi(ApiContent apiContent) {
         handleJsonPath(apiContent);
         handleUrl(apiContent);
@@ -139,8 +166,8 @@ public class ApiPO extends BasePO {
             throw new APINotFoundException("解析失败");
         }
     }
-    public List<ApiContent> getContent(Model model) {
-        return model.contents;
+    public List<ApiContent> getContent(ApiModel ApiModel) {
+        return ApiModel.contents;
     }
 
 }

@@ -5,7 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import zelda.util.InitializeDriver;
 import zelda.util.LoadDefaultConfig;
-import zelda.util.ReadYAML;
+import zelda.util.HandelYaml;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -47,7 +47,7 @@ public class PageObjectModel {
     public static void parseSteps(Class frontTestClazz) {
         String path = transClasspathToYamlpath(frontTestClazz);
         log.info(" parse the path : " + path);
-        PageObjectModel model = ReadYAML.getYamlConfig(path, PageObjectModel.class);
+        PageObjectModel model = HandelYaml.getYamlConfig(path, PageObjectModel.class);
         log.info("载入yaml中写的执行步骤");
         String method = Thread.currentThread().getStackTrace()[2].getMethodName();
         log.info("载入method :" + method);
@@ -56,7 +56,7 @@ public class PageObjectModel {
 
     @Deprecated
     private static String parseBasis(String key, String path) {
-        PageObjectModel model = ReadYAML.getYamlConfig(path, PageObjectModel.class);
+        PageObjectModel model = HandelYaml.getYamlConfig(path, PageObjectModel.class);
         log.info("读取basis");
         return model.basis.get(key);
     }
