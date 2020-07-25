@@ -28,11 +28,6 @@ public class ApiContent {
         this.jsonParam = jsonParam;
     }
 
-    public void run(){}
-
-
-
-
     public HashMap<String, String> getRequestParam() {
         return requestParam;
     }

@@ -8,8 +8,8 @@ import java.util.List;
 public class ApiModel  {
     public String name ;
     public String describle;
-    public List<ApiContent> contents;
-    public List<HashMap<String, Object>> steps;
+    public HashMap<String,ApiContent> contents;
+    public HashMap<String,Object> params;
 
     public String getName() {
         return name;
@@ -27,21 +27,14 @@ public class ApiModel  {
         this.describle = describle;
     }
 
-    public List<ApiContent> getContents() {
+    public HashMap<String, ApiContent> getContents() {
         return contents;
     }
 
-    public void setContents(List<ApiContent> contents) {
+    public void setContents(HashMap<String, ApiContent> contents) {
         this.contents = contents;
     }
 
-    public List<HashMap<String, Object>> getSteps() {
-        return steps;
-    }
-
-    public void setSteps(List<HashMap<String, Object>> steps) {
-        this.steps = steps;
-    }
 /*    public void load(String path){}
     public void run(ApiContent api){
         api.run();

@@ -18,7 +18,7 @@ public class LoadDefaultConfig {
     private static String srcPath = "src/test/resources/application.yaml";
 
     public static List<String> getBrowserVersion() {
-        LoadDefaultConfig config = ReadYAML.getYamlConfig(srcPath, LoadDefaultConfig.class);
+        LoadDefaultConfig config = HandelYaml.getYamlConfig(srcPath, LoadDefaultConfig.class);
         List list =Arrays.asList(config.current.get("browser").split("-"));
         String browserVersion = config.browserDriver.get(list.get(0)).get(list.get(1));
         list.set(1, browserVersion);
@@ -26,7 +26,7 @@ public class LoadDefaultConfig {
     }
 
     public static String getHost() {
-        LoadDefaultConfig config = ReadYAML
+        LoadDefaultConfig config = HandelYaml
                 .getYamlConfig(srcPath, LoadDefaultConfig.class);
         String env  =config.current.get("host");
         return config.host.get(env);
