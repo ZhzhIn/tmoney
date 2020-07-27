@@ -12,8 +12,8 @@ import lombok.extern.slf4j.Slf4j;
  **/
 @Slf4j
 @Data
-public class APINotFoundException extends Exception {
-    public APINotFoundException(String message) {
+public class ApiNotFoundException extends Exception {
+    public ApiNotFoundException(String message) {
     }
 
 }

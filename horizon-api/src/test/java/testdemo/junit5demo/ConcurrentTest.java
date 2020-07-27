@@ -1,5 +1,8 @@
 package testdemo.junit5demo;
 
+import io.qameta.allure.Feature;
+import io.qameta.allure.Owner;
+import io.qameta.allure.Story;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.parallel.Execution;
@@ -15,6 +18,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 //CorpStaffDataAnalyseServiceImpl
 //还有一个解决方案，手动加锁
 @Slf4j
+@Feature("SimpleDateFormat并发不安全示例")
+@Owner("zhzh.yin")
 public class ConcurrentTest {
     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
@@ -27,7 +32,8 @@ public class ConcurrentTest {
             return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         }
     };
-    @RepeatedTest(500)
+//    @RepeatedTest(500)
+    @Story("并发报错：simpleDateFormat线程不安全")
     @Execution(ExecutionMode.CONCURRENT)
     //解决方案：用DateTimeFormatter
     public void testFailure() throws ParseException, InterruptedException {
@@ -37,7 +43,8 @@ public class ConcurrentTest {
         String dateString2 = simpleDateFormat.format(time);
         assertEquals(dateString, dateString2);
     }
-    @RepeatedTest(500)
+//    @RepeatedTest(500)
+    @Story("解决方案：局部变量")
     @Execution(ExecutionMode.CONCURRENT)
     //解决方案：局部变量
     public void testSuc2() throws ParseException, InterruptedException {
@@ -48,7 +55,8 @@ public class ConcurrentTest {
         String dateString2 = simpleDateFormat1.format(time);
         assertEquals(dateString, dateString2);
     }
-    @RepeatedTest(500)
+//    @RepeatedTest(500)
+    @Story("解决方案：ThreadLocal")
     @Execution(ExecutionMode.CONCURRENT)
     //解决方案：使用ThreadLocal，每个线程都拥有自己的SimpleDateFormat对象副本。
     public void testSuc3() throws ParseException, InterruptedException {
@@ -61,7 +69,8 @@ public class ConcurrentTest {
         String dateString2 = simpleDateFormat2.format(time);
         assertEquals(dateString, dateString2);
     }
-    @RepeatedTest(500)
+//    @RepeatedTest(500)
+    @Story("解决方案：使用DateTimeFormatter")
     @Execution(ExecutionMode.CONCURRENT)
     public void testSuc1() throws ParseException, InterruptedException {
         String dateNow = LocalDateTime.now().format(dtf);

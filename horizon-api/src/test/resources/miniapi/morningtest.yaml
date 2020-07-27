@@ -13,6 +13,11 @@ contents:
       url: /caizhi_miniapi/api/applet/staffCard/detail
       headers:
         Content-Type: text/plain
+    getDetail3:
+      method: get
+      url: /caizhi_miniapi/api/applet/staffCard/detail
+      headers:
+        Content-Type: text/plain
     viewPaper:
       method: post
       url: /caizhi_miniapi/api/applet/morning/paper/view.do

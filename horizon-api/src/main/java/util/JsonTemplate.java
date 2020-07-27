@@ -18,13 +18,13 @@ import java.util.HashMap;
  * @Verion: 1.0
  */
 @Slf4j
-public class JSONTemplate {
-    public static String template(String jsonPath) {
+public class JsonTemplate {
+    public static synchronized String template(String jsonPath) {
         Writer writer = new StringWriter();
         DeferringMustacheFactory mf = new DeferringMustacheFactory();
         Mustache mustache = mf.compile(jsonPath);
         try {
-            mustache.execute(writer, new JSONTemplate())
+            mustache.execute(writer, new JsonTemplate())
                     .flush();
         }catch(MustacheNotFoundException e){
             log.error("未找到json文件");
@@ -33,7 +33,11 @@ public class JSONTemplate {
         }
         return writer.toString();
     }
-    //todo
+
+    /**
+     *  todo 还没想好怎么写
+     */
+
     public static String template(HashMap<String,String> map) {
 
         return null;

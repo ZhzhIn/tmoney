@@ -20,6 +20,8 @@ public class ApiContent {
     public HashMap<String, String> requestParam;
     public HashMap<String,String> jsonParam;
 
+    //finalize()
+
     public HashMap<String, String> getJsonParam() {
         return jsonParam;
     }

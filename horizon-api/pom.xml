@@ -30,7 +30,6 @@
             <artifactId>compiler</artifactId>
             <version>0.9.6</version>
         </dependency>
-
     </dependencies>
     <build>
         <plugins>
@@ -56,6 +55,9 @@
                             <value>${project.build.directory}/allure-results</value>
                         </property>
                     </systemProperties>
+                    <excludes>
+                        <exclude>%regex[.*(testdemo).*Test.*]</exclude>
+                    </excludes>
                 </configuration>
                 <dependencies>
                     <dependency>

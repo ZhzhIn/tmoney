@@ -1,0 +1,15 @@
+name: 基本接口
+describle: 登录
+contents:
+  h5:
+    url: /caizhi_miniapi/index/ty/auth.do
+    method: get
+  minipro:
+    url: /caizhi_miniapi/index/ty/auth.do
+    method: get
+  manage:
+    url: /caizhi_miniapi/index/ty/auth.do
+    method: get
+  market:
+    url: /caizhi_miniapi/index/ty/auth.do
+    method: get

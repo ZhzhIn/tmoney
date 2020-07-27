@@ -1,5 +1,41 @@
+current:
+  env : test
 host:
   test : "https://test.tengmoney.com"
-  dev : ""
-current:
-  host : "test"
+  dev : "https://dev.tengmoney.com"
+  uat : "https://uat.tengmoney.com"
+  prod: "https://www.tengmoney.com"
+corp:
+  test:
+    corpName: 新翰信息咨询有限公司
+    corpId: ww8c83d949a80b562d
+    appIdList:
+      - wx2b2b5ed3e46167bd
+  dev:
+    corpName: 新皓信息咨询有限公司
+    corpId: xxx
+app:
+  test:
+    minipro:
+      corpId: ww8c83d949a80b562d
+      appId: wx2b2b5ed3e46167bd
+      appName: 新翰信息
+      agentId: 1000039
+      componentAppid: wx45f030acae6a845a
+    h5station:
+      corpId: ww8c83d949a80b562d
+      appId: wx2b2b5ed3e46167bd
+      appName: 经理小站
+      agentId: 1000122
+      componentAppid: wx45f030acae6a845a
+    h5product:
+      corpId: ww8c83d949a80b562d
+      appId: wx2b2b5ed3e46167bd
+      appName: 推产品
+      agentId: 1000067
+      componentAppid: wx45f030acae6a845a
+staff:
+  test:
+    name: staff-name
+    userId: YinZhenZhi
+    staffId: staff-id
