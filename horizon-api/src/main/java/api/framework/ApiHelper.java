@@ -1,6 +1,8 @@
 package api.framework;
 
 import api.item.ManuData;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import io.restassured.builder.RequestSpecBuilder;
@@ -15,6 +17,7 @@ import util.JSONTemplate;
 import util.LoadDefaultConfig;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashMap;
 
@@ -75,6 +78,12 @@ public class ApiHelper {
                     new File(path),
                     ApiModel.class
             );
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (JsonParseException e) {
+            e.printStackTrace();
+        } catch (JsonMappingException e) {
+            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
