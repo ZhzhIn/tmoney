@@ -3,23 +3,26 @@ package api.framework;
 import api.item.AppType;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.http.ContentType;
-import io.restassured.http.Method;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import poexception.ApiNotFoundException;
+import util.DefaultConfig;
 import util.JsonTemplate;
-import util.LoadDefaultConfig;
 
 import java.util.HashMap;
 
 import static api.item.Manu.JSON_FILE_NAME;
 import static io.restassured.RestAssured.given;
-import static io.restassured.http.ContentType.JSON;
+import static io.restassured.http.ContentType.*;
+import static io.restassured.http.Method.GET;
+import static io.restassured.http.Method.POST;
+import static util.DefaultConfig.getStrFromDefaultConfig;
 
 /**
- * tmoney
+ * 接口定义，支持传入url,method，headers等等接口数据。
+ * 内容都在yaml中填入。
  * 2020/5/8 17:00
  *
  * @author zhzh.yin
@@ -30,12 +33,11 @@ public class Api {
     public String url;
     public String method;
     public HashMap<String, String> headers;
-    public ContentType contentType;
     public String connection;
     public String jsonFileName;
-    public HashMap<String, String> requestParam;
+    public HashMap<String, Object> requestParam;
     private int flag = 0;
-    private String jsonFilePath;
+    public String describle;
 
     public void login() {
         log.info("登录对应类型");
@@ -43,11 +45,14 @@ public class Api {
 
     /**
      * 导入默认配置
+     * 调用DefaultConfig方法，来完成接口的默认参数传递。
+     * 该方法可以在书写class测试类时使用，当前的yaml用例编写方式中，已废弃该方法。
      */
+    @Deprecated
     public synchronized Api importDefaultConfig() {
         log.info("做一些yaml配置的参数导入操作");
-        HashMap<String, String> configMap = this.getRequestParam();
-        HashMap<String, String> defaultMap = LoadDefaultConfig.getDefaultConfig();
+        HashMap<String, Object> configMap = this.getRequestParam();
+        HashMap<String, Object> defaultMap = DefaultConfig.getDefaultConfig();
         if (null == configMap) {
             configMap = new HashMap(16);
         }
@@ -58,10 +63,16 @@ public class Api {
         return this;
     }
 
+    /**
+     * 导入默认配置（根据不同的系统版本，传递不同的agentId等数据）
+     * 调用DefaultConfig方法，来完成接口的默认参数传递。
+     * 该方法可以在书写class测试类时使用，当前的yaml用例编写方式中，已废弃该方法。
+     */
+    @Deprecated
     public synchronized Api importDefaultConfig(AppType type) {
         log.info("做一些yaml配置的参数导入操作");
-        HashMap<String, String> configMap = this.getRequestParam();
-        HashMap<String, String> defaultMap = LoadDefaultConfig.getDefaultConfig(type);
+        HashMap<String, Object> configMap = this.getRequestParam();
+        HashMap<String, Object> defaultMap = DefaultConfig.getDefaultConfig(type);
         if (null == configMap) {
             configMap = new HashMap(16);
         }
@@ -74,30 +85,39 @@ public class Api {
 
 
     /**
-     * 向api中传入数据
+     * 向api中传入数据，根据yaml的requestParam来传递参数，且value中包含“defaultConfig"时，
+     * 读取默认的配置，配置来自DefaultConfig。
      *
      * @param newMap
      * @return
      */
-    public synchronized Api importParam(HashMap<String, String> newMap) {
-        log.info("handleMap:" + newMap);
+    public synchronized Api importParam(HashMap<String, Object> newMap) {
+        log.info("importParam:" + newMap);
         if (newMap != null) {
-            log.info("传参中有request_param");
+            log.info("传参中有param");
             if (this.getRequestParam() != null) {
-                HashMap<String, String> oldMap = this.getRequestParam();
+                requestParam.forEach(
+                        (key, values) -> {
+                            if(values!=null){
+                            String value = getStrFromDefaultConfig(values.toString());
+                            log.info("存入key-value：" + key + "," + value);
+                            requestParam.put(key, value);
+                        }});
+                log.info("原来得requestParam:" + this.requestParam.keySet());
+                HashMap<String, Object> oldMap = this.getRequestParam();
                 oldMap.putAll(newMap);
                 //新的数据会覆盖旧的
+                log.info("最终得requestParam:" + this.requestParam.keySet());
                 this.setRequestParam(oldMap);
-                log.info("当前 map参数为：" + oldMap);
             } else {
                 log.info("当前 map参数为：" + newMap);
                 this.setRequestParam(newMap);
             }
             if (newMap.containsKey(JSON_FILE_NAME)) {
                 log.info("jsonFileName is " + newMap.get(JSON_FILE_NAME));
-                this.setJsonFileName(newMap.get(JSON_FILE_NAME));
+                this.setJsonFileName(newMap.get(JSON_FILE_NAME).toString());
             } else {
-                log.error("传入的map数据不正确，不加工");
+                log.warn("没有传入jsonFileName,不用加工");
             }
         } else {
             log.warn("没有传入map值");
@@ -105,6 +125,11 @@ public class Api {
         return this;
     }
 
+    /**
+     * 执行api,并返回结果。
+     *
+     * @return
+     */
     public synchronized Response run() {
         setApiBody();
         return sendRequest();
@@ -113,10 +138,10 @@ public class Api {
     private static RequestSpecBuilder builder;
 
     /**
-     * 处理host
+     * 处理host，读取默认配置。
      */
     private synchronized Api handleUrl() {
-        String host = LoadDefaultConfig.getHost();
+        String host = DefaultConfig.getHost();
         log.info("当前环境配置的host是：" + host);
         if (getUrl() != null && flag == 0) {
             String apiHost = getUrl();
@@ -129,13 +154,18 @@ public class Api {
         return this;
     }
 
-    private RequestSpecification setApiBody() {
+    /**
+     * 读取api类，并调用restAssured装配成http请求
+     * RequestSpecification 用于传递cookie值，所有api共享cookie
+     *
+     * @return
+     */
+    public RequestSpecification setApiBody() {
         handleUrl();
         log.info(this.toString());
         String method = this.getMethod();
         HashMap headers = this.getHeaders();
         String jsonFileName = this.getJsonFileName();
-        String jsonPath = this.getJsonFilePath();
         if (method == "" || method.equals(null)) {
             log.error("没有写入method");
         }
@@ -151,28 +181,29 @@ public class Api {
             request = request.headers(this.getHeaders());
             log.info("配置header:" + headers);
         }
-        if (jsonFileName != null) {
-            log.info("jsonFileName is " + jsonFileName);
-            request = request
-                    .contentType(JSON)
-                    .body(JsonTemplate.template(jsonPath + jsonFileName + ".json"));
-        }
-        request = request.when()
+
+        request = request
                 .log().all();
         return request;
     }
 
     /**
-     * 发送api请求
+     * 发送api请求，根据json相关参数配置与否，选择是否post json.
      *
      * @return
      * @throws ApiNotFoundException
      */
     private synchronized Response sendRequest() {
+        log.info("发送请求");
         RequestSpecification request = setApiBody();
-        if (method.toUpperCase().equals(Method.GET.toString())) {
-            if(requestParam!=null){request = request.params(requestParam);}
-            Response response = request.get(url)
+        if (GET.name().equalsIgnoreCase(method)) {
+            log.info("执行get方法");
+            if (requestParam != null) {
+                request = request.params(requestParam);
+            }
+            Response response = request
+                    .when()
+                    .get(url)
                     .then()
                     .log().all()
                     .extract()
@@ -183,16 +214,38 @@ public class Api {
                 builder.addCookies(response.getCookies());
             }
             return response;
-        } else if (method.toUpperCase().equals(Method.POST.toString())) {
-            if (headers != null
-                    && headers.containsKey("Content-Type")
-                    && headers.get("Content-Type").toLowerCase().equals(JSON.toString())
-                    && requestParam!=null) {
-                request = request.contentType(JSON);
+        } else if (POST.name().equalsIgnoreCase(method)) {
+            log.info("执行post方法");
+            if (headers != null){
+                request = request.headers(headers);
+                if(headers.containsKey("Content-Type")||headers.containsKey("content-type")){
+                    ContentType contentType = fromContentType(headers.get("Content-Type"));
+                    log.info("contentType is " + contentType);
+                    if (JSON.matches(contentType.toString())
+                            && requestParam != null) {
+                        log.info("填充param作为json");
+                        request.request().contentType(JSON);
+                        log.info("用jsonFileName填充");
+                        request = request
+                                .contentType(JSON)
+                                .body(requestParam);
+                    } else if(URLENC.matches(contentType.toString())) {
+                        request = request
+                                .formParams(requestParam);
+                    }else{
+                        request = request.formParams(requestParam);
+                    }
+                }
+            }else{
                 request = request.body(requestParam);
-                log.info("配置POST param:" + requestParam);
             }
-            Response response = request.post(url)
+            if (jsonFileName != null) {
+                log.info("用jsonFileName填充");
+                request = request
+                        .contentType(JSON)
+                        .body(JsonTemplate.template(jsonFileName));
+            }
+            Response response = request.when().post(url)
                     .then()
                     .log().all()
                     .extract()

@@ -2,10 +2,8 @@ package api.item;/**
  * @author zhzh.yin
  * @create 2020-08-05 13:37
  */
-
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
-
 /**
  * 〈ApiType〉
  *
@@ -25,6 +23,7 @@ public enum AppType {
      */
     MINIPRO("minipro"),
     H5STATION("h5station"),
+    H5POSTER("h5poster"),
     H5PRODUCT("h5product"),
     MANAGE("manage"),
     MARKET("market");

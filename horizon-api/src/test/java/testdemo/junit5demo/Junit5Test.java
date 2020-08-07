@@ -17,7 +17,7 @@ import static org.junit.jupiter.params.provider.Arguments.arguments;
 @Feature("junit5用例示范")
 @Owner("zhzh.yin")
 public class Junit5Test {
-    @ParameterizedTest(name="使用stream")
+//    @ParameterizedTest(name="使用stream")
     @MethodSource("stringProvider")
     @Story("stream -stringlist")
     void testWithExplicitLocalMethodSource(String argument) {
@@ -30,7 +30,7 @@ public class Junit5Test {
 
 
 
-    @ParameterizedTest(name="使用stream")
+//    @ParameterizedTest(name="使用stream")
     @MethodSource("range")
     @Story("stream -intlist")
     void testWithRangeMethodSource(int argument) {
@@ -41,7 +41,7 @@ public class Junit5Test {
         return IntStream.range(0, 20).skip(10);
     }
 
-    @ParameterizedTest(name="使用stream")
+//    @ParameterizedTest(name="使用stream")
     @MethodSource("stringIntAndListProvider")
     @Story("stream -不同类型的list")
     void testWithMultiArgMethodSource(String str, int num, List<String> list) {

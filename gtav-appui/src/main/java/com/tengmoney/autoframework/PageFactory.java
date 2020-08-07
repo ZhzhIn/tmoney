@@ -1,5 +1,7 @@
 package com.tengmoney.autoframework;
 
+import test_app_framework.AppBasePage;
+
 public class PageFactory {
     public static BasePage create(String driverName){
         if(driverName=="web" || driverName=="selenium"){

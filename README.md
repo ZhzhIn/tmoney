@@ -6,14 +6,13 @@
 - 测试报告优化： allure
 
 ### 用例编写方式
-- src/test/java/api/framework/xxx 定义业务调用 Example.java
-- src/test/resources/apiyaml/xxx 编写对应的调用yaml,json文件。
+- src/test/resources/api/ 编写对应的调用yaml文件。
 - 示例：
    yaml格式：
 ``` yaml 
     name: 早报
     describle: 早报相关接口测试用例
-    contents:
+    api:
         getDetail:
           method: get
           url: /caizhi_miniapi/api/applet/staffCard/detail
@@ -31,54 +30,74 @@
           Content-Type: application/json
           jsonFileName: viewPaper        
 ```
-如果是get请求,需要传的参数在 application.yaml中配置过了，那就不用在请求中传递，在调用时使用Api类的importDefaultConfig()方法。
-如果参数的app类型需要指定，则使用importDefaultConfig(AppType.xxx)方法。
+需要传输的参数，如果在src/main/resources/application.yaml中有，则传defaultConfig.xxxx（例如 defaultConfig.staffId).
 如果希望用例不使用application.yaml中的配置，则不调用该方法，直接在json中设置，或者在调用时使用Api类的importParam(hashMap)方法。
-- 如果接口中需要传输json，就在同yaml文件夹路径下传入对应的json文件，并在yaml的api参数中添加 jsonFileName字段。
+- 如果接口中需要传输json，就在src/test/resource/json下传入，并在yaml的api参数中添加 jsonFileName字段。
 ``` java
 {
   "id": "f09a04b775974f98bee9aaed8c492d24",
   "name": 
 }
 ```
-- .java断言，如果希望直接调用yaml文件中的设置，直接使用ApiModel类的runWithoutConfig(apiName)即可
-如果希望调用时，对Api请求进行加工，则调用ApiModel.get(apiName)获得api之后，使用Api类的run()方法调用。
-``` java
-@Execution(CONCURRENT)  //CONCURRENT表示支持多线程
-@Slf4j
-@Feature("早报")
-@Owner("zhzh.yin")
-public class MorPaperTest {
-    ApiModel model = ApiModel.load("src/test/resources/miniapi/paper/paper.yaml");
-
-    @BeforeAll
-    static void beforeAll() {
-        LoginHelper.login(AppType.MINIPRO);
-    }
-    @Test
-    @DisplayName("一个简单的断言")
-    @Story("detail.do接口")
-    void test1() {
-        model.runWithoutConfig("getDetail")
-                .then()
-                .statusCode(200)
-                .body("ret", equalTo(0));
-//                .body("ret", hasItem(0))
-//                .body("xx.xx", hasItems(1, 2));
-    }
-    @ParameterizedTest(name ="早报接口：{0}-{index}")
-    @CsvSource({
-            "getDetail,ret,0",
-            "getDetail,ret,0"
-    })
-    @Story("csv测试detail.do接口")
-    void testPaper(String apiName, String responsePath, Integer expectValue) throws InvocationTargetException, IllegalAccessException {
-        assertTrue(model.runWithoutConfig(apiName)
-                .path(responsePath).equals(expectValue));
-    }
-}
+- 断言yaml
+``` yaml
+name: 早报接口
+testCaseList:
+  - yamlName: morningtest
+    api: getDetail
+    #requestParam:
+     # staffId: defaultConfig.staffId
+    results:
+      - path: ret
+        expect: "0"
+        matcher: equalTo
+  - yamlName: morningtest
+    api: viewPaper
+    requestParam:
+      id: "f09a04b775974f98bee9aaed8c492d24"
+    results:
+      - path: ret
+        expect: "0"
+        matcher: equalTo
 ```
-
+### testcase调试类
+src/test/java/api.framework/TestCaseList
+在apiDebug()中，将testcase的yaml地址修改成想要调试的testcase
+然后执行debugTest方法。
+``` java
+/**
+     * 调试类
+     * @param testCase
+     */
+    @ParameterizedTest(name = "接口：{0}-{index}")
+    @MethodSource("apiDebug")
+    @Story("一大堆接口")
+    public void debugTest(TestCase testCase) {
+        if (null == testCase.yamlName
+                || null == testCase.api
+                || testCase.results.size()<=0) {
+            log.error("testcase元素没写完整：需要填写action，api，result字段");
+        }
+        testCase.run();
+    }
+    static List<TestCase> apiDebug(){
+        List<String> testcasePath = new ArrayList<>();
+        testcasePath.add("src/test/resources/testcase/getAuthInfoTestcase.yaml");
+        List<ApiTestCaseModel> apitestcase = new ArrayList<>();
+        List<TestCase> testcaseList = new ArrayList<>();
+        testcasePath.forEach(
+                path -> {
+                    apitestcase.add(ApiTestCaseModel.load(path));
+                }
+        );
+        apitestcase.forEach(
+                apiTestCaseModel -> {
+                    testcaseList.addAll(apiTestCaseModel.testCaseList);
+                }
+        );
+        return testcaseList;
+    }
+```
 ### yaml配置编写规范
 - 参数名和参数值之间需要用空格隔开
 ### 执行
@@ -110,7 +129,7 @@ mvn -Dtest=org.example.MyTest test
 </build>
 ``` 
 report地址： target/site/allure-maven-plugin/index.html
+执行单个用例：mvn test -Dtest=MyTest
 ### 待完善
 - 断言结合mybatis
-- 代码优化： 异常加工，配置文件路径硬编码 
 - json支持传参

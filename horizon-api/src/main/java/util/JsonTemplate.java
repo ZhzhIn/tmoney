@@ -4,10 +4,14 @@ import com.github.mustachejava.DeferringMustacheFactory;
 import com.github.mustachejava.Mustache;
 import com.github.mustachejava.MustacheNotFoundException;
 import lombok.extern.slf4j.Slf4j;
+import poexception.JsonNotFoundException;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 /**
@@ -19,10 +23,19 @@ import java.util.HashMap;
  */
 @Slf4j
 public class JsonTemplate {
-    public static synchronized String template(String jsonPath) {
+    public static synchronized String template(String jsonName)   {
+        File file = new File("src/test/resources/json");
+        ArrayList<File>files = HandleFile.getFileList(Arrays.asList(file.listFiles()),".json",jsonName);
+        if(files.size()<=0||null==files){
+            log.error("没找到你说的json文件"+jsonName);
+            throw new JsonNotFoundException();
+        }
+        file = files.get(0);
         Writer writer = new StringWriter();
         DeferringMustacheFactory mf = new DeferringMustacheFactory();
-        Mustache mustache = mf.compile(jsonPath);
+        String path = file.getPath().replace("\\","/");
+        log.info("最终读取得json位置在："+path);
+        Mustache mustache = mf.compile(path);
         try {
             mustache.execute(writer, new JsonTemplate())
                     .flush();

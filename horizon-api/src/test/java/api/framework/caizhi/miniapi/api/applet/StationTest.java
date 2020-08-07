@@ -3,9 +3,8 @@ package api.framework.caizhi.miniapi.api.applet;/**
  * @create 2020-08-05 11:51
  */
 
-import api.framework.ApiModel;
+import api.framework.ApiList;
 import api.framework.LoginHelper;
-import api.item.AppType;
 import io.qameta.allure.Feature;
 import io.qameta.allure.Owner;
 import io.qameta.allure.Story;
@@ -13,11 +12,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.parallel.Execution;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
-import util.LoadDefaultConfig;
-
-import java.util.HashMap;
 
 import static api.item.AppType.H5STATION;
 import static org.hamcrest.Matchers.equalTo;
@@ -31,13 +25,13 @@ import static org.junit.jupiter.api.parallel.ExecutionMode.CONCURRENT;
  */
 @Execution(CONCURRENT)  //CONCURRENT表示支持多线程
 @Slf4j
-@Feature("早报")
+@Feature("小站")
 @Owner("zhzh.yin")
 public class StationTest {
-    ApiModel model = ApiModel.load("src/test/resources/miniapi/stationtest.yaml");
+    ApiList model = ApiList.load(this.getClass());
 
     @BeforeAll
-    static void beforeAll() {
+    void beforeAll() {
         LoginHelper.login();
     }
 
@@ -56,28 +50,5 @@ public class StationTest {
 //                .body("xx.xx", hasItems(1, 2));
     }
 
-    @ParameterizedTest
-    @CsvSource({
-            "H5STATION",
-            "MINIPRO",
-            "H5STATION",
-            "H5PRODUCT"
-    })
-    @Story("小站首页-getAuthInfo")
-    void testGetAuthInfo(AppType type) {
-        HashMap<String, String> map = new HashMap<>(16);
-        map.put("currentCorpId", LoadDefaultConfig.getCorp().getCorpId());
-        map.put("agentId", LoadDefaultConfig.getApp(type).getAgentId());
-        model.get("getAuthInfo")
-                .importParam(map)
-                .run()
-                .then()
-                .statusCode(200)
-                .body("ret", equalTo(0))
-                .body("retdata.appId",equalTo(LoadDefaultConfig.getApp(type).getAppId()))
-                .body("retdata.authCorpId",equalTo(LoadDefaultConfig.getCorp().getCorpId()))
-                .body("retdata.componentAppid",equalTo(LoadDefaultConfig.getApp(type).getComponentAppid()))
-        ;
-    }
 
 }

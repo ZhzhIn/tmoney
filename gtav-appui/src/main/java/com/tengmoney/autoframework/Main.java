@@ -13,11 +13,10 @@ import static org.junit.platform.engine.discovery.DiscoverySelectors.selectPacka
 
 public class Main {
     public static void main(String[] args){
-
         LauncherDiscoveryRequest request = LauncherDiscoveryRequestBuilder.request()
                 .selectors(
-                        selectPackage("test_framework")
-//                        ,selectClass(PageTest.class)
+                        selectPackage("test_framework"),
+                        selectClass(DDTest.class)
                 )
                 .filters(
                         includeClassNamePatterns(".*")

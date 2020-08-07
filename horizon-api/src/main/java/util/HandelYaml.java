@@ -29,5 +29,18 @@ public class HandelYaml<T> {
         }
         return null;
     }
+    public static <T> T getYamlConfig(File file, Class<T> clazz) {
+        ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
+        mapper.findAndRegisterModules();
+        try {
+            T t =mapper.readValue(
+                    file,
+                    clazz);
+            return t;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
 }

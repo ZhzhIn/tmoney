@@ -1,30 +1,30 @@
 package api.framework;
 
-import api.item.AppType;
-import org.junit.Test;
+import io.qameta.allure.Feature;
+import io.qameta.allure.Owner;
+import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.parallel.Execution;
+import poexception.ApiNotFoundException;
 
+import static org.junit.jupiter.api.parallel.ExecutionMode.CONCURRENT;
+
+@Execution(CONCURRENT)  //CONCURRENT表示支持多线程
+@Slf4j
+@Feature("登录")
+@Owner("zhzh.yin")
 public class LoginHelper {
-    private static ApiModel model = ApiModel.load("src/test/resources/miniapi/loginhelper.yaml");
-    @Test
-    public void test(){
-        login(AppType.MINIPRO);
-    }
-    public static void login(){
-        model.get("minipro").importDefaultConfig().run();
-    }
-    public static void login(AppType type){
-        switch (type){
-            case MANAGE:
-                model.get("api.framework.manage").importDefaultConfig().run();
-                break;
-            case MARKET:
-                model.get("market").importDefaultConfig().run();
-                break;
-            case MINIPRO:
-                model.get("minipro").importDefaultConfig().run();
-                break;
-            default:
-                model.get("h5").importDefaultConfig().run();
+    private static ApiList model;
+
+    static {
+        try {
+            model = ApiList.load("loginTest");
+        } catch (ApiNotFoundException e) {
+            e.printStackTrace();
         }
     }
+
+    public static void login() {
+        model.runWithoutConfig("login");
+    }
+
 }
