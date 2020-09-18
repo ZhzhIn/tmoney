@@ -4,13 +4,18 @@ package com.tengmoney.autoframework;
 import test_app_framework.AppBasePage;
 import test_web_framework.WebBasePage;
 
-public class UIAutoFactory {
+/**
+ * 根据平台的不同，创建不同的page
+ *
+ */
+public class UITestCaseFactory {
+    private static final String WEB = "WEB";
+    private static final String APP = "APP";
     public static BasePage create(String driverName){
-        if(driverName.equals("web") || driverName.equals("selenium")){
+        if(driverName.toUpperCase().equals(WEB)){
             return new WebBasePage();
         }
-
-        if(driverName.equals("app") || driverName.equals("appium")){
+        if(driverName.toUpperCase().equals(APP)){
             return new AppBasePage();
         }
 
@@ -19,10 +24,6 @@ public class UIAutoFactory {
         }
 
         if(driverName.equals("atx")){
-//            return new AppBasePage();
-        }
-
-        if(driverName.equals("macaca")){
 //            return new AppBasePage();
         }
 

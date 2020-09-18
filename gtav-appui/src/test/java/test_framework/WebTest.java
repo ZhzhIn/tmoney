@@ -1,7 +1,7 @@
 package test_framework;
 
 import com.tengmoney.autoframework.BasePage;
-import com.tengmoney.autoframework.UIAuto;
+import com.tengmoney.autoframework.UITestCase;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -30,7 +30,7 @@ public class WebTest {
 
     @ParameterizedTest(name = "{index} {1}")
     @MethodSource
-    void classic(UIAuto uiAuto, String path){
+    void classic(UITestCase uiAuto, String path){
         basePage.run(uiAuto);
     }
 
@@ -44,7 +44,7 @@ public class WebTest {
 //                "/test_framework/webauto_2.yaml",
                 "/test_framework/webauto_3.yaml"
         ).stream().forEach(path->{
-            UIAuto uiAuto= basePage.load(path);
+            UITestCase uiAuto= basePage.load(path);
             uiAuto.description=path;
             all.add(arguments(uiAuto, path));
         });

@@ -2,41 +2,43 @@ package com.tengmoney.autoframework;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-import org.openqa.selenium.By;
+import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.WebElement;
 
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.lang.reflect.Method;
+import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-//自动化领域建模
-public class BasePage {
-    List<PageObjectModel> pages = new ArrayList<>();
+//抽象工厂模式
+@Slf4j
+public abstract class BasePage {
 
+    List<PageMethod> pages = new ArrayList<>();
     public void click(HashMap<String, Object> map) {
-        System.out.println("click");
-        System.out.println(map);
-//        driver.findElement(by).click
+        log.info("click");
     }
-
     public void sendKeys(HashMap<String, Object> map) {
-        System.out.println("sendKeys");
-        System.out.println(map);
+        log.info("sendKeys");
     }
+    public void otherAction(HashMap<String,Object>map){
 
+    }
+    /**
+     * 除了官方提供的元素操作之外，还需要定义一些自己的操作
+     * @param map
+     */
     public void action(HashMap<String, Object> map) {
-        System.out.println("action");
-        System.out.println(map);
+        log.info("action");
 
 //        如果是page级别的关键字
         if (map.containsKey("page")) {
             String action = map.get("action").toString();
             String pageName = map.get("page").toString();
-            pages.forEach(pom-> System.out.println(pom.name));
+            pages.forEach(pom-> log.info(pom.name));
 
             pages.stream()
                     .filter(pom -> pom.name.equals(pageName))
@@ -46,15 +48,14 @@ public class BasePage {
                 action(step);
             });
         } else {
+
 //            自动化级别
             if (map.containsKey("click")) {
                 HashMap<String, Object> by = (HashMap<String, Object>) map.get("click");
                 click(by);
             }
 
-            if (map.containsKey("sendKeys")) {
-                sendKeys(map);
-            }
+
         }
 
 
@@ -68,55 +69,47 @@ public class BasePage {
 
     }
 
-    public void run(UIAuto uiAuto) {
-        uiAuto.steps.stream().forEach(m -> {
-//            if (m.keySet().contains("click")) {
-//                click((HashMap<String, Object>) m.get("click"));
-//            }
-
-            if (m.containsKey("click")) {
-                HashMap<String, Object> by = (HashMap<String, Object>) m.get("click");
-                click(by);
-            }
-
-            if (m.containsKey("sendKeys")) {
-                sendKeys(m);
-            }
-
-            if (m.containsKey("action")) {
+    public void run(UITestCase uiTestcase ,WebElement element) {
+        uiTestcase.steps.stream().forEach(m -> {
+            Set<Object> elementMethodSet =
+                    Arrays.stream(Arrays.stream(element.getClass().getDeclaredMethods())
+                    .toArray()).collect(Collectors.toSet());
+            HashSet<Method>result = new HashSet();
+            if (result.addAll(m.keySet()).removeAll(elementMethodSet).size()>) {
                 action(m);
+            }else if (){
+
+            }else{
+                log.error("error");
             }
 
-//            if(m.containsKey("page")){
-//                page(m);
-//            }
 
         });
 
     }
 
-    public UIAuto load(String path) {
+    public UITestCase load(String path) {
         ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
-        UIAuto uiauto = null;
+        UITestCase uiTestcase = null;
         try {
-            uiauto = mapper.readValue(
+            uiTestcase = mapper.readValue(
                     BasePage.class.getResourceAsStream(path),
-                    UIAuto.class
+                    UITestCase.class
             );
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return uiauto;
+        return uiTestcase;
 
     }
 
-    public PageObjectModel loadPage(String path) {
+    public PageMethod loadPage(String path) {
         ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
-        PageObjectModel pom = null;
+        PageMethod pom = null;
         try {
             pom = mapper.readValue(
                     new File(path),
-                    PageObjectModel.class
+                    PageMethod.class
             );
         } catch (IOException e) {
             e.printStackTrace();
@@ -128,7 +121,7 @@ public class BasePage {
         Stream.of(new File(dir).list(new FilenameFilter() {
             @Override
             public boolean accept(File dir, String name) {
-                return name.contains("_page");
+                return name.contains("page");
             }
         })).forEach(path -> {
             path = dir + "/" + path;

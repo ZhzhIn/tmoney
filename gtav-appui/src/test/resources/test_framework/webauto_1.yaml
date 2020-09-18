@@ -1,0 +1,8 @@
+name: xxx
+description: xxx
+steps:
+  #List<HashMap<FocusType, Object>>
+  - action: get
+    url: https://ceshiren.com
+  - click: {linktext: 最新}
+  - click: {linktext: 热门}

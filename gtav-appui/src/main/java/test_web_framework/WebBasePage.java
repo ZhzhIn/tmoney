@@ -1,6 +1,7 @@
 package test_web_framework;
 
 import com.tengmoney.autoframework.BasePage;
+import item.FocusType;
 import org.openqa.selenium.By;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.remote.RemoteWebDriver;

@@ -1,10 +1,15 @@
 package com.tengmoney.autoframework;
 
+import item.FocusType;
+
 import java.util.HashMap;
 import java.util.List;
 
-public class UIAuto {
+/**
+ * 用例操作
+ */
+public class UITestCase {
     public String name="";
     public String description="";
-    public List<HashMap<String, Object>> steps;
+    public List<HashMap<FocusType, Object>> steps;
 }

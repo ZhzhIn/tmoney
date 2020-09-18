@@ -11,7 +11,7 @@ public class BasePageTest {
     private static BasePage basePage;
     @BeforeAll
     static void beforeAll(){
-        basePage = new BasePage();
+        basePage =UITestCaseFactory.create("web");
     }
 
     @BeforeEach
@@ -24,13 +24,13 @@ public class BasePageTest {
 
     @Test
     void run() {
-        UIAuto uiauto=basePage.load("/uiauto.yaml");
+        UITestCase uiauto=basePage.load("/test_framework/uiauto.yaml");
         basePage.run(uiauto);
     }
 
     @Test
     void load() throws JsonProcessingException {
-        UIAuto uiauto=basePage.load("/uiauto.yaml");
+        UITestCase uiauto=basePage.load("/test_framework/uiauto.yaml");
         ObjectMapper mapper=new ObjectMapper();
         System.out.println(mapper.writeValueAsString(uiauto));
     }
