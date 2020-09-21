@@ -3,113 +3,59 @@ package com.tengmoney.autoframework;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import lombok.extern.slf4j.Slf4j;
-import org.openqa.selenium.WebElement;
 
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
-import java.lang.reflect.Method;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.stream.Stream;
 
 //抽象工厂模式
 @Slf4j
-public abstract class BasePage {
+public class BasePage {
+    List<PageObjectModel> pages = new ArrayList<>();
 
-    List<PageMethod> pages = new ArrayList<>();
-    public void click(HashMap<String, Object> map) {
-        log.info("click");
-    }
-    public void sendKeys(HashMap<String, Object> map) {
-        log.info("sendKeys");
-    }
-    public void otherAction(HashMap<String,Object>map){
-
+    public void run(UITestCase uiTestcase) {
+        uiTestcase.steps.stream().forEach(
+                step -> {
+                action(step);
+        });
     }
     /**
-     * 除了官方提供的元素操作之外，还需要定义一些自己的操作
+     * 单个操作的判定和执行
+     */
+    public void click(HashMap map){
+        log.info("click");
+    }
+    public void sendKeys(HashMap map){
+        log.info("sendKeys");
+    }
+
+    /**
+     * 执行每个用例中的步骤,如果是page层面的，就调用对应的page和对应方法
+     * 如果是操作层面的，就调用pageObject里面的操作处理
+     * 如果是断言层面的，就调用断言方法处理
      * @param map
      */
-    public void action(HashMap<String, Object> map) {
-        log.info("action");
-
-//        如果是page级别的关键字
-        if (map.containsKey("page")) {
-            String action = map.get("action").toString();
-            String pageName = map.get("page").toString();
-            pages.forEach(pom-> log.info(pom.name));
-
-            pages.stream()
-                    .filter(pom -> pom.name.equals(pageName))
-                    .findFirst()
-                    .get()
-                    .methods.get(action).forEach(step -> {
-                action(step);
-            });
-        } else {
-
-//            自动化级别
-            if (map.containsKey("click")) {
-                HashMap<String, Object> by = (HashMap<String, Object>) map.get("click");
-                click(by);
-            }
-
-
-        }
-
+    public void action(HashMap map){
 
     }
 
-    public void find() {
-
-    }
-
-    public void getText() {
-
-    }
-
-    public void run(UITestCase uiTestcase ,WebElement element) {
-        uiTestcase.steps.stream().forEach(m -> {
-            Set<Object> elementMethodSet =
-                    Arrays.stream(Arrays.stream(element.getClass().getDeclaredMethods())
-                    .toArray()).collect(Collectors.toSet());
-            HashSet<Method>result = new HashSet();
-            if (result.addAll(m.keySet()).removeAll(elementMethodSet).size()>) {
-                action(m);
-            }else if (){
-
-            }else{
-                log.error("error");
-            }
-
-
-        });
-
-    }
-
-    public UITestCase load(String path) {
+    /**
+     * 加载所有的pageObject
+     * @param path
+     * @return
+     */
+    public PageObjectModel loadPage(String path) {
         ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
-        UITestCase uiTestcase = null;
-        try {
-            uiTestcase = mapper.readValue(
-                    BasePage.class.getResourceAsStream(path),
-                    UITestCase.class
-            );
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return uiTestcase;
-
-    }
-
-    public PageMethod loadPage(String path) {
-        ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
-        PageMethod pom = null;
+        PageObjectModel pom = null;
         try {
             pom = mapper.readValue(
+//                    Thread.currentThread().getStackTrace()[2].getClass().getResourceAsStream(path),
                     new File(path),
-                    PageMethod.class
+                    PageObjectModel.class
             );
         } catch (IOException e) {
             e.printStackTrace();
@@ -117,7 +63,7 @@ public abstract class BasePage {
         return pom;
     }
 
-    public void loadPages(String dir) {
+    public BasePage loadPages(String dir) {
         Stream.of(new File(dir).list(new FilenameFilter() {
             @Override
             public boolean accept(File dir, String name) {
@@ -128,5 +74,6 @@ public abstract class BasePage {
             System.out.println(path);
             pages.add(loadPage(path));
         });
+        return this;
     }
 }

@@ -1,0 +1,15 @@
+name: xxx
+description: xxx
+steps:
+  - action: get
+    url: https://ceshiren.com
+  - click: {linktext: 开源项目}
+  - click: {linktext: 测试内推}
+  - action: exist
+    id: xxx
+  - action: getText
+    id: ddd
+    save: ddd_text
+  - action: equals
+    expect: "xxxx"
+    actual: ddd_text

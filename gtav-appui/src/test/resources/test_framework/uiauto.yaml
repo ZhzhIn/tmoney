@@ -1,9 +1,0 @@
-name: xxx
-description: xxx
-steps:
-  - id: search
-    sendKeys: "seveniruby hogwarts"
-  - click: {id: search}
-  - id: search
-    action: getText
-    key: search_text

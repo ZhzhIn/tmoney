@@ -15,7 +15,6 @@ import static org.junit.jupiter.params.provider.Arguments.arguments;
 public class DDTest {
 
     private static BasePage basePage;
-
     @BeforeAll
     static void beforeAll(){
         //todo: 加载通用配置
@@ -33,14 +32,14 @@ public class DDTest {
     }
 
     static List<Arguments> classic(){
-        basePage = UITestCaseFactory.create("web");
+        basePage = BasePageFactory.create("web");
         List<Arguments> all= new ArrayList<Arguments>();
 
         Arrays.asList(
                 "/test_framework/webauto_1.yaml",
                 "/test_framework/webauto_2.yaml"
         ).stream().forEach(path->{
-            UITestCase uiTestcase= basePage.load(path);
+            UITestCase uiTestcase= UITestCase.load(path);
             uiTestcase.description=path;
             all.add(arguments(uiTestcase, path));
         });

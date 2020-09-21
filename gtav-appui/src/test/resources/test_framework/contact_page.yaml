@@ -1,4 +1,6 @@
 name: contact
+#item:
+# 最新: linktext=最新
 methods:
   search:
     - click: {linktext: 最新}
