@@ -1,6 +1,5 @@
 package com.tengmoney.autoframework;
 
-import item.ActionType;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -17,7 +16,7 @@ public class PageMethod {
      * element = findElemnt(String using ,String value)
      * element.action();
      */
-    public HashMap<ActionType, List<HashMap<String, Object>>> methods;
+    public HashMap<String, List<HashMap<String, Object>>> methods;
     @Test
     void test(){
         HashMap usingValue = new HashMap();
@@ -25,7 +24,7 @@ public class PageMethod {
         ArrayList array = new ArrayList();
         array.add(usingValue);
         methods = new HashMap<>();
-        methods.put(ActionType.CLICK,array);
+        methods.put("click",array);
         System.out.println(methods);
     }
 }

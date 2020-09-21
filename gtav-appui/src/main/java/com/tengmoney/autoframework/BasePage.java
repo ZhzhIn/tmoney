@@ -3,14 +3,13 @@ package com.tengmoney.autoframework;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import lombok.extern.slf4j.Slf4j;
-import org.openqa.selenium.WebElement;
 
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
-import java.lang.reflect.Method;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.stream.Stream;
 
 //抽象工厂模式
@@ -24,9 +23,7 @@ public abstract class BasePage {
     public void sendKeys(HashMap<String, Object> map) {
         log.info("sendKeys");
     }
-    public void otherAction(HashMap<String,Object>map){
 
-    }
     /**
      * 除了官方提供的元素操作之外，还需要定义一些自己的操作
      * @param map
@@ -49,12 +46,15 @@ public abstract class BasePage {
             });
         } else {
 
-//            自动化级别
+//            page内部操作
             if (map.containsKey("click")) {
                 HashMap<String, Object> by = (HashMap<String, Object>) map.get("click");
                 click(by);
             }
-
+            if (map.containsKey("sendkeys")) {
+                HashMap<String, Object> by = (HashMap<String, Object>) map.get("sendkeys");
+                sendKeys(by);
+            }
 
         }
 
@@ -69,21 +69,10 @@ public abstract class BasePage {
 
     }
 
-    public void run(UITestCase uiTestcase ,WebElement element) {
-        uiTestcase.steps.stream().forEach(m -> {
-            Set<Object> elementMethodSet =
-                    Arrays.stream(Arrays.stream(element.getClass().getDeclaredMethods())
-                    .toArray()).collect(Collectors.toSet());
-            HashSet<Method>result = new HashSet();
-            if (result.addAll(m.keySet()).removeAll(elementMethodSet).size()>) {
-                action(m);
-            }else if (){
-
-            }else{
-                log.error("error");
-            }
-
-
+    public void run(UITestCase uiTestcase) {
+        uiTestcase.steps.stream().forEach(
+                step -> {
+                action(step);
         });
 
     }

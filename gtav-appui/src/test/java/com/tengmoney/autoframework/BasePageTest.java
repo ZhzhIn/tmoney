@@ -27,7 +27,11 @@ public class BasePageTest {
         UITestCase uiauto=basePage.load("/test_framework/uiauto.yaml");
         basePage.run(uiauto);
     }
-
+    @Test
+    void run2() {
+        UITestCase uiauto=basePage.load("/test_framework/contact_page.yaml");
+        basePage.run(uiauto);
+    }
     @Test
     void load() throws JsonProcessingException {
         UITestCase uiauto=basePage.load("/test_framework/uiauto.yaml");

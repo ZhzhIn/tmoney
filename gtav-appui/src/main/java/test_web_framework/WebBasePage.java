@@ -1,13 +1,13 @@
 package test_web_framework;
 
 import com.tengmoney.autoframework.BasePage;
-import item.FocusType;
 import org.openqa.selenium.By;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
@@ -16,10 +16,11 @@ public class WebBasePage extends BasePage {
     WebDriverWait wait;
 
     public WebBasePage() {
+        File file = new File("src/main/resources/chromedriver/chromedriver80-106.exe");
+        System.setProperty("webdriver.chrome.driver"
+                ,file.getAbsolutePath());
         driver=new ChromeDriver();
         driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
-//        selenium 4.0 use duration
-//        wait=new WebDriverWait(driver, Duration.ofSeconds(10));
         wait=new WebDriverWait(driver, 10);
     }
 
