@@ -7,16 +7,16 @@ import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLDecoder;
 
-public class ContactPage extends WebBasePage {
+public class ContactPageHandler extends WebPageHandler {
     By addMember=By.linkText("添加成员");
     By username=By.name("username");
     By delete=By.linkText("删除");
 
-    public ContactPage(RemoteWebDriver driver) {
+    public ContactPageHandler(RemoteWebDriver driver) {
         super(driver);
     }
 
-    public ContactPage addMember(String username, String acctid, String mobile) {
+    public ContactPageHandler addMember(String username, String acctid, String mobile) {
         //todo:
 //        try {
 //            Thread.sleep(3000);
@@ -46,7 +46,7 @@ public class ContactPage extends WebBasePage {
         return this;
     }
 
-    public ContactPage search(String keyword){
+    public ContactPageHandler search(String keyword){
         sendKeys(By.id("memberSearchInput"), keyword);
 //        driver.findElement(By.id("memberSearchInput")).sendKeys(keyword);
 //        new WebDriverWait(driver, Duration.ofSeconds(10))
@@ -58,7 +58,7 @@ public class ContactPage extends WebBasePage {
         return driver.findElement(By.cssSelector(".member_display_cover_detail_name")).getText();
     }
 
-    public ContactPage delete(){
+    public ContactPageHandler delete(){
         click(delete);
         click(By.linkText("确认"));
         click(By.id("clearMemberSearchInput"));
@@ -69,7 +69,7 @@ public class ContactPage extends WebBasePage {
 
     }
 
-    public ContactPage importFromFile(URL path){
+    public ContactPageHandler importFromFile(URL path){
         //todo:
         System.out.println(path.getPath());
 

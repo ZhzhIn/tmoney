@@ -1,20 +1,8 @@
 package com.tengmoney.autoframework;
 
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import static org.junit.jupiter.params.provider.Arguments.arguments;
-
 public class DDTest {
 
-    private static BasePage basePage;
+    /*private static PageHandler basePage;
     @BeforeAll
     static void beforeAll(){
         //todo: 加载通用配置
@@ -32,7 +20,7 @@ public class DDTest {
     }
 
     static List<Arguments> classic(){
-        basePage = BasePageFactory.create("web");
+        basePage = PageObjectFactory.create("web","chrome");
         List<Arguments> all= new ArrayList<Arguments>();
 
         Arrays.asList(
@@ -45,5 +33,5 @@ public class DDTest {
         });
         return all;
 
-    }
+    }*/
 }

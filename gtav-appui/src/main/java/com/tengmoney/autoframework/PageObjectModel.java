@@ -25,4 +25,5 @@ public class PageObjectModel {
      */
     public HashMap<String, List<HashMap<String, Object>>> methods;
 
+
 }

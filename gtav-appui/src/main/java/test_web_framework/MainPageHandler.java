@@ -3,10 +3,10 @@ package test_web_framework;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Cookie;
 
-public class MainPage extends WebBasePage {
+public class MainPageHandler extends WebPageHandler {
 
-    public MainPage() {
-        super();
+    public MainPageHandler(String platform) {
+        super(platform);
 //        System.setProperty("webdriver.gecko.driver", "/Users/seveniruby/ke/java_3/selenium/drivers/geckodriver");
 
         String url = "https://test.xx.com/login";
@@ -25,11 +25,11 @@ public class MainPage extends WebBasePage {
 
     }
 
-    public ContactPage toContact() {
+    public ContactPageHandler toContact() {
         //todo:
         click(By.cssSelector("#menu_contacts"));
 //        driver.findElement(By.cssSelector("#menu_contacts")).click();
-        return new ContactPage(driver);
+        return new ContactPageHandler(driver);
     }
 
 }

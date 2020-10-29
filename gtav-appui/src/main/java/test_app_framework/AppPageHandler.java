@@ -1,6 +1,6 @@
 package test_app_framework;
 
-import com.tengmoney.autoframework.BasePage;
+import com.tengmoney.autoframework.PageHandler;
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.MobileElement;
 import io.appium.java_client.TouchAction;
@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 @Slf4j
-public class AppBasePage extends BasePage {
+public class AppPageHandler extends PageHandler {
     private final int timeOutInSecondsDefault = 60;
     //    AndroidDriver<MobileElement> driver;
     static AppiumDriver<MobileElement> driver;
@@ -29,10 +29,10 @@ public class AppBasePage extends BasePage {
     String packageName;
     String activityName;
 
-    public AppBasePage() {
+    public AppPageHandler(String platform) {
     }
 
-    public AppBasePage(String packageName, String activityName) {
+    public AppPageHandler(String packageName, String activityName) {
         log.info("packageName is :" + packageName + ",activityName is :" + activityName);
         this.packageName = packageName;
         this.activityName = activityName;
@@ -40,7 +40,7 @@ public class AppBasePage extends BasePage {
 
     }
 
-    public AppBasePage(AppiumDriver<MobileElement> driver) {
+    public AppPageHandler(AppiumDriver<MobileElement> driver) {
 
         this.driver = driver;
         wait = new WebDriverWait(driver, timeOutInSecondsDefault);
@@ -100,11 +100,10 @@ public class AppBasePage extends BasePage {
                 );
     }
 
-
+    @Override
     public void quit() {
         driver.quit();
     }
-
 
     public By byText(String text) {
         return By.xpath("//*[@text='" + text + "']");
@@ -117,7 +116,7 @@ public class AppBasePage extends BasePage {
     public MobileElement find(String text) {
         return driver.findElement(byText(text));
     }
-
+    @Override
     public void click(By by) {
         //todo: 异常处理
         try {
@@ -128,12 +127,12 @@ public class AppBasePage extends BasePage {
         }
         wait.until(ExpectedConditions.visibilityOfElementLocated(by)).click();
     }
-
+    @Override
     public void click(String text) {
         //todo: 异常处理
         find(text).click();
     }
-
+    @Override
     public void sendKeys(By by, String content) {
         driver.findElement(by).sendKeys(content);
     }
