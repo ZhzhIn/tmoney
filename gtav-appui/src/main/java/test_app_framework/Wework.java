@@ -4,7 +4,8 @@ import org.openqa.selenium.By;
 
 public class Wework extends AppPageHandler {
     public Wework() {
-        super("com.tencent.wework", ".launch.LaunchSplashActivity");
+        super("com.tencent.wework", ".launch.LaunchSplashActivity"
+        ,"APH0219430006864","Android");
     }
 
     public 日程PageHandler 日程(){

@@ -28,15 +28,17 @@ public class AppPageHandler extends PageHandler {
     WebDriverWait wait;
     String packageName;
     String activityName;
+    String platform;
+    String deviceName;
 
     public AppPageHandler(String platform) {
     }
 
-    public AppPageHandler(String packageName, String activityName) {
+    public AppPageHandler(String packageName, String activityName,String deviceName,String platform) {
         log.info("packageName is :" + packageName + ",activityName is :" + activityName);
         this.packageName = packageName;
         this.activityName = activityName;
-        startApp(this.packageName, this.activityName);
+        startApp(this.packageName, this.activityName,this.deviceName,this.platform);
 
     }
 
@@ -62,10 +64,10 @@ public class AppPageHandler extends PageHandler {
     }
 
 
-    public void startApp(String packageName, String activityName) {
+    public void startApp(String packageName, String activityName,String deviceName,String platform) {
         DesiredCapabilities desiredCapabilities = new DesiredCapabilities();
-        desiredCapabilities.setCapability("platformName", "android");
-        desiredCapabilities.setCapability("deviceName", "hogwarts");
+        desiredCapabilities.setCapability("platformName", platform);
+        desiredCapabilities.setCapability("deviceName", deviceName);
         desiredCapabilities.setCapability("appPackage", packageName);
         desiredCapabilities.setCapability("appActivity", activityName);
         desiredCapabilities.setCapability("noReset", "true");
@@ -74,6 +76,7 @@ public class AppPageHandler extends PageHandler {
         desiredCapabilities.setCapability("skipLogcatCapture", "true");
         URL remoteUrl = null;
         try {
+            //"http://127.0.0.1:4723/wd/hub"
             remoteUrl = new URL("http://127.0.0.1:4723/wd/hub");
         } catch (MalformedURLException e) {
             e.printStackTrace();
