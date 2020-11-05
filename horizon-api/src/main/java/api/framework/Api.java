@@ -146,7 +146,7 @@ public class Api {
         if (getUrl() != null && flag == 0) {
             String apiHost = getUrl();
             log.info("before handle ,the url is :" + apiHost);
-            String url = host + apiHost;
+            String url = String.format("%s%s",host , apiHost);
             setUrl(url);
             log.info("after handle,当前api的url是：" + url);
             flag = 1;
