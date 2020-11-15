@@ -9,14 +9,9 @@ public class TestMap {
    public void test(){
         HashMap<String,String>map = new HashMap();
         HashMap<String,String>map2 = new HashMap();
-
         map.put("a","a");
         map.put("b","b");
         map.put("c","c");
-
-
-
-
         map2.put("a","aa");
         map2.put("b","bb");
         map2.put("d","d");

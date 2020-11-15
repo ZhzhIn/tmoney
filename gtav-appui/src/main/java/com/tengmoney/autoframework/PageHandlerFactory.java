@@ -1,8 +1,8 @@
 package com.tengmoney.autoframework;
 
 
-import test_app_framework.AppPageHandler;
-import test_web_framework.WebPageHandler;
+import com.appframework.AppPageHandler;
+import com.webframework.WebPageHandler;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;

@@ -9,54 +9,9 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>horizon-api</artifactId>
-
     <properties>
         <maven.compiler.target>${maven.compiler.source}</maven.compiler.target>
     </properties>
-    <dependencies>
-        <!--api test-->
-        <dependency>
-            <groupId>io.rest-assured</groupId>
-            <artifactId>rest-assured</artifactId>
-            <version>4.1.2</version>
-        </dependency>
-        <dependency>
-            <groupId>io.rest-assured</groupId>
-            <artifactId>json-schema-validator</artifactId>
-            <version>4.1.2</version>
-        </dependency>
-        <!-- json 模板化工具-->
-        <dependency>
-            <groupId>com.github.spullara.mustache.java</groupId>
-            <artifactId>compiler</artifactId>
-            <version>0.9.6</version>
-        </dependency>
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-engine</artifactId>
-            <version>5.7.0-M1</version>
-            <!--            <scope>test</scope>-->
-        </dependency>
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter</artifactId>
-            <version>5.7.0-M1</version>
-            <!--            <scope>test</scope>-->
-        </dependency>
-        <!--main执行testcase-->
-        <dependency>
-            <groupId>org.junit.platform</groupId>
-            <artifactId>junit-platform-launcher</artifactId>
-            <version>1.7.0-M1</version>
-            <!--            <scope>test</scope>-->
-        </dependency>
-        <dependency>
-            <groupId>org.junit.platform</groupId>
-            <artifactId>junit-platform-runner</artifactId>
-            <version>1.7.0-M1</version>
-            <!--            <scope>test</scope>-->
-        </dependency>
-    </dependencies>
     <build>
         <plugins>
             <plugin>
@@ -69,16 +24,13 @@
                 <version>2.22.2</version>
                 <configuration>
                     <encoding>UTF-8</encoding>
-                    <testFailureIgnore>false</testFailureIgnore>
+                    <!--忽略失败的用例-->
+                    <testFailureIgnore>true</testFailureIgnore>
                     <argLine>
                         -javaagent:"${settings.localRepository}/org/aspectj/aspectjweaver/${aspectj.version}/aspectjweaver-${aspectj.version}.jar"
                     </argLine>
                     <reportsDirectory>${project.build.directory}/allure-reports</reportsDirectory>
                     <systemProperties>
-                        <property>
-                            <name>junit.jupiter.extensions.autodetection.enabled</name>
-                            <value>true</value>
-                        </property>
                         <!--在target中生成result,就用下面这个命令-->
                         <property>
                             <name>allure.results.directory</name>
