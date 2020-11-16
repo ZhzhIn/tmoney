@@ -1,17 +1,21 @@
 package test_web.wework;
 
+import io.github.bonigarcia.wdm.WebDriverManager;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.chrome.ChromeDriver;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 public class TestWeWork {
     @Test
     void chrome(){
+        assertEquals("xx","xx");
 //        System.setProperty("webdriver.gecko.driver", "/Users/seveniruby/ke/java_3/selenium/drivers/geckodriver");
-
+        WebDriverManager.chromedriver().setup();
+        ChromeDriver driver=new ChromeDriver();
         String url="https://work.weixin.qq.com/wework_admin/frame";
 //        FirefoxDriver driver=new FirefoxDriver();
-        ChromeDriver driver=new ChromeDriver();
         driver.get(url);
         driver.manage().deleteAllCookies();
 
