@@ -1,22 +1,23 @@
 package com.webframework;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLDecoder;
 
-public class ContactPageHandler extends WebPageHandler {
+public class ContactPage extends WebPage {
     By addMember=By.linkText("添加成员");
     By username=By.name("username");
     By delete=By.linkText("删除");
 
-    public ContactPageHandler(RemoteWebDriver driver) {
+    public ContactPage(WebDriver driver) {
         super(driver);
     }
 
-    public ContactPageHandler addMember(String username, String acctid, String mobile) {
+    public ContactPage addMember(String username, String acctid, String mobile) {
         //todo:
 //        try {
 //            Thread.sleep(3000);
@@ -46,7 +47,7 @@ public class ContactPageHandler extends WebPageHandler {
         return this;
     }
 
-    public ContactPageHandler search(String keyword){
+    public ContactPage search(String keyword){
         sendKeys(By.id("memberSearchInput"), keyword);
 //        driver.findElement(By.id("memberSearchInput")).sendKeys(keyword);
 //        new WebDriverWait(driver, Duration.ofSeconds(10))
@@ -58,7 +59,7 @@ public class ContactPageHandler extends WebPageHandler {
         return driver.findElement(By.cssSelector(".member_display_cover_detail_name")).getText();
     }
 
-    public ContactPageHandler delete(){
+    public ContactPage delete(){
         click(delete);
         click(By.linkText("确认"));
         click(By.id("clearMemberSearchInput"));
@@ -69,7 +70,7 @@ public class ContactPageHandler extends WebPageHandler {
 
     }
 
-    public ContactPageHandler importFromFile(URL path){
+    public ContactPage importFromFile(URL path){
         //todo:
         System.out.println(path.getPath());
 

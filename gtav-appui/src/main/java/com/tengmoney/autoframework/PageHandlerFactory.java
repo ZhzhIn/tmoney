@@ -2,7 +2,7 @@ package com.tengmoney.autoframework;
 
 
 import com.appframework.AppPageHandler;
-import com.webframework.WebPageHandler;
+import com.webframework.WebPage;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -20,7 +20,7 @@ public class PageHandlerFactory {
         String[] params = new String[]{platform};
         try {
             if (driverName.toLowerCase().contains(WEB)) {
-                Class clazz = WebPageHandler.class;
+                Class clazz = WebPage.class;
                 Constructor c = null;
                 c = clazz.getConstructor(String.class);
                 page = (T) c.newInstance(platform);

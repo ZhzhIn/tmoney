@@ -5,6 +5,7 @@ import com.tengmoney.autoframework.PageObjectModel;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -13,8 +14,8 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 @Slf4j
-public class WebPageHandler extends PageHandler {
-    RemoteWebDriver driver;
+public class WebPage extends PageHandler {
+    WebDriver driver;
     WebDriverWait wait;
     private static final String BROWSER_CHROME="chrome";
     private static final String BROWSER_FIREFOX="firefox";
@@ -22,7 +23,7 @@ public class WebPageHandler extends PageHandler {
     private static final String BROWSER_HTML="html";
 
 
-    public WebPageHandler(String browserName) {
+    public WebPage(String browserName) {
         if(browserName.toLowerCase().contains(BROWSER_CHROME)){
             WebDriverManager.chromedriver().setup();
             driver=new ChromeDriver();
@@ -31,7 +32,7 @@ public class WebPageHandler extends PageHandler {
         wait=new WebDriverWait(driver, 10);
     }
 
-    public WebPageHandler(RemoteWebDriver driver) {
+    public WebPage(RemoteWebDriver driver) {
         this.driver = driver;
 //        wait=new WebDriverWait(driver, Duration.ofSeconds(10));
         wait=new WebDriverWait(driver,10);
