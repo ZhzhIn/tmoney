@@ -4,85 +4,98 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import io.github.bonigarcia.wdm.WebDriverManager;
-import org.junit.jupiter.api.BeforeAll;
+import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Cookie;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
-
+@Slf4j
 public class MainPage extends WebPage {
+    static String AUTH_LOGIN_URL = "https://test.tengmoney.com/caizhi_mkto/index/ty/auth.do?userId=YinZhenZhi&corpId=ww8c83d949a80b562d";
+    static String OP_URL = "https://test.tengmoney.com/caizhi_op/#/";
 
-    static WebDriver driver;
-    @BeforeAll
-    static void test(){
+    @FindBy(xpath = "//span[text()=\"文章管理\"]")
+    private By 文章管理;
+    @FindBy(xpath = "//span[text()=\"每日早报\"]")
+    private By 每日早报;
+
+    public MainPage() {
+//        super();
+        log.info("创建MainPage");
         WebDriverManager.chromedriver().setup();
         driver=new ChromeDriver();
-    }
-    void needLogin() throws IOException, InterruptedException {
-        //扫码登录
-        WebDriver driver = new ChromeDriver();
-        driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
-        driver.get("https://work.weixin.qq.com/wework_admin/frame");
-        //sleep 20
-        Thread.sleep(15000);
-        Set<Cookie> cookies = driver.manage().getCookies();
-        ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
-        mapper.writeValue(new File("cookies.yaml"), cookies);
-        System.exit(0);
-    }
-
-    void beforeAll() throws IOException, InterruptedException {
-        File file = new File("cookies.yaml");
-        if (file.exists()) {
-            //利用cookie复用session登录
-
-            if(System.getenv("browser")=="chrome"){
-                driver = new ChromeDriver();
-            }else if(System.getenv("browser")=="firefox"){
-                driver=new FirefoxDriver();
-            }
-            driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
-            driver.get("https://work.weixin.qq.com/wework_admin/frame");
-
-            ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
-            TypeReference typeReference = new TypeReference<List<HashMap<String, Object>>>() {
-            };
-
-            List<HashMap<String, Object>> cookies = mapper.readValue(file, typeReference);
-            System.out.println(cookies);
-
-            cookies.forEach(cookieMap -> {
-                driver.manage().addCookie(new Cookie(cookieMap.get("name").toString(), cookieMap.get("value").toString()));
-            });
-
-            driver.navigate().refresh();
-        } else {
-            needLogin();
-        }
-    }
-
-    public MainPage(String platform){
-     super(platform);
-     this.beforeAll();
-    }
-    public MainPage() throws IOException, InterruptedException {
-        super("chrome");
-        //初始化你的selenium 复用session 打开网站
+        wait=new WebDriverWait(driver, 10);
         this.beforeAll();
     }
 
-    public ContactPage contact(){
-        //进入通讯录
-        click(By.id("menu_contacts"));
-        //传递selenium的driver给另外一个PO
-        //po原则4 跳转或者进入新页面使用返回新的po来模拟
-        return new ContactPage(driver);
+    void login() {
+        driver.get(AUTH_LOGIN_URL);
+        Set<Cookie> cookies = driver.manage().getCookies();
+        ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
+        File file = new File("cookies.yaml");
+        try {
+            mapper.writeValue(file, cookies);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        waitSecond(5);
+        driver.get(OP_URL);
+        System.exit(0);
     }
+
+    void beforeAll() {
+        File file = new File("cookies.yaml");
+        if (!file.exists()) {
+            login();
+        } else {
+            BasicFileAttributes bAttributes = null;
+            try {
+                bAttributes = Files.readAttributes(file.toPath(),
+                        BasicFileAttributes.class);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            long changeTime = bAttributes.lastModifiedTime().toMillis();
+
+            if (System.currentTimeMillis() - changeTime > 1000 * 60 * 5) {
+                login();
+            } else {
+                ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
+                TypeReference typeReference = new TypeReference<List<HashMap<String, Object>>>() {
+                };
+                driver.get(OP_URL);
+                List<HashMap<String, Object>> cookies = null;
+                try {
+                    cookies = (List<HashMap<String, Object>>) mapper.readValue(file, typeReference);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                cookies.forEach(cookieMap -> {
+                    driver.manage().addCookie(new Cookie(cookieMap.get("name").toString(), cookieMap.get("value").toString()));
+                });
+                driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+                driver.get(OP_URL);
+            }
+        }
+    }
+
+    public MorPaperPage jumpToMorPaper() {
+//todo 替换成findby，并且不被反复的创建新窗口
+        //todo 修改每日早报无法点击的问题
+//        click(文章管理);
+        click(By.xpath("//span[text()=\"文章管理\"]"));
+//        click(每日早报);
+        click(By.xpath("//span[text()=\"每日早报\"]"));
+        return new MorPaperPage(driver);
+    }
+}

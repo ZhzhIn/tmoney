@@ -5,10 +5,8 @@ import io.qameta.allure.Feature;
 import io.qameta.allure.Owner;
 import io.qameta.allure.Story;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.parallel.Execution;
-import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import poexception.TestCaseNeedToEditException;
 
@@ -26,11 +24,11 @@ import static util.HandleFile.getFileList;
 @Owner("zhzh.yin")
 @ExtendWith(TimingExtension.class)
 public class TestCaseList {
-    @BeforeAll
+//    @BeforeAll
      void setUp(){
         LoginHelper.login();
     }
-    @ParameterizedTest(name = "接口：{0}-{index}")
+//    @ParameterizedTest(name = "接口：{0}-{index}")
     @MethodSource("apiTestCase")
     @Story("一大堆接口")
     public void runTestCase(TestCase testCase) {

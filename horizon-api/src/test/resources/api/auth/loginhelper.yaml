@@ -11,5 +11,5 @@ api:
     url: /caizhi_miniapi/index/ty/auth.do
     method: get
   market:
-    url: /caizhi_miniapi/index/ty/auth.do
+    url: /caizhi_mkto/index/ty/auth.do
     method: get

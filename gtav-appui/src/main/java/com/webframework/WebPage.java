@@ -1,16 +1,12 @@
 package com.webframework;
-
 import com.tengmoney.autoframework.PageHandler;
-import com.tengmoney.autoframework.PageObjectModel;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 @Slf4j
@@ -18,11 +14,10 @@ public class WebPage extends PageHandler {
     WebDriver driver;
     WebDriverWait wait;
     private static final String BROWSER_CHROME="chrome";
-    private static final String BROWSER_FIREFOX="firefox";
-    private static final String BROWSER_IE="ie";
-    private static final String BROWSER_HTML="html";
 
-
+    public WebPage(){
+        log.info("创建WebPage");
+    }
     public WebPage(String browserName) {
         if(browserName.toLowerCase().contains(BROWSER_CHROME)){
             WebDriverManager.chromedriver().setup();
@@ -32,10 +27,12 @@ public class WebPage extends PageHandler {
         wait=new WebDriverWait(driver, 10);
     }
 
-    public WebPage(RemoteWebDriver driver) {
+    public WebPage(WebDriver driver) {
         this.driver = driver;
-//        wait=new WebDriverWait(driver, Duration.ofSeconds(10));
         wait=new WebDriverWait(driver,10);
+    }
+    public void waitSecond(long second){
+        driver.manage().timeouts().implicitlyWait(second, TimeUnit.SECONDS);
     }
     @Override
     public void quit() {

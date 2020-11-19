@@ -4,8 +4,6 @@ import api.framework.ApiList;
 import api.framework.LoginHelper;
 import api.item.AppType;
 import io.qameta.allure.Story;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import util.DefaultConfig;
 
@@ -16,11 +14,11 @@ import static org.hamcrest.Matchers.equalTo;
 public class GetAuthInfoTest {
     ApiList model = ApiList.load(this.getClass());
 
-    @BeforeAll
+//    @BeforeAll
     void beforeAll() {
         LoginHelper.login();
     }
-    @ParameterizedTest
+//    @ParameterizedTest
     @CsvSource({
             "H5STATION",
             "MINIPRO",
