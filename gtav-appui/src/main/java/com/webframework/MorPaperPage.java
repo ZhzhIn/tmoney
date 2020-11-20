@@ -20,9 +20,9 @@ public class MorPaperPage extends WebPage{
     @FindBy(xpath = "//div[@text=\"每日早报\"]")
     private By 每日早报;
 
-    Boolean isMorPaperPage(){
+/*    public Boolean isMorPaperPage(){
 
-        return
-                driver.findElements(By.xpath("//div[@text=\"每日早报\"]")).size()>0 ?  true : false;
-    }
+        return driver.findElement(By.xpath("//div[@text=\"每日早报\"]")) ? true:false;
+//                hasElement(By.xpath("//div[@text=\"每日早报\"]")) ?  true : false;
+    }*/
 }

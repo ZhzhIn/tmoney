@@ -36,6 +36,7 @@ public class MainPage extends WebPage {
         driver=new ChromeDriver();
         wait=new WebDriverWait(driver, 10);
         this.beforeAll();
+        driver.manage().window().maximize();
     }
 
     void login() {
@@ -50,7 +51,7 @@ public class MainPage extends WebPage {
         }
         waitSecond(5);
         driver.get(OP_URL);
-        System.exit(0);
+//        System.exit(0);
     }
 
     void beforeAll() {
