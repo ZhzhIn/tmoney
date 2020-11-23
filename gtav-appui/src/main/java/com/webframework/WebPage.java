@@ -1,11 +1,11 @@
 package com.webframework;
 
 import com.tengmoney.autoframework.PageHandler;
-import io.github.bonigarcia.wdm.WebDriverManager;
 import lombok.extern.slf4j.Slf4j;
-import org.openqa.selenium.*;
+import org.openqa.selenium.By;
+import org.openqa.selenium.ElementClickInterceptedException;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.interactions.Action;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -22,10 +22,11 @@ public class WebPage extends PageHandler {
     public WebPage() {
         log.info("创建WebPage");
     }
-
+@Deprecated
     public WebPage(String browserName) {
         if (browserName.toLowerCase().contains(BROWSER_CHROME)) {
-            WebDriverManager.chromedriver().setup();
+//            WebDriverManager.chromedriver().setup();
+            System.setProperty("webdriver.chrome.driver", "chromedriver.exe");
             driver = new ChromeDriver();
         }
         driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);

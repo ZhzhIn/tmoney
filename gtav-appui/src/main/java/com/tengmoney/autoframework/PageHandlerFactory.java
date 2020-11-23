@@ -1,7 +1,7 @@
 package com.tengmoney.autoframework;
 
 
-import com.appframework.AppPageHandler;
+import com.appframework.AppPage;
 import com.webframework.WebPage;
 
 import java.lang.reflect.Constructor;
@@ -25,7 +25,7 @@ public class PageHandlerFactory {
                 c = clazz.getConstructor(String.class);
                 page = (T) c.newInstance(platform);
             }else if(driverName.toLowerCase().contains(APP)){
-                Class clazz = AppPageHandler.class;
+                Class clazz = AppPage.class;
                 Constructor c = null;
                 c = clazz.getConstructor(String.class);
                 page = (T) c.newInstance(platform);

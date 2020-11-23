@@ -2,12 +2,16 @@ package com.appframework;
 
 import io.appium.java_client.MobileElement;
 import io.appium.java_client.android.AndroidDriver;
+import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.OutputType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
+import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.concurrent.TimeUnit;
@@ -15,36 +19,41 @@ import java.util.concurrent.TimeUnit;
 public class WebViewTest {
 
     private AndroidDriver driver;
+    private int index = 0;
 
     @Before
     public void setUp() throws MalformedURLException {
         DesiredCapabilities desiredCapabilities = new DesiredCapabilities();
         desiredCapabilities.setCapability("platformName", "android");
-        desiredCapabilities.setCapability("deviceName", "hogwarts");
+        desiredCapabilities.setCapability("platformVersion", "10.0");
+        desiredCapabilities.setCapability("deviceName", "device");
+        desiredCapabilities.setCapability("udid", "127.0.0.1:7555");
+//        desiredCapabilities.setCapability("udid", "APH0219430006864");
+//        desiredCapabilities.setCapability("udid", "device");
+//        desiredCapabilities.setCapability("deviceName", "APH0219430006864");
         desiredCapabilities.setCapability("appPackage", "com.xueqiu.android");
-        desiredCapabilities.setCapability("appActivity", ".view.WelcomeActivityAlias");
+        desiredCapabilities.setCapability("appActivity", "view.WelcomeActivityAlias");
         desiredCapabilities.setCapability("noReset", "true");
 //        desiredCapabilities.setCapability("adbPort", "5038");
 //        desiredCapabilities.setCapability("skipLogcatCapture", "true");
         desiredCapabilities.setCapability("dontStopAppOnReset", "true");
-
-        desiredCapabilities.setCapability("chromedriverExecutable", "/Users/seveniruby/projects/chromedriver/72/chromedriver");
-
         URL remoteUrl = new URL("http://127.0.0.1:4723/wd/hub");
 
         driver = new AndroidDriver(remoteUrl, desiredCapabilities);
         //todo: 等待优化
         driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
-        driver.findElement(By.xpath("//*[@text='交易']"));
+        System.out.println(driver.getPageSource());
+//        System.out.println(driver.getPageSource().contains("交易"));
+//        driver.findElement(By.xpath("//*[@text='交易']"));
     }
 
-    @Test
+//    @Test
     public void webview_native() {
         driver.findElement(By.xpath("//*[@text='交易']")).click();
         driver.findElement(By.xpath("//*[@text='基金开户']")).click();
     }
 
-    @Test
+//    @Test
     public void webview_web() throws InterruptedException {
         driver.findElement(By.xpath("//*[@text='交易']")).click();
         for (int i = 0; i < 2; i++) {
@@ -73,11 +82,6 @@ public class WebViewTest {
     }
 
     @Test
-    public void wxmicroApplication(){
-        
-    }
-
-    @Test
     public void sampleTest() {
         MobileElement el4 = (MobileElement) driver.findElementById("com.xueqiu.android:id/home_search");
         el4.click();
@@ -92,4 +96,29 @@ public class WebViewTest {
         Thread.sleep(20000);
         driver.quit();
     }
+    public void screenshot() {
+        //截图
+        index += 1;
+        String path = ".";
+        try {
+            FileUtils.copyFile(driver.getScreenshotAs(OutputType.FILE),
+                    new File(String.format("%s/wx_%s.png", path, index)));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void findTopWindow() {
+        for (String win : driver.getWindowHandles()) {
+            if (driver.getTitle().contains(":VISIBLE")) {
+                System.out.println(driver.getTitle());
+                System.out.println(driver.findElement(By.cssSelector("body")).getAttribute("is"));
+            } else {
+                driver.switchTo().window(win);
+            }
+        }
+        System.out.println(driver.getPageSource());
+    }
+
+
 }
