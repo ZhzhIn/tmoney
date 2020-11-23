@@ -1,8 +1,8 @@
 package com.webframework;
 
-import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.support.PageFactory;
 
 public class TestMainPage {
 //     InitPage page=new InitPage();
@@ -10,7 +10,6 @@ public class TestMainPage {
     @Test
      void test() throws InterruptedException {
         page = new MainPage();
-//        PageFactory.initElements(page.driver,MainPage.class);
 //        Assert.assertTrue(page.jumpToMorPaper().isMorPaperPage());
         MorPaperPage page1 = page.jumpToMorPaper();
         Thread.sleep(5000);

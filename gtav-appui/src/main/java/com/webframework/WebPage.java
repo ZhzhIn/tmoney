@@ -17,6 +17,7 @@ import java.util.concurrent.TimeUnit;
 public class WebPage extends PageHandler {
     WebDriver driver;
     WebDriverWait wait;
+
     private static final String BROWSER_CHROME = "chrome";
 
     public WebPage() {
@@ -62,7 +63,6 @@ public class WebPage extends PageHandler {
             JavascriptExecutor jse2 = (JavascriptExecutor)driver;
             jse2.executeScript("arguments[0].scrollIntoView()", driver.findElement(by));
              */
-            //todo waituntil到底有什么用
             wait.until(ExpectedConditions.elementToBeClickable(by));
             log.info("当前坐标" + driver.findElement(by).getLocation().toString());
             //坐标并不对,这个位置到底是啥
