@@ -6,8 +6,8 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import io.github.bonigarcia.wdm.config.WebDriverManagerException;
 import lombok.extern.slf4j.Slf4j;
-import org.openqa.selenium.By;
 import org.openqa.selenium.Cookie;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
@@ -27,19 +27,19 @@ public class MainPage extends WebPage {
     static String AUTH_LOGIN_URL = "https://test.tengmoney.com/caizhi_mkto/index/ty/auth.do?userId=YinZhenZhi&corpId=ww8c83d949a80b562d";
     static String OP_URL = "https://test.tengmoney.com/caizhi_op/#/";
     @FindBy(xpath = "//span[text()=\"文章管理\"]")
-    private By newsManage;
+    WebElement newsManage;
     @FindBy(xpath = "//span[text()=\"每日早报\"]")
-    private By morningPaper;
+    WebElement morningPaper;
 
     public MainPage() {
         log.info("创建MainPage");
         initDriver();
-        PageFactory.initElements(driver,this);
         this.beforeAll();
         driver.manage().window().maximize();
-
+        PageFactory.initElements(driver, this);
     }
-    private void initDriver(){
+
+    private void initDriver() {
         try {
             WebDriverManager.chromedriver().setup();
         } catch (WebDriverManagerException e) {
@@ -111,17 +111,8 @@ public class MainPage extends WebPage {
     }
 
     public MorPaperPage jumpToMorPaper() {
-
-        if (newsManage == null) {
-            log.error("没找到文章管理,强制退出");
-            System.exit(0);
-        } else {
-            log.info("没啥问题");
-        }
         click(newsManage);
-//        click(By.xpath("//span[text()=\"文章管理\"]"));
         click(morningPaper);
-//        click(By.xpath("//span[text()=\"每日早报\"]"));
         return new MorPaperPage(driver);
     }
 }

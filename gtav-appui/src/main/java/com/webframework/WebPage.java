@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.ElementClickInterceptedException;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -48,7 +49,19 @@ public class WebPage extends PageHandler {
         log.info("web quit");
         driver.quit();
     }
-
+    public void click(WebElement element) {
+        //todo: 异常处理
+        wait.until(ExpectedConditions.elementToBeClickable(element));
+        try {
+            element.click();
+            log.info("click element ");
+        } catch (ElementClickInterceptedException e) {
+            //坐标并不对,这个位置到底是啥
+            log.info("不可点击 使用action点击");
+            Actions action = new Actions(driver);
+            action.click(element).perform();
+        }
+    }
     @Override
     public void click(By by) {
         //todo: 异常处理
