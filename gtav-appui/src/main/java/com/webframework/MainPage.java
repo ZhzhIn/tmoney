@@ -12,11 +12,10 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import utils.FileChangeTime;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.attribute.BasicFileAttributes;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
@@ -51,7 +50,7 @@ public class MainPage extends WebPage {
 
     }
 
-    void login() {
+    private void login(){
         driver.get(AUTH_LOGIN_URL);
         Set<Cookie> cookies = driver.manage().getCookies();
         ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
@@ -70,12 +69,12 @@ public class MainPage extends WebPage {
      * 如果本地没有存cookie,就调用登录；如果存了cookie，但是时效过期，就调用登录；
      * 否则直接读取cookie文件
      */
-    void beforeAll() {
+    private void beforeAll() {
         File file = new File("cookies.yaml");
         if (!file.exists()) {
             login();
         } else {
-            long changeTime = getChangeTime(file);
+            long changeTime = FileChangeTime.getChangeTime(file);
             if (System.currentTimeMillis() - changeTime > 1000 * 60 * 5) {
                 login();
             } else {
@@ -96,18 +95,6 @@ public class MainPage extends WebPage {
                 driver.get(OP_URL);
             }
         }
-    }
-
-    private long getChangeTime(File file) {
-        BasicFileAttributes bAttributes = null;
-        try {
-            bAttributes = Files.readAttributes(file.toPath(),
-                    BasicFileAttributes.class);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        long changeTime = bAttributes.lastModifiedTime().toMillis();
-        return changeTime;
     }
 
     public MorPaperPage jumpToMorPaper() {

@@ -1,5 +1,4 @@
 package com.webframework;
-
 import com.tengmoney.autoframework.PageHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
@@ -10,7 +9,6 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
@@ -18,9 +16,7 @@ import java.util.concurrent.TimeUnit;
 public class WebPage extends PageHandler {
     WebDriver driver;
     WebDriverWait wait;
-
     private static final String BROWSER_CHROME = "chrome";
-
     public WebPage() {
         log.info("创建WebPage");
     }
@@ -34,16 +30,13 @@ public class WebPage extends PageHandler {
         driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
         wait = new WebDriverWait(driver, 10);
     }
-
     public WebPage(WebDriver driver) {
         this.driver = driver;
         wait = new WebDriverWait(driver, 10);
     }
-
     public void waitSecond(long second) {
         driver.manage().timeouts().implicitlyWait(second, TimeUnit.SECONDS);
     }
-
     @Override
     public void quit() {
         log.info("web quit");
@@ -84,7 +77,16 @@ public class WebPage extends PageHandler {
             action.click(driver.findElement(by)).perform();
         }
     }
-
+    public boolean hasElement(WebElement element) {
+        try {
+            log.info("等待找到元素");
+            wait.until(ExpectedConditions.visibilityOf(element));
+            return true;
+        } catch (Exception e) {
+            log.error("没有找到元素");
+            return false;
+        }
+    }
     public boolean hasElement(By by) {
         try {
             log.info("等待找到by元素");
@@ -101,7 +103,11 @@ public class WebPage extends PageHandler {
         wait.until(ExpectedConditions.visibilityOfElementLocated(by));
         driver.findElement(by).sendKeys(content);
     }
-
+//    @Override
+    public void sendKeys(WebElement element, String content) {
+        wait.until(ExpectedConditions.visibilityOf(element));
+        element.sendKeys(content);
+    }
     @Override
     public void upload(By by, String path) {
         wait.until(ExpectedConditions.presenceOfElementLocated(by));
@@ -125,9 +131,6 @@ public class WebPage extends PageHandler {
         if (key.toLowerCase().equals("partialLinkText".toLowerCase())) {
             by = By.partialLinkText(value);
         }
-
         click(by);
     }
-
-
 }
