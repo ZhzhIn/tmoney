@@ -103,6 +103,12 @@ public class WebPage extends PageHandler {
         wait.until(ExpectedConditions.visibilityOfElementLocated(by));
         driver.findElement(by).sendKeys(content);
     }
+    public void wait4visible(By by) {
+        wait.until(ExpectedConditions.visibilityOfElementLocated(by));
+    }
+    public void wait4visible(WebElement by) {
+        wait.until(ExpectedConditions.visibilityOf(by));
+    }
 //    @Override
     public void sendKeys(WebElement element, String content) {
         wait.until(ExpectedConditions.visibilityOf(element));
