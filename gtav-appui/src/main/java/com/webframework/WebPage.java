@@ -1,14 +1,13 @@
 package com.webframework;
+
 import com.tengmoney.autoframework.PageHandler;
 import lombok.extern.slf4j.Slf4j;
-import org.openqa.selenium.By;
-import org.openqa.selenium.ElementClickInterceptedException;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
@@ -17,10 +16,12 @@ public class WebPage extends PageHandler {
     WebDriver driver;
     WebDriverWait wait;
     private static final String BROWSER_CHROME = "chrome";
+
     public WebPage() {
         log.info("创建WebPage");
     }
-@Deprecated
+
+    @Deprecated
     public WebPage(String browserName) {
         if (browserName.toLowerCase().contains(BROWSER_CHROME)) {
 //            WebDriverManager.chromedriver().setup();
@@ -30,32 +31,50 @@ public class WebPage extends PageHandler {
         driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
         wait = new WebDriverWait(driver, 10);
     }
+
     public WebPage(WebDriver driver) {
         this.driver = driver;
         wait = new WebDriverWait(driver, 10);
     }
+
     public void waitSecond(long second) {
         driver.manage().timeouts().implicitlyWait(second, TimeUnit.SECONDS);
     }
+
     @Override
     public void quit() {
         log.info("web quit");
         driver.quit();
     }
-    public void click(WebElement element) {
+
+    public boolean click(WebElement element) {
+        boolean flag = false;
         //todo: 异常处理
-        wait.until(ExpectedConditions.elementToBeClickable(element));
         try {
+            moveTo(element);
+            wait.until(ExpectedConditions.elementToBeClickable(element));
             element.click();
             log.info("click element ");
+            flag = true;
         } catch (ElementClickInterceptedException e) {
             //坐标并不对,这个位置到底是啥
             log.info("不可点击 使用action点击");
             Actions action = new Actions(driver);
             action.click(element).perform();
+            flag=true;
+        }catch(StaleElementReferenceException e){
+            log.info("按钮被遮挡了");
+            flag = false;
+        }catch(NoSuchElementException e){
+            log.info("按钮消失了");
+            flag = false ;
         }
+        return flag;
+
     }
+
     @Override
+    @Deprecated
     public void click(By by) {
         //todo: 异常处理
         wait.until(ExpectedConditions.elementToBeClickable(by));
@@ -77,6 +96,7 @@ public class WebPage extends PageHandler {
             action.click(driver.findElement(by)).perform();
         }
     }
+
     public boolean hasElement(WebElement element) {
         try {
             log.info("等待找到元素");
@@ -87,11 +107,12 @@ public class WebPage extends PageHandler {
             return false;
         }
     }
+    @Deprecated
     public boolean hasElement(By by) {
         try {
             log.info("等待找到by元素");
             wait.until(ExpectedConditions.visibilityOfElementLocated(by));
-            return driver.findElements(by).size()>0;
+            return driver.findElements(by).size() > 0;
         } catch (Exception e) {
             log.error("没有找到by元素");
             return false;
@@ -99,28 +120,39 @@ public class WebPage extends PageHandler {
     }
 
     @Override
+    @Deprecated
     public void sendKeys(By by, String content) {
         wait.until(ExpectedConditions.visibilityOfElementLocated(by));
         driver.findElement(by).sendKeys(content);
     }
+    @Deprecated
     public void wait4visible(By by) {
         wait.until(ExpectedConditions.visibilityOfElementLocated(by));
     }
+
     public void wait4visible(WebElement by) {
         wait.until(ExpectedConditions.visibilityOf(by));
     }
-//    @Override
-    public void sendKeys(WebElement element, String content) {
+
+    //    @Override
+    public void sendKeys(WebElement element, String path) {
         wait.until(ExpectedConditions.visibilityOf(element));
-        element.sendKeys(content);
+        moveTo(element);
+        element.sendKeys(path);
     }
+
     @Override
+    @Deprecated
     public void upload(By by, String path) {
         wait.until(ExpectedConditions.presenceOfElementLocated(by));
         driver.findElement(by).sendKeys(path);
     }
-
+    public void moveTo(WebElement element ){
+        Actions action =new Actions(driver);
+        action.moveToElement(element);
+    }
     @Override
+    @Deprecated
     public void click(HashMap map) {
         super.click(map);
         String key = (String) map.keySet().toArray()[0];

@@ -8,8 +8,6 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
-import org.openqa.selenium.support.ui.ExpectedCondition;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -81,8 +79,12 @@ public class AddPaperPage extends WebPage {
     private WebElement 手动添加;
     @FindBy(xpath = "//input[@placeholder=\"请输入文章标题\"]")
     private WebElement 文章标题;
-    @FindBy(xpath ="//input[@placeholder=\"请输入原创信息\"]")
+    @FindBy(xpath = "//input[@placeholder=\"请输入原创信息\"]")
     private WebElement 原创信息;
+
+    @FindBy(xpath = "//input[@type=\"file\"]")
+    private WebElement 上传图片;
+
 
     @FindBy(xpath = "//textarea[@placeholder=\"请输入一日谈\"]")
     private WebElement 一日谈;
@@ -127,31 +129,34 @@ public class AddPaperPage extends WebPage {
 
     //    @Deprecated
     private void addNews() {
-        sendKeys(早报标题,System.currentTimeMillis()+"");
+        sendKeys(早报标题, System.currentTimeMillis() + "");
         /*click(增加文章);
         AddNewsPage page = new AddNewsPage(driver);
         page.addNews(宏观时事,urls.get(0));*/
-        for (int i = 0,j=0; i < newsType().size(); i++) {
+        for (int i = 0, j = 0; i < newsType().size(); i++) {
             click(newsType().get(i));
-            click(增加文章);
-            click(newsType().get(i));
-            sendKeys(文章地址, urls.get(i));
-            click(确定);
-            try {
-                wait4visible(概述);
-            } catch (TimeoutException e) {
-                click(关闭);
+            if (hasElement(增加文章)) {
                 click(增加文章);
-                click(手动添加);
-                sendKeys(文章标题,"title"+i);
-                sendKeys(原创信息,"content"+i);
+                click(newsType().get(i));
+                sendKeys(文章地址, urls.get(i));
                 click(确定);
+                try {
+                    wait4visible(概述);
+                } catch (TimeoutException e) {
+                    click(关闭);
+                    click(增加文章);
+                    click(手动添加);
+                    sendKeys(文章标题, "title" + i);
+                    sendKeys(原创信息, "content" + i);
+                    click(确定);
+                }
             }
+            sendKeys(上传图片, "pic/1.png");
             sendKeys(概述, urls.get(i) + 概述.getText());
             sendKeys(今日综述, urls.get(i) + 今日综述.getText());
             sendKeys(点评, urls.get(i) + 点评.getText());
         }
-        sendKeys(一日谈,urls.toString());
+        sendKeys(一日谈, urls.toString());
         click(保存);
     }
 

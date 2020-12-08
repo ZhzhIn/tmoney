@@ -15,13 +15,16 @@ import org.openqa.selenium.support.PageFactory;
  * @create 2020/11/19
  */
 public class MorPaperPage extends WebPage {
-
-
     @FindBy(xpath = "//button/span[text()=\"新增今日早报\"]")
     private WebElement 新增今日早报;
+    @FindBy(xpath = "//button/span[text()=\"编辑今日早报\"]")
+    private WebElement 编辑今日早报;
 
-    public AddPaperPage jumpToAddPaperPage(){
-        click(新增今日早报);
+
+    public AddPaperPage jumpToAddPaperPage() {
+        if(!click(新增今日早报) ){
+            click(编辑今日早报);
+        }
         return new AddPaperPage(driver);
     }
 
@@ -37,4 +40,5 @@ public class MorPaperPage extends WebPage {
     public Boolean isMorPaperPage() {
         return hasElement(每日早报) ? true : false;
     }
+
 }
