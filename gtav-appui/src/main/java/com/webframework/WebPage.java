@@ -136,6 +136,7 @@ public class WebPage extends PageHandler {
 
     //    @Override
     public void sendKeys(WebElement element, String path) {
+        moveTo(element);
         wait.until(ExpectedConditions.visibilityOf(element));
         moveTo(element);
         element.sendKeys(path);
@@ -147,9 +148,18 @@ public class WebPage extends PageHandler {
         wait.until(ExpectedConditions.presenceOfElementLocated(by));
         driver.findElement(by).sendKeys(path);
     }
+
     public void moveTo(WebElement element ){
-        Actions action =new Actions(driver);
-        action.moveToElement(element);
+       /* Actions action =new Actions(driver);
+        action.moveToElement(element);*/
+        JavascriptExecutor driver_js= (JavascriptExecutor) driver;
+        //利用js代码键入搜索关键字
+        hasElement(element);
+        //向下滑动直到找到元素下一页
+        driver_js.executeScript("arguments[0].scrollIntoView(true)",element);
+    }
+    @Deprecated
+    public void scrollTo(WebElement element){
     }
     @Override
     @Deprecated

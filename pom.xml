@@ -11,6 +11,7 @@
     <modules>
         <module>gtav-appui</module>
         <module>horizon-api</module>
+        <module>overcooked-mock</module>
     </modules>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -180,6 +181,11 @@
             <artifactId>compiler</artifactId>
             <version>0.9.6</version>
         </dependency>
-
+        <!--mock-->
+        <dependency>
+            <groupId>net.lightbody.bmp</groupId>
+            <artifactId>browsermob-core</artifactId>
+            <version>2.1.5</version>
+        </dependency>
     </dependencies>
 </project>

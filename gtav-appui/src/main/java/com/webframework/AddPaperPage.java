@@ -151,12 +151,14 @@ public class AddPaperPage extends WebPage {
                     click(确定);
                 }
             }
-            sendKeys(上传图片, "pic/1.png");
+            if(hasElement(上传图片)){
+                sendKeys(上传图片, "pic/1.png");
+            }
             sendKeys(概述, urls.get(i) + 概述.getText());
             sendKeys(今日综述, urls.get(i) + 今日综述.getText());
             sendKeys(点评, urls.get(i) + 点评.getText());
         }
-        sendKeys(一日谈, urls.toString());
+        sendKeys(一日谈,一日谈.getClass().getSimpleName());
         click(保存);
     }
 
