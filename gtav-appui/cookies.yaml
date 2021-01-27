@@ -1,8 +1,8 @@
 ---
 - name: "morning_paper_cookie"
-  value: "0c0941942c424744b91f644e99c936b3"
+  value: "a4152cc2d54147519a8a09d11115cdcd"
   path: "/"
   domain: "test.tengmoney.com"
-  expiry: 1607767029000
-  secure: false
+  expiry: 1607439487000
   httpOnly: false
+  secure: false

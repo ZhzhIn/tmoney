@@ -28,14 +28,9 @@ public class WebViewTest {
         desiredCapabilities.setCapability("platformVersion", "10.0");
         desiredCapabilities.setCapability("deviceName", "device");
         desiredCapabilities.setCapability("udid", "127.0.0.1:7555");
-//        desiredCapabilities.setCapability("udid", "APH0219430006864");
-//        desiredCapabilities.setCapability("udid", "device");
-//        desiredCapabilities.setCapability("deviceName", "APH0219430006864");
         desiredCapabilities.setCapability("appPackage", "com.xueqiu.android");
         desiredCapabilities.setCapability("appActivity", "view.WelcomeActivityAlias");
         desiredCapabilities.setCapability("noReset", "true");
-//        desiredCapabilities.setCapability("adbPort", "5038");
-//        desiredCapabilities.setCapability("skipLogcatCapture", "true");
         desiredCapabilities.setCapability("dontStopAppOnReset", "true");
         URL remoteUrl = new URL("http://127.0.0.1:4723/wd/hub");
 
@@ -43,8 +38,6 @@ public class WebViewTest {
         //todo: 等待优化
         driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
         System.out.println(driver.getPageSource());
-//        System.out.println(driver.getPageSource().contains("交易"));
-//        driver.findElement(By.xpath("//*[@text='交易']"));
     }
 
 //    @Test
@@ -68,12 +61,6 @@ public class WebViewTest {
             driver.switchTo().window(window);
             System.out.println(driver.getPageSource());
         });
-
-//        driver.getWindowHandles().stream().filter(win->{
-//            driver.switchTo().window(win);
-//            return driver.getTitle().contains("实盘交易");
-//        });
-
         Object[] array = driver.getWindowHandles().toArray();
         driver.switchTo().window(array[array.length - 1].toString());
 

@@ -13,10 +13,9 @@ import java.util.concurrent.TimeUnit;
 
 @Slf4j
 public class WebPage extends PageHandler {
-    WebDriver driver;
-    WebDriverWait wait;
+    static WebDriver driver;
+    static WebDriverWait wait;
     private static final String BROWSER_CHROME = "chrome";
-
     public WebPage() {
         log.info("创建WebPage");
     }
@@ -29,12 +28,11 @@ public class WebPage extends PageHandler {
             driver = new ChromeDriver();
         }
         driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
-        wait = new WebDriverWait(driver, 10);
+
     }
 
     public WebPage(WebDriver driver) {
         this.driver = driver;
-        wait = new WebDriverWait(driver, 10);
     }
 
     public void waitSecond(long second) {
@@ -83,11 +81,7 @@ public class WebPage extends PageHandler {
             log.info("click by ");
         } catch (ElementClickInterceptedException e) {
             log.info("by is not clickable");
-            /*
-            //移动到元素
-            JavascriptExecutor jse2 = (JavascriptExecutor)driver;
-            jse2.executeScript("arguments[0].scrollIntoView()", driver.findElement(by));
-             */
+
             wait.until(ExpectedConditions.elementToBeClickable(by));
             log.info("当前坐标" + driver.findElement(by).getLocation().toString());
             //坐标并不对,这个位置到底是啥
@@ -97,33 +91,8 @@ public class WebPage extends PageHandler {
         }
     }
 
-    public boolean hasElement(WebElement element) {
-        try {
-            log.info("等待找到元素");
-            wait.until(ExpectedConditions.visibilityOf(element));
-            return true;
-        } catch (Exception e) {
-            log.error("没有找到元素");
-            return false;
-        }
-    }
-    @Deprecated
-    public boolean hasElement(By by) {
-        try {
-            log.info("等待找到by元素");
-            wait.until(ExpectedConditions.visibilityOfElementLocated(by));
-            return driver.findElements(by).size() > 0;
-        } catch (Exception e) {
-            log.error("没有找到by元素");
-            return false;
-        }
-    }
-
-    @Override
-    @Deprecated
     public void sendKeys(By by, String content) {
-        wait.until(ExpectedConditions.visibilityOfElementLocated(by));
-        driver.findElement(by).sendKeys(content);
+        super.sendKeys(by,content);
     }
     @Deprecated
     public void wait4visible(By by) {

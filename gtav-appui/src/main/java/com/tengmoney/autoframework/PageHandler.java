@@ -4,6 +4,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import util.HandelYaml;
 
 import java.io.File;
@@ -13,19 +18,33 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
 @Slf4j
 /**
  *  将所有page放入集合，按照用例步骤进行page的调用和执行
  */
-public class PageHandler {
+public class PageHandler{
+    private final static int DEFAULT_TIME_OUT_SECOND = 60;
+    private static WebDriverWait wait;
+    private static WebDriver driver;
+
+    public void setWait(WebDriverWait wait) {
+        this.wait = wait;
+    }
+
+    public void setDriver(WebDriver driver) {
+        this.driver = driver;
+    }
+
     List<PageObjectModel> pages = new ArrayList<>();
     public UITestCase load(String path){
         UITestCase uiTestCase = HandelYaml
                 .getYamlConfig(path,UITestCase.class);
         return uiTestCase;
     }
+
     public void run(UITestCase uiTestcase) {
         uiTestcase.steps.stream().forEach(
                 step -> {
@@ -85,8 +104,33 @@ public class PageHandler {
         log.info("sendKeys");
     }
     public void quit() {}
-    public void sendKeys(By by, String content){};
+    public By byText(String text) {
+        return By.xpath("//*[@text='" + text + "']");
+    }
+    public void sendKeys(By by, String content){
+        driver.manage().timeouts().implicitlyWait(DEFAULT_TIME_OUT_SECOND, TimeUnit.SECONDS);
+        wait.until(ExpectedConditions.visibilityOfElementLocated(by));
+        driver.findElement(by).sendKeys(content);
+    };
     public void click(String text) {}
     public void click(By by) {}
     public void upload(By by, String path){}
+    public boolean hasElement(By by) {
+        try {
+            return driver.findElement(by).isDisplayed() ? true : false;
+        } catch (NoSuchElementException e) {
+            log.warn("没找到这个元素：" + by.toString());
+            return false;
+        }
+    }
+    public boolean hasElement(WebElement element) {
+        try {
+            log.info("等待找到元素");
+            return element.isDisplayed()? true : false;
+        } catch (Exception e) {
+            log.error("没有找到元素");
+            return false;
+        }
+    }
+
 }

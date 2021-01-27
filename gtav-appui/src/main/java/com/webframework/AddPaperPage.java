@@ -19,7 +19,6 @@ import java.util.List;
  * @create 2020/11/25
  */
 public class AddPaperPage extends WebPage {
-
     List<String> urls = new ArrayList<String>() {{
         add("https://mp.weixin.qq.com/s/7ZmIBmoKkCQ9dlYHXP71eg");
         add("https://mp.weixin.qq.com/s/3Pyqeit0-xS3UB4_tEfFmw");
