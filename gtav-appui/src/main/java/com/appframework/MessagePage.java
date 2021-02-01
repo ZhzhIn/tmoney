@@ -24,8 +24,12 @@ public class MessagePage extends AppPage {
     private final By backIcon = By.id("com.tencent.wework:id/i63");//<-
     private final By switchToKeyBoardMode = By.id("com.tencent.wework:id/dq0");//键盘按钮
     private final By addIcon = By.id("com.tencent.wework:id/env");//+按钮
-    private final By picIcon = By.xpath("//*[@text='图片']");//图片按钮
+//    private final By picIcon = By.xpath("//*[@text='图片']");//图片按钮
+    private final By picIcon = byText("图片");//图片按钮
     private final By sendFileIcon = By.id("com.tencent.wework:id/i6k");//发送图片按钮
+    private final By addArea = By.id("com.tencent.wework:id/a15");//add区域
+    private final By businessCard = byText("个人名片");//名片按钮
+    private final By send = byText("发送");//发送按钮
     private final String filePreName = "//android.widget.GridView/android.widget.RelativeLayout[";
     private final String fileLastName = "]/android.widget.RelativeLayout/android.widget.ImageView";
     private Boolean isVoiceMode;//是否是语音状态
@@ -106,19 +110,21 @@ public class MessagePage extends AppPage {
         click(sendFileIcon);
         return this;
     }
+    public void jumpToActivity(){
 
+    }
     /**
      * 发送名片
      *
-     * @param num
+     * @param name
      * @return
      */
-    public MessagePage sendBusinessCard(int num) {
+    public MessagePage sendBusinessCard(String name) {
         click(addIcon);
-        /*click(picIcon);
-        log.info("看看xpath：" + xpathString);
-        click(By.xpath(filePreName + num + fileLastName));
-        click(sendFileIcon);*/
+        innerElementSweepToLeftUp(addArea);
+        click(businessCard);
+        click(byText(name));
+        click(send);
         return this;
     }
 }

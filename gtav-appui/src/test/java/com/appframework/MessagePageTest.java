@@ -1,17 +1,21 @@
 package com.appframework;
+
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.Assert;
+import org.junit.jupiter.api.*;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.TimeoutException;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 @Slf4j
 class MessagePageTest {
+    private DateTimeFormatter dtf= DateTimeFormatter.ofPattern("yyMMdd_HHmmss");
     private static Wework wework;
     private static String FILEPATH = "src\\main\\resources\\xiaoaojianghu.txt";
     private static MessagePage page;
@@ -25,37 +29,54 @@ class MessagePageTest {
     @AfterEach
     void tearDown() {
     }
+    private String currentTime(){
+        LocalDateTime localDateTime = LocalDateTime.now();
+        return  localDateTime.format(dtf);
+    }
     @Test
     //发送350条私聊
     void sendMessage() {
         page = wework.jumpToMessage().chooseConversation("卢华文");
-        sendMessageFromFile(FILEPATH,1);
+        sendMessageFromFile(FILEPATH,359);
+        page.savePic(currentTime());
         page.clickBack();
+        Assert.assertTrue(page.hasElement(page.byText("消息")));
     }
+
     @Test
     //发送90条群聊
     void sendMessage2() {
         page = wework.jumpToMessage().chooseConversation("尹珍枝测试群聊");
-        sendMessageFromFile(FILEPATH,1);
+        sendMessageFromFile(FILEPATH,90);
+        page.savePic(currentTime());
         page.clickBack();
+        Assert.assertTrue(page.hasElement(page.byText("消息")));
     }
     @Test
     //发送20条语音私聊
     void sendVoiceMessage(){
         page = wework.jumpToMessage().chooseConversation("尹珍枝测试群聊");
-        sendVoiceMessage(1);
+        sendVoiceMessage(20);
+        page.savePic(currentTime());
         page.clickBack();
+        Assert.assertTrue(page.hasElement(page.byText("消息")));
     }
     @Test
     //发送30图片
     void sendPicMessage(){
         page = wework.jumpToMessage().chooseConversation("尹珍枝测试群聊");
-        sendPicMessage(1);
+        sendPicMessage(30);
+        page.savePic(currentTime());
         page.clickBack();
+        Assert.assertTrue(page.hasElement(page.byText("消息")));
     }
     @Test
-    void test(){
-
+    void sendBussinessCard(){
+        page = wework.jumpToMessage().chooseConversation("尹珍枝测试群聊");
+        page.sendBusinessCard("卢华文");
+        page.savePic(currentTime());
+        page.clickBack();
+        Assert.assertTrue(page.hasElement(page.byText("消息")));
     }
     public void sendPicMessage(int num){
         int sum = 0;

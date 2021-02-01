@@ -8,15 +8,19 @@ import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.touch.WaitOptions;
 import io.appium.java_client.touch.offset.PointOption;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.*;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.concurrent.TimeUnit;
@@ -24,7 +28,7 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class AppPage extends PageHandler {
     private final static int DURING_TIME = 1000;
-    private final static int DEFAULT_TIME_OUT_SECOND = 60;
+    private final static int DEFAULT_TIME_OUT_SECOND = 5;
     private final static String PLATFORM_NAME = "platformName";
     private final static String DEVICE_NAME = "deviceName";
     private final static String APP_PACKAGE = "appPackage";
@@ -33,6 +37,8 @@ public class AppPage extends PageHandler {
     private final static String DONT_STOP_APP_ON_RESET = "dontStopAppOnReset";
     private final static String SKIP_LOGCAT_CAPTURE = "skipLogcatCapture";
     private final static String REMOTE_URL = "http://127.0.0.1:4723/wd/hub";
+    private final static String PIC_FILE_PATH = "src\\main\\resources\\resultPic\\";
+    private final static String PIC_SUFFIX = ".png";
     static AppiumDriver<MobileElement> driver;
     static WebDriverWait wait;
     String packageName;
@@ -70,7 +76,19 @@ public class AppPage extends PageHandler {
             return driver.findElement(by);
         }
     }
-
+    @Override
+    public void savePic(String picName)  {
+        super.savePic(picName);
+        log.info("current method is："+picName);
+        String timestamp = new Date().toString();
+        File file = new File(PIC_FILE_PATH+picName+PIC_SUFFIX);
+        log.info("pic path is :"+file);
+        File screenShotFile = driver.getScreenshotAs(OutputType.FILE);
+        try {
+            FileUtils.copyFile(screenShotFile, file);
+        }
+        catch (IOException e) {e.printStackTrace();}
+    }
     public void startApp(String packageName, String activityName, String deviceName, String platform) {
         DesiredCapabilities desiredCapabilities = new DesiredCapabilities();
         desiredCapabilities.setCapability(PLATFORM_NAME, platform);
@@ -156,6 +174,23 @@ public class AppPage extends PageHandler {
                 2*element.getCenter().getY()-element.getLocation().getY());//元素左上角相对于屏幕左上角的偏移量
         pointToPoint(PointOption.point(center),PointOption.point(locate),DURING_TIME);
     }
+    //控件内部滑来滑去
+    public  void innerElementSweepToLeftUp(By by) {
+        //Y不变，X由大变小，y取center，x取center->locate
+        MobileElement element  = driver.findElement(by);
+        Point center = element.getCenter();//中心点
+        Point locate = element.getLocation();//元素左上角相对于屏幕左上角的偏移量
+        pointToPoint(PointOption.point(center),PointOption.point(locate),DURING_TIME);
+    }
+    public  void innerElementSweepToRightDown(By by) {
+        //Y不变，X由大变小，y取center，x取center->locate
+        MobileElement element  = driver.findElement(by);
+        Point center = element.getCenter();//中心点
+        Point locate = new Point(2*element.getCenter().getX()-element.getLocation().getX(),
+                2*element.getCenter().getY()-element.getLocation().getY());//元素左上角相对于屏幕左上角的偏移量
+        pointToPoint(PointOption.point(center),PointOption.point(locate),DURING_TIME);
+    }
+
     private void pointToPoint(PointOption start, PointOption end, int during) {
         TouchAction ta = new TouchAction(driver);
         ta.press(start)

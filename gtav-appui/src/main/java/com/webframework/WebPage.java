@@ -15,6 +15,7 @@ import java.util.concurrent.TimeUnit;
 public class WebPage extends PageHandler {
     static WebDriver driver;
     static WebDriverWait wait;
+    private final static int DEFAULT_TIME_OUT_SECOND = 60;
     private static final String BROWSER_CHROME = "chrome";
     public WebPage() {
         log.info("创建WebPage");
@@ -33,17 +34,12 @@ public class WebPage extends PageHandler {
 
     public WebPage(WebDriver driver) {
         this.driver = driver;
+        super.setDriver(driver);
+        wait = new WebDriverWait(driver,DEFAULT_TIME_OUT_SECOND);
+        super.setWait(wait);
     }
 
-    public void waitSecond(long second) {
-        driver.manage().timeouts().implicitlyWait(second, TimeUnit.SECONDS);
-    }
 
-    @Override
-    public void quit() {
-        log.info("web quit");
-        driver.quit();
-    }
 
     public boolean click(WebElement element) {
         boolean flag = false;
@@ -75,14 +71,12 @@ public class WebPage extends PageHandler {
     @Deprecated
     public void click(By by) {
         //todo: 异常处理
-        wait.until(ExpectedConditions.elementToBeClickable(by));
+        moveTo(driver.findElement(by));
         try {
-            driver.findElement(by).click();
+            wait.until(ExpectedConditions.elementToBeClickable(by)).click();
             log.info("click by ");
         } catch (ElementClickInterceptedException e) {
             log.info("by is not clickable");
-
-            wait.until(ExpectedConditions.elementToBeClickable(by));
             log.info("当前坐标" + driver.findElement(by).getLocation().toString());
             //坐标并不对,这个位置到底是啥
             log.info("使用action点击");
@@ -91,32 +85,6 @@ public class WebPage extends PageHandler {
         }
     }
 
-    public void sendKeys(By by, String content) {
-        super.sendKeys(by,content);
-    }
-    @Deprecated
-    public void wait4visible(By by) {
-        wait.until(ExpectedConditions.visibilityOfElementLocated(by));
-    }
-
-    public void wait4visible(WebElement by) {
-        wait.until(ExpectedConditions.visibilityOf(by));
-    }
-
-    //    @Override
-    public void sendKeys(WebElement element, String path) {
-        moveTo(element);
-        wait.until(ExpectedConditions.visibilityOf(element));
-        moveTo(element);
-        element.sendKeys(path);
-    }
-
-    @Override
-    @Deprecated
-    public void upload(By by, String path) {
-        wait.until(ExpectedConditions.presenceOfElementLocated(by));
-        driver.findElement(by).sendKeys(path);
-    }
 
     public void moveTo(WebElement element ){
        /* Actions action =new Actions(driver);
