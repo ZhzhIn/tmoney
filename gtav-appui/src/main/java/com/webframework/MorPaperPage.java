@@ -3,6 +3,7 @@ package com.webframework;/**
  * @create 2020-11-19 19:41
  */
 
+import com.tengmoney.gui.WebPage;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -25,12 +26,12 @@ public class MorPaperPage extends WebPage {
         if(!click(新增今日早报) ){
             click(编辑今日早报);
         }
-        return new AddPaperPage(driver);
+        return new AddPaperPage();
     }
 
 
     public MorPaperPage(WebDriver driver) {
-        super(driver);
+        super();
         PageFactory.initElements(driver, this);
     }
 

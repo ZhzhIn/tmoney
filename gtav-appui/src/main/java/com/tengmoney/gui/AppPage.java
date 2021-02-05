@@ -1,23 +1,18 @@
-package com.appframework;
+package com.tengmoney.gui;
 
-import com.tengmoney.autoframework.PageHandler;
+import com.tmoney.foundation.utils.Configuration;
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.MobileElement;
 import io.appium.java_client.TouchAction;
-import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.touch.WaitOptions;
 import io.appium.java_client.touch.offset.PointOption;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.*;
-import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Date;
@@ -26,42 +21,18 @@ import java.util.NoSuchElementException;
 import java.util.concurrent.TimeUnit;
 
 @Slf4j
-public class AppPage extends PageHandler {
+public class AppPage extends DriverHelper {
     private final static int DURING_TIME = 1000;
-    private final static int DEFAULT_TIME_OUT_SECOND = 5;
-    private final static String PLATFORM_NAME = "platformName";
-    private final static String DEVICE_NAME = "deviceName";
-    private final static String APP_PACKAGE = "appPackage";
-    private final static String APP_ACTIVITY = "appActivity";
-    private final static String NO_RESET = "noReset";
-    private final static String DONT_STOP_APP_ON_RESET = "dontStopAppOnReset";
-    private final static String SKIP_LOGCAT_CAPTURE = "skipLogcatCapture";
-    private final static String REMOTE_URL = "http://127.0.0.1:4723/wd/hub";
+    private static final int DEFAULT_TIME_OUT_SECOND = Configuration.getInt(Configuration.Parameter.IMPLICIT_TIMEOUT);
+    protected AppiumDriver<MobileElement>driver;
     private final static String PIC_FILE_PATH = "src\\main\\resources\\resultPic\\";
     private final static String PIC_SUFFIX = ".png";
-    static AppiumDriver<MobileElement> driver;
-    static WebDriverWait wait;
-    String packageName;
-    String activityName;
-    String platform;
-    String deviceName;
-
 /*    public boolean hasElement(By by) {
         return super.hasElement(this.driver,by);
     }*/
-    public AppPage(String packageName, String activityName, String deviceName, String platform) {
 
-        log.info("packageName is :" + packageName + ",activityName is :" + activityName);
-        this.packageName = packageName;
-        this.activityName = activityName;
-        this.deviceName = deviceName;
-        this.platform = platform;
-        startApp(this.packageName, this.activityName, this.deviceName, this.platform);
-    }
-
-    public AppPage(AppiumDriver<MobileElement> driver) {
-        this.driver = driver;
-        this.wait = new WebDriverWait(driver,DEFAULT_TIME_OUT_SECOND);
+    public AppPage() {
+        super();
     }
 
     public List<MobileElement> findElements(By by) {
@@ -89,42 +60,7 @@ public class AppPage extends PageHandler {
         }
         catch (IOException e) {e.printStackTrace();}
     }
-    public void startApp(String packageName, String activityName, String deviceName, String platform) {
-        DesiredCapabilities desiredCapabilities = new DesiredCapabilities();
-        desiredCapabilities.setCapability(PLATFORM_NAME, platform);
-        desiredCapabilities.setCapability(DEVICE_NAME, deviceName);
-        desiredCapabilities.setCapability(APP_PACKAGE, packageName);
-        desiredCapabilities.setCapability(APP_ACTIVITY, activityName);
-        desiredCapabilities.setCapability(NO_RESET, "true");
-        desiredCapabilities.setCapability(DONT_STOP_APP_ON_RESET, "true");
-        desiredCapabilities.setCapability(SKIP_LOGCAT_CAPTURE, "true");
-        URL remoteUrl = null;
-        try {
-            remoteUrl = new URL(REMOTE_URL);
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-            System.exit(1);
-        }
-        driver = new AndroidDriver(remoteUrl, desiredCapabilities);
-        driver.manage().timeouts().implicitlyWait(6, TimeUnit.SECONDS);
-        new WebDriverWait(driver, DEFAULT_TIME_OUT_SECOND)
-                .until(
-                        x ->
-                        {
-                            log.info(String.valueOf(System.currentTimeMillis()));
-                            String source = driver.getPageSource();
-                            Boolean exist = source.contains("工作台") || source.contains("腾银信息");
-                            log.info("寻找工作台/腾银信息：" + exist);
-                            Boolean existI = source.contains("消息");
-                            log.info("寻找消息：" + existI);
-                            return exist;
-                        }
-                );
-        //todo 不知道怎么优化
-        super.setDriver(driver);
-        wait = new WebDriverWait(driver,DEFAULT_TIME_OUT_SECOND);
-        super.setWait(wait);
-    }
+
 
     @Override
     public void quit() {

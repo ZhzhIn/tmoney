@@ -1,8 +1,13 @@
-package com.tengmoney.autoframework;
+package com.tengmoney.gui;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import com.tengmoney.autoframework.DriverFactory;
+import com.tengmoney.autoframework.PageObjectModel;
+import com.tengmoney.autoframework.UITestCase;
+import com.tmoney.foundation.utils.Configuration;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.log4j.Logger;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
@@ -25,19 +30,22 @@ import java.util.stream.Stream;
 /**
  *  将所有page放入集合，按照用例步骤进行page的调用和执行
  */
-public class PageHandler {
-    private final static int DEFAULT_TIME_OUT_SECOND = 5;
-    private static WebDriverWait wait;
-    private static WebDriver driver;
+public class DriverHelper {
+    protected static final Logger LOGGER = Logger.getLogger(DriverHelper.class);
+    protected static final long IMPLICIT_TIMEOUT = Configuration.getLong(Configuration.Parameter.IMPLICIT_TIMEOUT);
+    protected static final long EXPLICIT_TIMEOUT = Configuration.getLong(Configuration.Parameter.EXPLICIT_TIMEOUT);
+    protected static final long RETRY_TIME = Configuration.getLong(Configuration.Parameter.RETRY_TIMEOUT);
 
-    public void setWait(WebDriverWait wait) {
-        this.wait = wait;
+    protected WebDriverWait wait;
+    protected WebDriver driver;
+    public WebDriver getDriver(){
+        return driver;
     }
-
-    public void setDriver(WebDriver driver) {
-        this.driver = driver;
+    public DriverHelper(){
+        this.driver = DriverFactory.create("test");
+        this.wait = new WebDriverWait(driver,EXPLICIT_TIMEOUT);
+        driver.manage().timeouts().implicitlyWait(IMPLICIT_TIMEOUT,TimeUnit.SECONDS);
     }
-
     List<PageObjectModel> pages = new ArrayList<>();
 
     public UITestCase load(String path) {
@@ -128,7 +136,7 @@ public class PageHandler {
     }
 
     public void sendKeys(By by, String content) {
-        driver.manage().timeouts().implicitlyWait(DEFAULT_TIME_OUT_SECOND, TimeUnit.SECONDS);
+        driver.manage().timeouts().implicitlyWait(IMPLICIT_TIMEOUT, TimeUnit.SECONDS);
         wait.until(ExpectedConditions.visibilityOfElementLocated(by));
         driver.findElement(by).sendKeys(content);
     }
@@ -168,7 +176,7 @@ public class PageHandler {
         element.sendKeys(word);
     }
 
-
+    @Deprecated
     public void waitSecond(int second) {
         driver.manage().timeouts().implicitlyWait(second, TimeUnit.SECONDS);
     }

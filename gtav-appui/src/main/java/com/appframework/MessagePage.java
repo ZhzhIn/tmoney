@@ -3,8 +3,7 @@ package com.appframework;/**
  * @create 2021-01-26 9:40
  */
 
-import io.appium.java_client.AppiumDriver;
-import io.appium.java_client.MobileElement;
+import com.tengmoney.gui.AppPage;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 
@@ -33,10 +32,6 @@ public class MessagePage extends AppPage {
     private final String filePreName = "//android.widget.GridView/android.widget.RelativeLayout[";
     private final String fileLastName = "]/android.widget.RelativeLayout/android.widget.ImageView";
     private Boolean isVoiceMode;//是否是语音状态
-
-    public MessagePage(AppiumDriver<MobileElement> driver) {
-        super(driver);
-    }
 
     /**
      * 选择任意对话窗口

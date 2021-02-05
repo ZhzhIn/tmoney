@@ -1,46 +1,20 @@
-package com.webframework;
+package com.tengmoney.gui;
 
-import com.tengmoney.autoframework.PageHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.*;
-import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.HashMap;
-import java.util.concurrent.TimeUnit;
 
 @Slf4j
-public class WebPage extends PageHandler {
-    static WebDriver driver;
-    static WebDriverWait wait;
-    private final static int DEFAULT_TIME_OUT_SECOND = 60;
-    private static final String BROWSER_CHROME = "chrome";
+public class WebPage extends DriverHelper {
+    protected WebDriver driver;
+    protected WebDriverWait wait;
     public WebPage() {
-        log.info("创建WebPage");
+        super();
     }
-
-    @Deprecated
-    public WebPage(String browserName) {
-        if (browserName.toLowerCase().contains(BROWSER_CHROME)) {
-//            WebDriverManager.chromedriver().setup();
-            System.setProperty("webdriver.chrome.driver", "chromedriver.exe");
-            driver = new ChromeDriver();
-        }
-        driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
-
-    }
-
-    public WebPage(WebDriver driver) {
-        this.driver = driver;
-        super.setDriver(driver);
-        wait = new WebDriverWait(driver,DEFAULT_TIME_OUT_SECOND);
-        super.setWait(wait);
-    }
-
-
-
     public boolean click(WebElement element) {
         boolean flag = false;
         //todo: 异常处理

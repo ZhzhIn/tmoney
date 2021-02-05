@@ -12,6 +12,8 @@
         <module>gtav-appui</module>
         <module>horizon-api</module>
         <module>overcooked-mock</module>
+        <module>bloodborne-commons</module>
+        <module>uncharted-utils</module>
     </modules>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

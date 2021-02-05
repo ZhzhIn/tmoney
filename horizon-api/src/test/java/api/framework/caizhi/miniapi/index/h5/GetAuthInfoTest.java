@@ -3,8 +3,6 @@ package api.framework.caizhi.miniapi.index.h5;
 import api.framework.ApiList;
 import api.framework.LoginHelper;
 import api.item.AppType;
-import io.qameta.allure.Story;
-import org.junit.jupiter.params.provider.CsvSource;
 import util.DefaultConfig;
 
 import java.util.HashMap;
@@ -19,13 +17,13 @@ public class GetAuthInfoTest {
         LoginHelper.login();
     }
 //    @ParameterizedTest
-    @CsvSource({
+   /* @CsvSource({
             "H5STATION",
             "MINIPRO",
             "H5STATION",
             "H5PRODUCT"
-    })
-    @Story("小站首页-getAuthInfo")
+    })*/
+//    @Story("小站首页-getAuthInfo")
     void testGetAuthInfo(AppType type) {
         HashMap<String, Object> map = new HashMap<>(16);
         map.put("currentCorpId", DefaultConfig.getCorp().getCorpId());

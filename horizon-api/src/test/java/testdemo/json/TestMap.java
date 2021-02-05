@@ -1,11 +1,17 @@
 package testdemo.json;
 
-import org.junit.Test;
+import io.qameta.allure.Allure;
+import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
 
 public class TestMap {
-    @Test
+     @Test
+     void test1(){
+          Allure.description("this is just a description");
+          System.out.println("hello,world");
+     }
+//    @Test
    public void test(){
         HashMap<String,String>map = new HashMap();
         HashMap<String,String>map2 = new HashMap();

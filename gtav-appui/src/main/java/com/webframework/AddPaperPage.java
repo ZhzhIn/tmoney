@@ -3,6 +3,7 @@ package com.webframework;/**
  * @create 2020-11-25 18:14
  */
 
+import com.tengmoney.gui.WebPage;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -32,8 +33,8 @@ public class AddPaperPage extends WebPage {
         add("https://mp.weixin.qq.com/s/5C1pa86dm3-CjpIFNmmwHw");
     }};
 
-    public AddPaperPage(WebDriver driver) {
-        super(driver);
+    public AddPaperPage() {
+        super();
         PageFactory.initElements(driver, this);
     }
 
@@ -96,7 +97,7 @@ public class AddPaperPage extends WebPage {
         private WebElement 确定;
 
         public AddNewsPage(WebDriver driver) {
-            super(driver);
+            super();
             PageFactory.initElements(driver, this);
         }
 

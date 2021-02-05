@@ -37,6 +37,7 @@
                             <value>${project.build.directory}/allure-results</value>
                         </property>
                     </systemProperties>
+                    <!--testdemo的用例就不执行-->
                     <excludes>
                         <exclude>%regex[.*(testdemo).*Test.*]</exclude>
                     </excludes>

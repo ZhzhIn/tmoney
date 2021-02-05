@@ -37,7 +37,7 @@ class MessagePageTest {
     //发送350条私聊
     void sendMessage() {
         page = wework.jumpToMessage().chooseConversation("卢华文");
-        sendMessageFromFile(FILEPATH,359);
+        sendMessageFromFile(FILEPATH,1);
         page.savePic(currentTime());
         page.clickBack();
         Assert.assertTrue(page.hasElement(page.byText("消息")));
