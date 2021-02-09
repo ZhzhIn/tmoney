@@ -15,8 +15,8 @@ public class Main {
     public static void main(String[] args){
         LauncherDiscoveryRequest request = LauncherDiscoveryRequestBuilder.request()
                 .selectors(
-                        selectPackage("test_framework"),
-                        selectClass(DDTest.class)
+                        selectPackage("com.appframework"),
+                        selectClass(MessagePageTest.class)
                 )
                 .filters(
                         includeClassNamePatterns(".*")

@@ -2,16 +2,12 @@ package com.tengmoney.gui;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-import com.tengmoney.autoframework.DriverFactory;
 import com.tengmoney.autoframework.PageObjectModel;
 import com.tengmoney.autoframework.UITestCase;
 import com.tmoney.foundation.utils.Configuration;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.log4j.Logger;
-import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import util.HandelYaml;
@@ -30,22 +26,28 @@ import java.util.stream.Stream;
 /**
  *  将所有page放入集合，按照用例步骤进行page的调用和执行
  */
-public class DriverHelper {
+public abstract class DriverHelper {
     protected static final Logger LOGGER = Logger.getLogger(DriverHelper.class);
     protected static final long IMPLICIT_TIMEOUT = Configuration.getLong(Configuration.Parameter.IMPLICIT_TIMEOUT);
     protected static final long EXPLICIT_TIMEOUT = Configuration.getLong(Configuration.Parameter.EXPLICIT_TIMEOUT);
     protected static final long RETRY_TIME = Configuration.getLong(Configuration.Parameter.RETRY_TIMEOUT);
-
-    protected WebDriverWait wait;
+    protected static  WebDriverWait wait;
     protected WebDriver driver;
-    public WebDriver getDriver(){
-        return driver;
+
+    //    public WebDriver getDriver(){
+//        return driver;
+//    }
+    public DriverHelper() {
+        log.info("driver helper init ");
+//        driver.manage().timeouts().implicitlyWait(IMPLICIT_TIMEOUT, TimeUnit.SECONDS);
+//        wait = new WebDriverWait(driver,EXPLICIT_TIMEOUT );
     }
-    public DriverHelper(){
-        this.driver = DriverFactory.create("test");
-        this.wait = new WebDriverWait(driver,EXPLICIT_TIMEOUT);
-        driver.manage().timeouts().implicitlyWait(IMPLICIT_TIMEOUT,TimeUnit.SECONDS);
+
+    public DriverHelper(WebDriver driver) {
+        log.info("driverhelper init with driver ");
+        this.driver = driver ;
     }
+
     List<PageObjectModel> pages = new ArrayList<>();
 
     public UITestCase load(String path) {
@@ -123,6 +125,7 @@ public class DriverHelper {
         log.info("web quit");
         driver.quit();
     }
+
     public void wait4visible(By by) {
         wait.until(ExpectedConditions.visibilityOfElementLocated(by));
     }
@@ -143,8 +146,10 @@ public class DriverHelper {
 
     public void click(String text) {
     }
-    public void savePic(String name)   {
+
+    public void savePic(String name) {
     }
+
     public void click(By by) {
     }
 
@@ -155,9 +160,15 @@ public class DriverHelper {
 
     public boolean hasElement(By by) {
         try {
-            return driver.findElement(by).isDisplayed() ? true : false;
+            return wait.until(ExpectedConditions.invisibilityOfElementLocated(by)) ? true : false;
         } catch (NoSuchElementException e) {
             log.warn("没找到这个元素：" + by.toString());
+            return false;
+        } catch (TimeoutException e){
+            log.error("找不到元素，超时了："+by.toString());
+            return false;
+        }catch (Exception e){
+            log.error("没找到元素："+by.toString());
             return false;
         }
     }
@@ -171,6 +182,7 @@ public class DriverHelper {
             return false;
         }
     }
+
     public void sendKeys(WebElement element, String word) {
         wait.until(ExpectedConditions.visibilityOf(element));
         element.sendKeys(word);

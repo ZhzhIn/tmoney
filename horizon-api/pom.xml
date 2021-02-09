@@ -8,6 +8,7 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
+    <packaging>jar</packaging>
     <artifactId>horizon-api</artifactId>
     <properties>
         <maven.compiler.target>${maven.compiler.source}</maven.compiler.target>

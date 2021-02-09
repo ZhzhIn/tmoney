@@ -1,4 +1,5 @@
 package com.tmoney.foundation.utils;
+
 import org.apache.commons.lang3.StringUtils;
 
 import java.lang.reflect.Constructor;
@@ -10,24 +11,18 @@ import java.util.Locale;
  * @author zhzh.yin
  * @create 2021/2/4
  */
-public class Configuration
-{
+public class Configuration {
     private static final String MUST_OVERRIDE = "{must_override}";
 
     private static IEnvArgResolver envArgResolver;
 
-    static
-    {
-        if(!Configuration.isNull(Parameter.ENV_ARG_RESOLVER))
-        {
-            try
-            {
+    static {
+        if (!Configuration.isNull(Parameter.ENV_ARG_RESOLVER)) {
+            try {
                 Class<?> cl = Class.forName(Configuration.get(Parameter.ENV_ARG_RESOLVER));
                 Constructor<?> ct = cl.getConstructor();
-                Configuration.setEnvArgResolver((IEnvArgResolver)ct.newInstance());
-            }
-            catch(Exception e)
-            {
+                Configuration.setEnvArgResolver((IEnvArgResolver) ct.newInstance());
+            } catch (Exception e) {
                 throw new RuntimeException("Configuration failure: can not initiate EnvArgResolver - + " + Configuration.get(Parameter.ENV_ARG_RESOLVER));
             }
         }
@@ -36,8 +31,7 @@ public class Configuration
     /**
      * All available configuration parameter keys along with default values.
      */
-    public enum Parameter
-    {
+    public enum Parameter {
         URL("url", "default_url"),
 
         ENV("env", "default_env"),
@@ -117,6 +111,7 @@ public class Configuration
         MOBILE_OS("mobile_os", "default_mobile_os"),
 
         MOBILE_VERSION("mobile_version", "default_mobile_version"),
+        MOBILE_NORESET("mobile_noreset", "default_mobile_noreset"),
 
         MOBILE_PLATFORM("mobile_platform", "default_mobile_platform"),
 
@@ -139,19 +134,16 @@ public class Configuration
 
         private final String defaultKey;
 
-        private Parameter(String key, String defaultKey)
-        {
+        private Parameter(String key, String defaultKey) {
             this.key = key;
             this.defaultKey = defaultKey;
         }
 
-        private String getKey()
-        {
+        private String getKey() {
             return key;
         }
 
-        private String getDefaultKey()
-        {
+        private String getDefaultKey() {
             return defaultKey;
         }
     }
@@ -160,74 +152,56 @@ public class Configuration
      * Returns configuration value from startup properties or from configuration
      * file if not found in startup args.
      *
-     * @param param
-     *            - parameter key.
+     * @param param - parameter key.
      * @return parameter value if it is found by key or default value if not.
      */
-    public static String get(Parameter param)
-    {
+    public static String get(Parameter param) {
         String startupArg = System.getProperty(param.getKey());
         String defaultConfigArg = R.CONFIG.get(param.getDefaultKey());
         String configArg = R.CONFIG.get(param.getKey());
 
-        if(!StringUtils.isEmpty(startupArg))
-        {
+        if (!StringUtils.isEmpty(startupArg)) {
             return startupArg;
-        }
-        else if(!StringUtils.isEmpty(configArg))
-        {
+        } else if (!StringUtils.isEmpty(configArg)) {
             return configArg;
-        }
-        else
-        {
+        } else {
             return defaultConfigArg;
         }
     }
 
-    public static int getInt(Parameter param)
-    {
+    public static int getInt(Parameter param) {
         return Integer.valueOf(get(param));
     }
 
-    public static long getLong(Parameter param)
-    {
+    public static long getLong(Parameter param) {
         return Long.valueOf(get(param));
     }
 
-    public static double getDouble(Parameter param)
-    {
+    public static double getDouble(Parameter param) {
         return Double.valueOf(get(param));
     }
 
-    public static boolean getBoolean(Parameter param)
-    {
+    public static boolean getBoolean(Parameter param) {
         return Boolean.valueOf(get(param));
     }
 
-    public static Locale getLocale()
-    {
+    public static Locale getLocale() {
         Locale locale = null;
-        if (!StringUtils.isEmpty(get(Parameter.LOCALE)))
-        {
-            if (Configuration.get(Parameter.LOCALE).contains("_"))
-            {
+        if (!StringUtils.isEmpty(get(Parameter.LOCALE))) {
+            if (Configuration.get(Parameter.LOCALE).contains("_")) {
                 locale = new Locale(get(Parameter.LOCALE).split("_")[0], get(Parameter.LOCALE).split("_")[1]);
-            } else
-            {
+            } else {
                 locale = new Locale("", get(Parameter.LOCALE));
             }
         }
         return locale;
     }
 
-    public static String asString()
-    {
+    public static String asString() {
         StringBuilder asString = new StringBuilder();
         asString.append("\n============= Test configuration =============\n");
-        for (Parameter param : Parameter.values())
-        {
-            if(!Parameter.CRYPTO_KEY_PATH.equals(param))
-            {
+        for (Parameter param : Parameter.values()) {
+            if (!Parameter.CRYPTO_KEY_PATH.equals(param)) {
                 asString.append(String.format("%s=%s\n", param.getKey(), Configuration.get(param)));
             }
         }
@@ -235,12 +209,9 @@ public class Configuration
         return asString.toString();
     }
 
-    public static void validateConfiguration()
-    {
-        for (Parameter param : Parameter.values())
-        {
-            if (StringUtils.isEmpty(Configuration.get(param)) || MUST_OVERRIDE.equals(Configuration.get(param)))
-            {
+    public static void validateConfiguration() {
+        for (Parameter param : Parameter.values()) {
+            if (StringUtils.isEmpty(Configuration.get(param)) || MUST_OVERRIDE.equals(Configuration.get(param))) {
                 throw new RuntimeException("Configuration failure: parameter '" + param.getKey() + "' not specified!");
             }
         }
@@ -250,23 +221,19 @@ public class Configuration
 //		}
     }
 
-    public static String getEnvArg(String key)
-    {
+    public static String getEnvArg(String key) {
         return envArgResolver.get(get(Parameter.ENV), key);
     }
 
-    public static IEnvArgResolver getEnvArgResolver()
-    {
+    public static IEnvArgResolver getEnvArgResolver() {
         return envArgResolver;
     }
 
-    public static void setEnvArgResolver(IEnvArgResolver envArgResolver)
-    {
+    public static void setEnvArgResolver(IEnvArgResolver envArgResolver) {
         Configuration.envArgResolver = envArgResolver;
     }
 
-    public static boolean isNull(Parameter param)
-    {
+    public static boolean isNull(Parameter param) {
         return get(param) == null || "NULL".equalsIgnoreCase(get(param));
     }
 }

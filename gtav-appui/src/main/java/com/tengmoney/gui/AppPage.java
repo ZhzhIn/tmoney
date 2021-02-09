@@ -1,5 +1,6 @@
 package com.tengmoney.gui;
 
+import com.tengmoney.autoframework.DriverFactory;
 import com.tmoney.foundation.utils.Configuration;
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.MobileElement;
@@ -10,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,7 +23,7 @@ import java.util.NoSuchElementException;
 import java.util.concurrent.TimeUnit;
 
 @Slf4j
-public class AppPage extends DriverHelper {
+public abstract class AppPage extends DriverHelper {
     private final static int DURING_TIME = 1000;
     private static final int DEFAULT_TIME_OUT_SECOND = Configuration.getInt(Configuration.Parameter.IMPLICIT_TIMEOUT);
     protected AppiumDriver<MobileElement>driver;
@@ -30,9 +32,23 @@ public class AppPage extends DriverHelper {
 /*    public boolean hasElement(By by) {
         return super.hasElement(this.driver,by);
     }*/
-
-    public AppPage() {
+    public AppPage(){
         super();
+        driver = DriverFactory.create("test");
+        //todo :应该有别的设计方法。暂时还没想到
+        super.driver = driver;
+        driver.manage().timeouts().implicitlyWait(IMPLICIT_TIMEOUT, TimeUnit.SECONDS);
+        wait = new WebDriverWait(driver,EXPLICIT_TIMEOUT );
+    }
+
+    public AppPage(AppiumDriver<MobileElement> driver) {
+        super(driver);
+        log.info(driver+"");
+        log.info(this.driver+"");
+        log.info(super.driver+"");
+        this.driver = driver;
+        driver.manage().timeouts().implicitlyWait(IMPLICIT_TIMEOUT, TimeUnit.SECONDS);
+        wait = new WebDriverWait(driver,EXPLICIT_TIMEOUT );
     }
 
     public List<MobileElement> findElements(By by) {
@@ -82,17 +98,19 @@ public class AppPage extends DriverHelper {
     @Override
     public void click(By by) {
         try {
-            wait.until(ExpectedConditions.visibilityOfElementLocated(by)).click();
+            wait.until(ExpectedConditions.visibilityOfElementLocated(by));
+            driver.findElement(by).click();
         }catch(TimeoutException e){
             log.error("没找到，超时了"+e);
             driver.manage().timeouts().implicitlyWait(DEFAULT_TIME_OUT_SECOND, TimeUnit.SECONDS);
             driver.getPageSource();
             driver.findElement(by).click();
-        }catch (NoSuchElementException e){
-            log.error("没找到"+e);
+        }catch (NoSuchElementException e) {
+            log.error("没找到" + e);
             e.printStackTrace();
         }catch (Exception e) {
-            //handleAlert();
+            log.error("click的元素没找到");
+            e.printStackTrace();
         }
     }
 

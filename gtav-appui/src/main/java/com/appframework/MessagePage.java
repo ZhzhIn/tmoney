@@ -3,7 +3,8 @@ package com.appframework;/**
  * @create 2021-01-26 9:40
  */
 
-import com.tengmoney.gui.AppPage;
+import io.appium.java_client.AppiumDriver;
+import io.appium.java_client.MobileElement;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 
@@ -14,7 +15,7 @@ import org.openqa.selenium.By;
  * @create 2021/1/26
  */
 @Slf4j
-public class MessagePage extends AppPage {
+public class MessagePage extends Wework {
 
     private final By messageArea = By.id("com.tencent.wework:id/eo7");//输入框
     private final By sendIcon = By.id("com.tencent.wework:id/eo3");//发送
@@ -31,7 +32,15 @@ public class MessagePage extends AppPage {
     private final By send = byText("发送");//发送按钮
     private final String filePreName = "//android.widget.GridView/android.widget.RelativeLayout[";
     private final String fileLastName = "]/android.widget.RelativeLayout/android.widget.ImageView";
-    private Boolean isVoiceMode;//是否是语音状态
+    private Boolean isVoiceMode= false;//是否是语音状态
+    public MessagePage() {
+        super();
+        log.info("messagePage init");
+    }
+
+    public MessagePage(AppiumDriver<MobileElement> driver) {
+        super(driver);
+    }
 
     /**
      * 选择任意对话窗口
@@ -39,6 +48,11 @@ public class MessagePage extends AppPage {
      * @return
      */
     public MessagePage chooseConversation(String conversationName) {
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         click(byText(conversationName));
         log.info("show the icon 'hold to speak' ?:" + hasElement(voiceIcon));
         if (hasElement(voiceIcon)) {

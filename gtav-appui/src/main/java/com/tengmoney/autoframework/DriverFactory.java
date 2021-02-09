@@ -5,9 +5,10 @@ import com.appframework.foundation.exception.InvalidArgsException;
 import com.tmoney.foundation.utils.Configuration;
 import com.tmoney.foundation.utils.Configuration.Parameter;
 import com.tmoney.foundation.utils.R;
+import io.appium.java_client.AppiumDriver;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.Platform;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.ie.InternetExplorerDriver;
@@ -19,8 +20,9 @@ import java.net.URL;
 import java.util.Arrays;
 
 /**
- * 根据平台的不同，创建不同的page
+ * 根据平台的不同，创建不同的driver
  */
+@Slf4j
 public class DriverFactory {
     public static final String HTML_UNIT = "htmlunit";
     public static final String IOS = "iOS";
@@ -33,9 +35,10 @@ public class DriverFactory {
      *            in which driver will be used
      * @return WebDriver instance
      */
-    public static synchronized WebDriver create(String testName)
+    public static synchronized AppiumDriver create(String testName)
     {
-        WebDriver driver = null;
+        log.info("DriverFactory create");
+        AppiumDriver driver = null;
         DesiredCapabilities capabilities = null;
         try
         {
@@ -75,8 +78,8 @@ public class DriverFactory {
             {
                 capabilities = getChromeCapabilities(testName);
             }
-            driver = new RemoteWebDriver(new URL(Configuration.get(Configuration.Parameter.SELENIUM_HOST)), capabilities);
-            driver = new Augmenter().augment(driver);
+            driver = new AppiumDriver(new URL(Configuration.get(Configuration.Parameter.SELENIUM_HOST)), capabilities);
+            driver = (AppiumDriver) new Augmenter().augment(driver);
 
         }
         catch (MalformedURLException e)
@@ -154,6 +157,7 @@ public class DriverFactory {
         desiredCapabilities.setCapability(CapabilityType.VERSION, Configuration.get(Parameter.MOBILE_VERSION));
         desiredCapabilities.setCapability(CapabilityType.PLATFORM_NAME, Configuration.get(Parameter.MOBILE_PLATFORM));
         desiredCapabilities.setCapability("appPackage", Configuration.get(Configuration.Parameter.MOBILE_PACKAGE));
+        desiredCapabilities.setCapability("noReset", Configuration.get(Parameter.MOBILE_NORESET));
         desiredCapabilities.setCapability("appActivity", Configuration.get(Parameter.MOBILE_ACTIVITY));
         desiredCapabilities.setCapability("newCommandTimeout", Configuration.get(Parameter.MOBILE_NEW_COMMAND_TIMEOUT));
         desiredCapabilities.setCapability("name", testName);
