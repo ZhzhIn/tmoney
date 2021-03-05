@@ -129,7 +129,7 @@ mvn -Dtest=org.example.MyTest test
 </build>
 ``` 
 report地址： target/site/allure-maven-plugin/index.html
-执行单个用例：mvn test -Dtest=MyTest
+执行单个用例：mvn test -Dtest=MyTest#testMethod -DEnv=test
 ### 待完善
 - 断言结合mybatis
 - json支持传参
