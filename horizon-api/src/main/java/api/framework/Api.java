@@ -13,7 +13,7 @@ import util.JsonTemplate;
 
 import java.util.HashMap;
 
-import static api.item.ManuData.JSON_FILE_NAME;
+import static api.item.Manu.JSON_FILE_NAME;
 import static io.restassured.RestAssured.given;
 import static io.restassured.http.ContentType.*;
 import static io.restassured.http.Method.GET;

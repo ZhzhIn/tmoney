@@ -31,8 +31,14 @@ public class DefaultConfig {
     static String srcPath = "src/main/resources/application.yaml";
     private static DefaultConfig config = HandelYaml
             .getYamlConfig(srcPath, DefaultConfig.class);
-    public static Env env = config.current.get("env");
+    public static Env env = Env.fromString(System.getProperty("Env"));
+    public DefaultConfig(){
+        initConfig();
+    }
+    private void initConfig(){
+        //TODO 读取数据库配置，写入配置文件
 
+    }
     @Override
     public String toString() {
         return "LoadDefaultConfig{" +
@@ -43,7 +49,7 @@ public class DefaultConfig {
                 ", staff=" + staff +
                 '}';
     }
-    //todo 调用数据库自动查询，不要用配置文件
+    //todo 参数使用反射实现
     public static String getStrFromDefaultConfig(String values) {
         if(values==null){
             return "";
