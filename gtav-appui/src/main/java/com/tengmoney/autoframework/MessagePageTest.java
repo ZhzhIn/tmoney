@@ -24,6 +24,7 @@ class MessagePageTest {
     private static Wework wework= null;
     private static String FILEPATH = "src\\main\\resources\\xiaoaojianghu.txt";
     private static MessagePage page=null;
+
     @BeforeAll
     static void beforeAll() {
         wework = new Wework();
@@ -43,10 +44,10 @@ class MessagePageTest {
     //发送350条私聊
     void sendMessage() {
         page = page.chooseConversation("梁繁兴");
-        sendMessageFromFile(FILEPATH,1);
+        sendMessageFromFile(FILEPATH,100);
         page.savePic(currentTime());
         page.clickBack();
-        Assert.assertTrue(page.hasElement(page.byText("消息")));
+        Assert.assertTrue(page.isWeworkMainPage());
     }
 
     @Test
@@ -56,7 +57,7 @@ class MessagePageTest {
         sendMessageFromFile(FILEPATH,1);
         page.savePic(currentTime());
         page.clickBack();
-        Assert.assertTrue(page.hasElement(page.byText("消息")));
+        Assert.assertTrue(page.isWeworkMainPage());
     }
     @Test
     //发送20条语音私聊
@@ -65,7 +66,7 @@ class MessagePageTest {
         sendVoiceMessage(1);
         page.savePic(currentTime());
         page.clickBack();
-        Assert.assertTrue(page.hasElement(page.byText("消息")));
+        Assert.assertTrue(page.isWeworkMainPage());
     }
     @Test
     //发送30图片
@@ -74,7 +75,7 @@ class MessagePageTest {
         sendPicMessage(1);
         page.savePic(currentTime());
         page.clickBack();
-        Assert.assertTrue(page.hasElement(page.byText("消息")));
+        Assert.assertTrue(page.isWeworkMainPage());
     }
     @Test
     void sendBussinessCard(){
@@ -82,7 +83,7 @@ class MessagePageTest {
         page.sendBusinessCard("卢华文");
         page.savePic(currentTime());
         page.clickBack();
-        Assert.assertTrue(page.hasElement(page.byText("消息")));
+        Assert.assertTrue(page.isWeworkMainPage());
     }
     public void sendPicMessage(int num){
         int sum = 0;

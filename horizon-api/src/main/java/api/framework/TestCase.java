@@ -54,9 +54,9 @@ public class TestCase {
     }
 
     public void run() {
-        ApiList apiList = null;
-        apiList = ApiList.load(yamlName);
-        Api currentApi = apiList.get(this.api);
+        ApiListModel apiListModel = null;
+        apiListModel = ApiListModel.load(yamlName);
+        Api currentApi = apiListModel.get(this.api);
         currentApi = insertParam(currentApi);
         Response res = currentApi.run();
         assertAll(

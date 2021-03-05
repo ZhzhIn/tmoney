@@ -45,7 +45,7 @@ public class TestCaseDTO {
             }
             Matcher expectParam = (Matcher) method.invoke(matchers, expect);
             response.then().statusCode(200);
-            assertThat(response.body().print(), actual, expectParam);
+            assertThat(actual, expectParam);
         } catch (InvocationTargetException e) {
             e.printStackTrace();
         } catch (NoSuchMethodException e) {

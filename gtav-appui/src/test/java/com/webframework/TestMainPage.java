@@ -11,6 +11,7 @@ public class TestMainPage {
         page.jumpToMorPaper().jumpToAddPaperPage().addNewsTest();
 //        Assert.assertNotNull(page.jumpToMorPaper().jumpToAddPaperPage().testAddPaperPage());
     }
+
     @AfterAll
     static void shutdown(){
         page.quit();

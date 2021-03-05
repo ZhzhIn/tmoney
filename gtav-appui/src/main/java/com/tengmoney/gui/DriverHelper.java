@@ -158,19 +158,34 @@ public abstract class DriverHelper {
         driver.findElement(by).sendKeys(path);
     }
 
-    public boolean hasElement(By by) {
+    public Boolean hasElement(By by) {
+
         try {
-            return wait.until(ExpectedConditions.invisibilityOfElementLocated(by)) ? true : false;
+            wait.until(
+                            x ->
+                            {
+                                log.info(String.valueOf(System.currentTimeMillis()));
+//                                String source = driver.getPageSource();
+                                log.info("是否有by:"+by.toString());
+                                return  driver.findElement(by).isDisplayed();
+//                                Boolean exist =source.contains(workSpace) /*|| source.contains("腾银信息")*/;
+                               
+//                                return exist;
+                            }
+//                                driver.getPageSource().contains("工作台")
+//                        ExpectedConditions.invisibilityOfElementLocated(by)
+                    );
         } catch (NoSuchElementException e) {
             log.warn("没找到这个元素：" + by.toString());
-            return false;
+
         } catch (TimeoutException e){
             log.error("找不到元素，超时了："+by.toString());
-            return false;
+
         }catch (Exception e){
             log.error("没找到元素："+by.toString());
-            return false;
+
         }
+       return  false;
     }
 
     public boolean hasElement(WebElement element) {

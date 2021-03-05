@@ -18,4 +18,5 @@ public class AppDTO {
     public String appName;
     public String agentId;
     public String componentAppid;
+    public String authCorpId;
 }

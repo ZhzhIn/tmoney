@@ -4,16 +4,18 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.tengmoney.gui.WebPage;
+import com.tmoney.foundation.utils.FileChangeTime;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import io.github.bonigarcia.wdm.config.WebDriverManagerException;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.Test;
+import org.openqa.selenium.By;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import com.tmoney.foundation.utils.FileChangeTime;
 
 import java.io.File;
 import java.io.IOException;
@@ -52,7 +54,7 @@ public class MainPage extends WebPage {
 
     }
 
-    private void login(){
+    private void login() {
         driver.get(AUTH_LOGIN_URL);
         Set<Cookie> cookies = driver.manage().getCookies();
         ObjectMapper mapper = new ObjectMapper(new YAMLFactory());

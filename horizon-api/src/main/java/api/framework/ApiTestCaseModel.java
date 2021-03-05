@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import util.HandelYaml;
 
 import java.io.File;
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -17,9 +16,6 @@ import java.util.List;
 @Data
 @Slf4j
 public class ApiTestCaseModel {
-    public String name;
-    public String describle;
-    public HashMap<String, String> param;
     public  List<TestCase> testCaseList;
 
     public static ApiTestCaseModel load(String yamlPath) {

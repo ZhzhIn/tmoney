@@ -30,8 +30,8 @@ public class MessagePage extends Wework {
     private final By addArea = By.id("com.tencent.wework:id/a15");//add区域
     private final By businessCard = byText("个人名片");//名片按钮
     private final By send = byText("发送");//发送按钮
-    private final String filePreName = "//android.widget.GridView/android.widget.RelativeLayout[";
-    private final String fileLastName = "]/android.widget.RelativeLayout/android.widget.ImageView";
+    private final static String filePreName = "//android.widget.GridView/android.widget.RelativeLayout[";
+    private final static String fileLastName = "]/android.widget.RelativeLayout/android.widget.ImageView";
     private Boolean isVoiceMode= false;//是否是语音状态
     public MessagePage() {
         super();
@@ -56,9 +56,9 @@ public class MessagePage extends Wework {
         click(byText(conversationName));
         log.info("show the icon 'hold to speak' ?:" + hasElement(voiceIcon));
         if (hasElement(voiceIcon)) {
-            isVoiceMode = true;
-        } else {
             isVoiceMode = false;
+        } else {
+            isVoiceMode = true;
         }
         return this;
     }

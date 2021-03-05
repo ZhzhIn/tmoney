@@ -8,7 +8,8 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.WebDriverWait;
 @Slf4j
 public class Wework extends AppPage {
-    private By messageTab=By.xpath("//*[@text='消息']");
+    private final String workSpace = "工作台";
+    private By messageTab=byText("消息");
 
     public Wework() {
         super();
@@ -37,7 +38,7 @@ public class Wework extends AppPage {
                         {
                             log.info(String.valueOf(System.currentTimeMillis()));
                             String source = driver.getPageSource();
-                            Boolean exist =source.contains("工作台") || source.contains("腾银信息");
+                            Boolean exist =source.contains(workSpace) /*|| source.contains("腾银信息")*/;
                             log.info("寻找工作台/腾银信息"+exist);
                             return exist;
                         }
@@ -55,6 +56,8 @@ public class Wework extends AppPage {
         click(By.xpath("//*[@text='日程']"));
         return new 日程Page();
     }
-
+    public Boolean isWeworkMainPage(){
+        return hasElement(messageTab);
+    }
 
 }

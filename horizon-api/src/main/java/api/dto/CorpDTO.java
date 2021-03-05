@@ -17,5 +17,6 @@ import java.util.List;
 public class CorpDTO {
     public String corpName;
     public String corpId;
+    public String authCorpId;
     public List<String> appIdList;
 }

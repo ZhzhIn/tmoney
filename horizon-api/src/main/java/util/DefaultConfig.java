@@ -74,6 +74,8 @@ public class DefaultConfig {
                         return DefaultConfig.getProduct().getProductType();
                     }else if(value[1].equals("productId")){
                         return DefaultConfig.getProduct().getProductId();
+                    }else if(value[1].equals("morningPaperId")){
+                        return DefaultConfig.getMorning().getPaperId();
                     }else{
                         log.error("param参数没有在默认设置中找到");
                         throw new ConfigNotFoundException("param参数没有在默认设置中找到");
