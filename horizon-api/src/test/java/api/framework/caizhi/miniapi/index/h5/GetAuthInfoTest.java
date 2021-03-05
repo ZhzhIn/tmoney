@@ -1,8 +1,10 @@
 package api.framework.caizhi.miniapi.index.h5;
 
-import api.framework.ApiList;
+import api.framework.ApiListModel;
 import api.framework.LoginHelper;
 import api.item.AppType;
+import io.qameta.allure.Story;
+import org.junit.jupiter.params.provider.CsvSource;
 import util.DefaultConfig;
 
 import java.util.HashMap;
@@ -10,7 +12,7 @@ import java.util.HashMap;
 import static org.hamcrest.Matchers.equalTo;
 
 public class GetAuthInfoTest {
-    ApiList model = ApiList.load(this.getClass());
+    ApiListModel model = ApiListModel.load(this.getClass());
 
 //    @BeforeAll
     void beforeAll() {

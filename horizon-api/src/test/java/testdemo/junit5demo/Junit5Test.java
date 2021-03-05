@@ -3,8 +3,6 @@ package testdemo.junit5demo;
 import io.qameta.allure.Feature;
 import io.qameta.allure.Owner;
 import io.qameta.allure.Story;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
@@ -13,21 +11,11 @@ import java.util.List;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 @Feature("junit5用例示范")
 @Owner("zhzh.yin")
 public class Junit5Test {
-    @Test
-    void fun(){
-        given()
-                .when()
-                .get("http://www.baidu.com")
-                .then()
-                .statusCode(200)
-                .log().all();
-    }
 //    @ParameterizedTest(name="使用stream")
     @MethodSource("stringProvider")
     @Story("stream -stringlist")

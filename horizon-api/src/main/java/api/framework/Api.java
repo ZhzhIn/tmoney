@@ -1,6 +1,5 @@
 package api.framework;
 
-import api.item.AppType;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
@@ -43,46 +42,6 @@ public class Api {
         log.info("登录对应类型");
     }
 
-    /**
-     * 导入默认配置
-     * 调用DefaultConfig方法，来完成接口的默认参数传递。
-     * 该方法可以在书写class测试类时使用，当前的yaml用例编写方式中，已废弃该方法。
-     */
-    @Deprecated
-    public synchronized Api importDefaultConfig() {
-        log.info("做一些yaml配置的参数导入操作");
-        HashMap<String, Object> configMap = this.getRequestParam();
-        HashMap<String, Object> defaultMap = DefaultConfig.getDefaultConfig();
-        if (null == configMap) {
-            configMap = new HashMap(16);
-        }
-
-        defaultMap.keySet().removeAll(configMap.keySet());
-        configMap.putAll(defaultMap);
-        this.setRequestParam(configMap);
-        return this;
-    }
-
-    /**
-     * 导入默认配置（根据不同的系统版本，传递不同的agentId等数据）
-     * 调用DefaultConfig方法，来完成接口的默认参数传递。
-     * 该方法可以在书写class测试类时使用，当前的yaml用例编写方式中，已废弃该方法。
-     */
-    @Deprecated
-    public synchronized Api importDefaultConfig(AppType type) {
-        log.info("做一些yaml配置的参数导入操作");
-        HashMap<String, Object> configMap = this.getRequestParam();
-        HashMap<String, Object> defaultMap = DefaultConfig.getDefaultConfig(type);
-        if (null == configMap) {
-            configMap = new HashMap(16);
-        }
-
-        defaultMap.keySet().removeAll(configMap.keySet());
-        configMap.putAll(defaultMap);
-        this.setRequestParam(configMap);
-        return this;
-    }
-
 
     /**
      * 向api中传入数据，根据yaml的requestParam来传递参数，且value中包含“defaultConfig"时，
@@ -96,13 +55,7 @@ public class Api {
         if (newMap != null) {
             log.info("传参中有param");
             if (this.getRequestParam() != null) {
-                requestParam.forEach(
-                        (key, values) -> {
-                            if(values!=null){
-                            String value = getStrFromDefaultConfig(values.toString());
-                            log.info("存入key-value：" + key + "," + value);
-                            requestParam.put(key, value);
-                        }});
+                loadParamFromDefaultConfig();
                 log.info("原来得requestParam:" + this.requestParam.keySet());
                 HashMap<String, Object> oldMap = this.getRequestParam();
                 oldMap.putAll(newMap);
@@ -125,6 +78,20 @@ public class Api {
         return this;
     }
 
+    /**
+     * 导入DefaultConfig的配置
+     * @return
+     */
+    public synchronized Api loadParamFromDefaultConfig() {
+        requestParam.forEach(
+                (key, values) -> {
+                    if(values!=null){
+                        String value = getStrFromDefaultConfig(values.toString());
+                        log.info("存入key-value：" + key + "," + value);
+                        requestParam.put(key, value);
+                    }});
+        return this;
+    }
     /**
      * 执行api,并返回结果。
      *

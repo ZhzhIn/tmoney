@@ -2,6 +2,10 @@ package util;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.session.SqlSession;
+import org.junit.Test;
+import util.DefaultConfig;
+import util.PaperMapper;
+import util.SqlSessionFactoryUtil;
 
 /**
  * 〈测试数据库语句〉

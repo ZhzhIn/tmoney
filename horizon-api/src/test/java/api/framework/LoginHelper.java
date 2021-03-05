@@ -13,18 +13,20 @@ import static org.junit.jupiter.api.parallel.ExecutionMode.CONCURRENT;
 @Feature("登录")
 @Owner("zhzh.yin")
 public class LoginHelper {
-    private static ApiList model;
+    private static ApiListModel model;
 
     static {
         try {
-            model = ApiList.load("loginTest");
+           model= ApiListModel.load("loginTest");
         } catch (ApiNotFoundException e) {
             e.printStackTrace();
         }
     }
 
     public static void login() {
-        model.runWithoutConfig("login");
+        Api api = model.get("login");
+        api=api.loadParamFromDefaultConfig();
+        api.run();
     }
 
 }

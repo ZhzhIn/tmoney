@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.params.provider.MethodSource;
+import poexception.ConfigNotFoundException;
 import poexception.TestCaseNeedToEditException;
 
 import java.io.File;
@@ -44,7 +45,8 @@ public class TestCaseList {
     static List<TestCase> apiTestCase() {
         File file = new File("src/test/resources/testcase");
         File [] fileList = file.listFiles();
-        ArrayList<File> testcaseFileList = new ArrayList<File>( Arrays.asList(fileList));
+        if(fileList==null){ throw new ConfigNotFoundException();}
+        ArrayList<File> testcaseFileList = new ArrayList<>( Arrays.asList(fileList));
         testcaseFileList=getFileList(testcaseFileList,".yaml","");
         List<ApiTestCaseModel> apitestcase = new ArrayList<>();
         List<TestCase> testcaseList = new ArrayList<>();

@@ -82,6 +82,8 @@ public class DefaultConfig {
                         return DefaultConfig.getProduct().getProductId();
                     }else if(value[1].equals("morningPaperId")){
                         return DefaultConfig.getMorning().getPaperId();
+                    }else if(value[1].equals("authCorpId")){
+                        return DefaultConfig.getCorp().getAuthCorpId();
                     }else{
                         log.error("param参数没有在默认设置中找到");
                         throw new ConfigNotFoundException("param参数没有在默认设置中找到");
