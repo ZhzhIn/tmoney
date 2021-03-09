@@ -44,7 +44,7 @@ class MessagePageTest {
     //发送350条私聊
     void sendMessage() {
         page = page.chooseConversation("梁繁兴");
-        sendMessageFromFile(FILEPATH,100);
+        sendMessageFromFile(FILEPATH,200);
         page.savePic(currentTime());
         page.clickBack();
         Assert.assertTrue(page.isWeworkMainPage());

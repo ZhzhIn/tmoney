@@ -32,6 +32,10 @@
                     </argLine>
                     <reportsDirectory>${project.build.directory}/allure-reports</reportsDirectory>
                     <systemProperties>
+                        <property>
+                            <name>junit.jupiter.extensions.autodetection.enabled</name>
+                            <value>true</value>
+                        </property>
                         <!--在target中生成result,就用下面这个命令-->
                         <property>
                             <name>allure.results.directory</name>
@@ -66,5 +70,57 @@
                 </configuration>
             </plugin>
         </plugins>
+
+        <resources>
+            <resource>
+                <directory>src/main/resources/${profiles.active}</directory>
+                <includes>
+                    <include>**/*</include>
+                </includes>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
     </build>
+    <profiles>
+        <profile>
+            <id>dev</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <properties>
+                <profiles.active>dev</profiles.active>
+                <name>env</name>
+                <value>dev</value>
+            </properties>
+        </profile>
+        <profile>
+            <id>test</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <properties>
+                <profiles.active>test</profiles.active>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>prod</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <properties>
+                <profiles.active>prod</profiles.active>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>uat</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <properties>
+                <profiles.active>uat</profiles.active>
+            </properties>
+        </profile>
+    </profiles>
 </project>

@@ -1,6 +1,7 @@
 package util;
 
 import api.dto.*;
+import api.framework.Api;
 import api.item.AppType;
 import api.item.Env;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +19,8 @@ import java.util.HashMap;
  */
 @Slf4j
 public class DefaultConfig {
-    public HashMap<String, Env> current = new HashMap<String, Env>();
+    public String current ;
+    public HashMap<Env,HashMap<Object,Object>> configs = new HashMap<>();
     public HashMap<Env, String> host = new HashMap<>();
     public HashMap<Env, CorpDTO> corp = new HashMap<Env, CorpDTO>();
     public HashMap<Env, HashMap<AppType, AppDTO>> app = new HashMap<Env, HashMap<AppType, AppDTO>>();
@@ -27,11 +29,17 @@ public class DefaultConfig {
     public HashMap<Env, MorningDTO> morning = new HashMap<Env, MorningDTO>();
     /**
      * todo 优化硬编码
+     * 1.去掉current配置
+     * 2.修改yaml的配置文件配置方式
+     * 3.反射配置项
      */
-    static String srcPath = "src/main/resources/application.yaml";
+
+    static String yamlName = "application.yaml";
+
     private static DefaultConfig config = HandelYaml
-            .getYamlConfig(srcPath, DefaultConfig.class);
-    public static Env env = Env.fromString(System.getProperty("Env"));
+            .getYamlConfig(DefaultConfig.class.getClassLoader().getResource(yamlName).getPath(), DefaultConfig.class);
+    public static Env env = Env.fromString(HandelYaml
+        .getYamlConfig(Api.class.getClassLoader().getResource(yamlName).getPath(), DefaultConfig.class).current);
     public DefaultConfig(){
         initConfig();
     }
@@ -42,7 +50,6 @@ public class DefaultConfig {
     @Override
     public String toString() {
         return "LoadDefaultConfig{" +
-                "current=" + current +
                 ", host=" + host +
                 ", corp=" + corp +
                 ", app=" + app +

@@ -161,20 +161,7 @@ public abstract class DriverHelper {
     public Boolean hasElement(By by) {
 
         try {
-            wait.until(
-                            x ->
-                            {
-                                log.info(String.valueOf(System.currentTimeMillis()));
-//                                String source = driver.getPageSource();
-                                log.info("是否有by:"+by.toString());
-                                return  driver.findElement(by).isDisplayed();
-//                                Boolean exist =source.contains(workSpace) /*|| source.contains("腾银信息")*/;
-                               
-//                                return exist;
-                            }
-//                                driver.getPageSource().contains("工作台")
-//                        ExpectedConditions.invisibilityOfElementLocated(by)
-                    );
+            wait.until(ExpectedConditions.invisibilityOfElementLocated(by));
         } catch (NoSuchElementException e) {
             log.warn("没找到这个元素：" + by.toString());
 
