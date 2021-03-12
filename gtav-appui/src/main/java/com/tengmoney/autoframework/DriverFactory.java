@@ -161,6 +161,7 @@ public class DriverFactory {
         desiredCapabilities.setCapability("appActivity", Configuration.get(Parameter.MOBILE_ACTIVITY));
         desiredCapabilities.setCapability("newCommandTimeout", Configuration.get(Parameter.MOBILE_NEW_COMMAND_TIMEOUT));
         desiredCapabilities.setCapability("name", testName);
+        desiredCapabilities.setCapability("deviceName", "device");
         return desiredCapabilities;
     }
     private static DesiredCapabilities initBaseCapabilities(DesiredCapabilities capabilities, Platform platform, String... args)

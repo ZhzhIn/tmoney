@@ -6,8 +6,10 @@ import api.item.AppType;
 import api.item.Env;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
+import org.springframework.util.ResourceUtils;
 import poexception.ConfigNotFoundException;
 
+import java.io.FileNotFoundException;
 import java.util.HashMap;
 
 /**
@@ -19,14 +21,12 @@ import java.util.HashMap;
  */
 @Slf4j
 public class DefaultConfig {
-    public String current ;
-    public HashMap<Env,HashMap<Object,Object>> configs = new HashMap<>();
-    public HashMap<Env, String> host = new HashMap<>();
-    public HashMap<Env, CorpDTO> corp = new HashMap<Env, CorpDTO>();
-    public HashMap<Env, HashMap<AppType, AppDTO>> app = new HashMap<Env, HashMap<AppType, AppDTO>>();
-    public HashMap<Env, StaffDTO> staff = new HashMap<Env, StaffDTO>();
-    public HashMap<Env, ProductDTO> product = new HashMap<Env, ProductDTO>();
-    public HashMap<Env, MorningDTO> morning = new HashMap<Env, MorningDTO>();
+    public  String host ;
+    public  CorpDTO corp ;
+    public  HashMap<AppType, AppDTO> app = new HashMap<AppType, AppDTO>();
+    public  StaffDTO staff;
+    public  ProductDTO product;
+    public  MorningDTO morning;
     /**
      * todo 优化硬编码
      * 1.去掉current配置
@@ -38,8 +38,6 @@ public class DefaultConfig {
 
     private static DefaultConfig config = HandelYaml
             .getYamlConfig(DefaultConfig.class.getClassLoader().getResource(yamlName).getPath(), DefaultConfig.class);
-    public static Env env = Env.fromString(HandelYaml
-        .getYamlConfig(Api.class.getClassLoader().getResource(yamlName).getPath(), DefaultConfig.class).current);
     public DefaultConfig(){
         initConfig();
     }
@@ -58,6 +56,7 @@ public class DefaultConfig {
     }
     //todo 参数使用反射实现
     public static String getStrFromDefaultConfig(String values) {
+        log.info("values is :"+values);
         if(values==null){
             return "";
         }
@@ -133,35 +132,31 @@ public class DefaultConfig {
         String time =  System.currentTimeMillis()+"";
         return Long.valueOf(time.substring(0, time.length() - 3));
     }
-    @Test
-    public void test(){
 
-        System.out.println(getCurrentMilles());
-    }
     public static String getHost() {
-        return config.host.get(env);
+        return config.host;
     }
 
     public static CorpDTO getCorp() {
-        CorpDTO corp = config.corp.get(env);
+        CorpDTO corp = config.corp;
         return corp;
     }
 
     public static AppDTO getApp(AppType appType) {
-        AppDTO app = config.app.get(env).get(appType);
+        AppDTO app = config.app.get(appType);
         return app;
     }
 
     public static StaffDTO getStaff() {
-        StaffDTO staff = config.staff.get(env);
+        StaffDTO staff = config.staff;
         return staff;
     }
     public static ProductDTO getProduct() {
-        ProductDTO product = config.product.get(env);
+        ProductDTO product = config.product;
         return product;
     }
     public static MorningDTO getMorning() {
-        MorningDTO morning = config.morning.get(env);
+        MorningDTO morning = config.morning;
         return morning;
     }
     public static HashMap<String, Object> getDefaultConfig() {

@@ -33,7 +33,7 @@ class MessagePageTest {
         LocalDateTime localDateTime = LocalDateTime.now();
         return  localDateTime.format(dtf);
     }
-    @Test
+//    @Test
     //发送350条私聊
     void sendMessage() {
         page = wework.jumpToMessage().chooseConversation("卢华文");
@@ -43,10 +43,10 @@ class MessagePageTest {
         Assert.assertTrue(page.hasElement(page.byText("消息")));
     }
 
-    @Test
-    //发送90条群聊
+//    @Test
+//    发送90条群聊
     void sendMessage2() {
-        page = wework.jumpToMessage().chooseConversation("尹珍枝测试群聊");
+        page = wework.jumpToMessage().chooseConversation("梁繁兴");
         sendMessageFromFile(FILEPATH,90);
         page.savePic(currentTime());
         page.clickBack();
@@ -55,13 +55,13 @@ class MessagePageTest {
     @Test
     //发送20条语音私聊
     void sendVoiceMessage(){
-        page = wework.jumpToMessage().chooseConversation("尹珍枝测试群聊");
+        page = wework.jumpToMessage().chooseConversation("梁繁兴");
         sendVoiceMessage(20);
         page.savePic(currentTime());
         page.clickBack();
         Assert.assertTrue(page.hasElement(page.byText("消息")));
     }
-    @Test
+//    @Test
     //发送30图片
     void sendPicMessage(){
         page = wework.jumpToMessage().chooseConversation("尹珍枝测试群聊");
@@ -70,7 +70,7 @@ class MessagePageTest {
         page.clickBack();
         Assert.assertTrue(page.hasElement(page.byText("消息")));
     }
-    @Test
+//    @Test
     void sendBussinessCard(){
         page = wework.jumpToMessage().chooseConversation("尹珍枝测试群聊");
         page.sendBusinessCard("卢华文");

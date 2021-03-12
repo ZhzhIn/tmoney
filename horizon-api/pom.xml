@@ -80,6 +80,22 @@
                 <filtering>true</filtering>
             </resource>
         </resources>
+        <testResources>
+            <testResource>
+                <directory>src/test/resources/testcase/${profiles.active}</directory>
+                <includes>
+                    <include>**/*.yaml</include>
+                </includes>
+                <filtering>true</filtering>
+            </testResource>
+            <testResource>
+                <directory>src/test/resources/testcase/common</directory>
+                <includes>
+                    <include>**/*.yaml</include>
+                </includes>
+                <filtering>true</filtering>
+            </testResource>
+        </testResources>
     </build>
     <profiles>
         <profile>
@@ -96,7 +112,7 @@
         <profile>
             <id>test</id>
             <activation>
-                <activeByDefault>false</activeByDefault>
+                <activeByDefault>true</activeByDefault>
             </activation>
             <properties>
                 <profiles.active>test</profiles.active>

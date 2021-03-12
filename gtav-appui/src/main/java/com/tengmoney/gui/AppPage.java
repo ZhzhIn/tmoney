@@ -34,7 +34,7 @@ public abstract class AppPage extends DriverHelper {
     }*/
     public AppPage(){
         super();
-        driver = DriverFactory.create("test");
+        driver = DriverFactory.create("device");
         //todo :应该有别的设计方法。暂时还没想到
         super.driver = driver;
         driver.manage().timeouts().implicitlyWait(IMPLICIT_TIMEOUT, TimeUnit.SECONDS);

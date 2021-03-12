@@ -6,14 +6,17 @@ import io.qameta.allure.Owner;
 import io.qameta.allure.Story;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.springframework.util.ResourceUtils;
 import poexception.ConfigNotFoundException;
 import poexception.TestCaseNeedToEditException;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -28,11 +31,10 @@ import static util.HandleFile.getFileList;
 @ExtendWith(TimingExtension.class)
 public class TestCaseList {
     @BeforeAll
-     static void setUp(){
-        System.setProperty("Env","test");
+    static void setUp(){
         LoginHelper.login();
     }
-//    @ParameterizedTest(name = "接口：{0}-{index}")
+    @ParameterizedTest(name = "接口：{0}-{index}")
     @MethodSource("apiTestCase")
     @Story("一大堆接口")
     public void runTestCase(TestCase testCase) {
@@ -44,9 +46,13 @@ public class TestCaseList {
         testCase.run();
     }
 
-
     static List<TestCase> apiTestCase() {
-        File file = new File("src/test/resources/testcase");
+        File file = new File(TestCaseList.class.getClassLoader().getResource("").getPath());
+        List<TestCase> testcaseList = getTestCases(file);
+        return testcaseList;
+    }
+
+    private static List<TestCase> getTestCases(File file) {
         File [] fileList = file.listFiles();
         if(fileList==null){ throw new ConfigNotFoundException();}
         ArrayList<File> testcaseFileList = new ArrayList<>( Arrays.asList(fileList));
@@ -68,9 +74,8 @@ public class TestCaseList {
 
     /**
      * 调试类
-     * @param testCase
      */
-    @ParameterizedTest(name = "接口：{0}-{index}")
+//    @ParameterizedTest(name = "接口：{0}-{index}")
     @MethodSource("apiDebug")
     @Story("一大堆接口")
     public void debugTest(TestCase testCase) {
@@ -85,7 +90,7 @@ public class TestCaseList {
 
     static List<TestCase> apiDebug(){
         List<String> testcasePath = new ArrayList<>();
-        testcasePath.add("src/test/resources/testcase/dynamics/dynamiclistTestcase.yaml");
+        testcasePath.add("src/test/resources/testcase/morning/morningdetailTestcase.yaml");
         List<ApiTestCaseModel> apitestcase = new ArrayList<>();
         List<TestCase> testcaseList = new ArrayList<>();
         testcasePath.forEach(

@@ -29,6 +29,7 @@ public class HandelYaml{
                     clazz);
             return t;
         }catch (IOException e) {
+            log.error("加载文件出错："+filePath);
             e.printStackTrace();
         }
         return null;

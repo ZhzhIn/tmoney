@@ -3,6 +3,7 @@ package api.framework;
 import io.qameta.allure.Feature;
 import io.qameta.allure.Owner;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import poexception.ApiNotFoundException;
 
