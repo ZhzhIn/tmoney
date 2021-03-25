@@ -121,7 +121,9 @@ public class Configuration {
         MOBILE_PACKAGE("mobile_package", "default_mobile_package"),
         MOBILE_ACTIVITY("mobile_activity", "default_mobile_activity"),
         MOBILE_NEW_COMMAND_TIMEOUT("mobile_new_command_timeout", "default_mobile_new_command_timeout"),
-
+        MINIPRONAME("minipro_name", "default_minipro_name"),
+        H5APPLICATIONNAME("h5_application_name", "default_h5_application_name"),
+        COMPANY("company_name","default_company_name"),
         JIRA_UPDATER("jira_updater", "default_jira_updater"),
 
         JIRA_URL("jira_url", "default_jira_url"),

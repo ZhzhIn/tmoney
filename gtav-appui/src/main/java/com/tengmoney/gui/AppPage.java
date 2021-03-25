@@ -32,6 +32,21 @@ public abstract class AppPage extends DriverHelper {
 /*    public boolean hasElement(By by) {
         return super.hasElement(this.driver,by);
     }*/
+
+    @Override
+    public void moveTo(By by ){
+        int page = 0;
+        while(page<5){
+            try {
+                wait.until(ExpectedConditions.visibilityOfElementLocated(by));
+                break;
+            }catch (TimeoutException e){
+                log.info("寻找元素超时了,"+by);
+                swipeToUp();
+            }
+            page++;
+        }
+    }
     public AppPage(){
         super();
         driver = DriverFactory.create("device");
@@ -96,14 +111,11 @@ public abstract class AppPage extends DriverHelper {
     }
 
     @Override
+    //TODO 翻页遍历查找
+
     public void click(By by) {
         try {
-            wait.until(ExpectedConditions.visibilityOfElementLocated(by));
-            driver.findElement(by).click();
-        }catch(TimeoutException e){
-            log.error("没找到，超时了"+e);
-            driver.manage().timeouts().implicitlyWait(DEFAULT_TIME_OUT_SECOND, TimeUnit.SECONDS);
-            driver.getPageSource();
+            moveTo(by);
             driver.findElement(by).click();
         }catch (NoSuchElementException e) {
             log.error("没找到" + e);
@@ -168,7 +180,7 @@ public abstract class AppPage extends DriverHelper {
             pointToPoint(start, end, during);
         }
     }
-
+    @Override
     public  void swipeToUp() {
         int width = driver.manage().window().getSize().width;
         int height = driver.manage().window().getSize().height;
@@ -192,6 +204,7 @@ public abstract class AppPage extends DriverHelper {
      * @param during 下拉耗时
      * @param num    下拉次数
      */
+
     public  void swipeToDown(int during, int num) {
         int width = driver.manage().window().getSize().width;
         int height = driver.manage().window().getSize().height;
@@ -201,7 +214,7 @@ public abstract class AppPage extends DriverHelper {
             pointToPoint(start, end, during);
         }
     }
-
+    @Override
     public  void swipeToDown() {
         int width = driver.manage().window().getSize().width;
         int height = driver.manage().window().getSize().height;

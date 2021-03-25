@@ -125,11 +125,11 @@ public abstract class DriverHelper {
         log.info("web quit");
         driver.quit();
     }
-
+    @Deprecated
     public void wait4visible(By by) {
         wait.until(ExpectedConditions.visibilityOfElementLocated(by));
     }
-
+    @Deprecated
     public void wait4visible(WebElement by) {
         wait.until(ExpectedConditions.visibilityOf(by));
     }
@@ -143,6 +143,14 @@ public abstract class DriverHelper {
         wait.until(ExpectedConditions.visibilityOfElementLocated(by));
         driver.findElement(by).sendKeys(content);
     }
+    @Deprecated
+    public void moveDownTo(By by){
+    }
+    @Deprecated
+    public void moveUpTo(By by){}
+    public void moveTo(By by){}
+    public  void swipeToUp() {}
+    public  void swipeToDown() {}
 
     public void click(String text) {
     }
@@ -159,17 +167,16 @@ public abstract class DriverHelper {
     }
 
     public Boolean hasElement(By by) {
-
         try {
-            wait.until(ExpectedConditions.invisibilityOfElementLocated(by));
+            wait.until(ExpectedConditions.visibilityOfElementLocated(by));
         } catch (NoSuchElementException e) {
             log.warn("没找到这个元素：" + by.toString());
 
         } catch (TimeoutException e){
-            log.error("找不到元素，超时了："+by.toString());
+            log.warn("找不到元素，超时了："+by.toString());
 
         }catch (Exception e){
-            log.error("没找到元素："+by.toString());
+            log.warn("没找到元素："+by.toString());
 
         }
        return  false;
@@ -178,7 +185,9 @@ public abstract class DriverHelper {
     public boolean hasElement(WebElement element) {
         try {
             log.info("等待找到元素");
-            return element.isDisplayed() ? true : false;
+            wait.until(ExpectedConditions.visibilityOf(element));
+            return true;
+//            return element.isDisplayed() ? true : false;
         } catch (Exception e) {
             log.error("没有找到元素");
             return false;

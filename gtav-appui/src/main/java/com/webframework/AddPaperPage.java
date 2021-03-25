@@ -4,7 +4,6 @@ package com.webframework;/**
  */
 
 import com.tengmoney.gui.WebPage;
-import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -140,9 +139,7 @@ public class AddPaperPage extends WebPage {
                 click(newsType().get(i));
                 sendKeys(文章地址, urls.get(i));
                 click(确定);
-                try {
-                    wait4visible(概述);
-                } catch (TimeoutException e) {
+                if(!hasElement(概述)){
                     click(关闭);
                     click(增加文章);
                     click(手动添加);

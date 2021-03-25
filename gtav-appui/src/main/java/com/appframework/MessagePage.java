@@ -32,7 +32,7 @@ public class MessagePage extends Wework {
     private final By send = byText("发送");//发送按钮
     private final static String filePreName = "//android.widget.GridView/android.widget.RelativeLayout[";
     private final static String fileLastName = "]/android.widget.RelativeLayout/android.widget.ImageView";
-    private Boolean isVoiceMode= false;//是否是语音状态
+    private Boolean voiceMode= false;//是否是语音状态
     public MessagePage() {
         super();
         log.info("messagePage init");
@@ -56,9 +56,9 @@ public class MessagePage extends Wework {
         click(byText(conversationName));
         log.info("show the icon 'hold to speak' ?:" + hasElement(voiceIcon));
         if (hasElement(voiceIcon)) {
-            isVoiceMode = false;
+            voiceMode = true;
         } else {
-            isVoiceMode = true;
+            voiceMode = false;
         }
         return this;
     }
@@ -69,11 +69,11 @@ public class MessagePage extends Wework {
      * @return
      */
     public MessagePage sendMessage(String message) {
-        log.info("voiceFlag is :" + isVoiceMode);
-        if (isVoiceMode) {
+        log.info("voiceFlag is :" + voiceMode);
+        if (voiceMode) {
             click(switchToKeyBoardMode);
             log.info("点击键盘icon");
-            isVoiceMode = false;
+            voiceMode = false;
         }
         sendKeys(messageArea, message);
         click(sendIcon);
@@ -94,9 +94,9 @@ public class MessagePage extends Wework {
      * @return
      */
     public MessagePage sendVoiceMessage() {
-        if (!isVoiceMode) {
+        if (!voiceMode) {
             click(switchToVoiceMode);
-            isVoiceMode = true;
+            voiceMode = true;
         }
         int touchtime = (int) (Math.random() * 30000);
         log.info("即将发送时长为" + touchtime + "ms的语音消息");
