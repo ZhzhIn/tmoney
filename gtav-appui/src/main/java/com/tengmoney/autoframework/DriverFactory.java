@@ -161,7 +161,13 @@ public class DriverFactory {
         desiredCapabilities.setCapability("appActivity", Configuration.get(Parameter.MOBILE_ACTIVITY));
         desiredCapabilities.setCapability("newCommandTimeout", Configuration.get(Parameter.MOBILE_NEW_COMMAND_TIMEOUT));
         desiredCapabilities.setCapability("name", testName);
-        desiredCapabilities.setCapability("deviceName", "device");
+        desiredCapabilities.setCapability("deviceName", Configuration.get(Parameter.MOBILE_DEVICE));
+//小程序测试设置
+//        desiredCapabilities.setCapability("chromedriverExecutable","chromedriver_78.0.3904.11");
+//        desiredCapabilities.setCapability("chromedriverExecutable","chromedriver_2.23");
+//        desiredCapabilities.setCapability("chromedriverExecutableDir","/chromedrivers");
+//        desiredCapabilities.setCapability("chromedriverChromeMappingFile","mapping.json");
+        desiredCapabilities.setCapability("showChromedriverLog",true);
         return desiredCapabilities;
     }
     private static DesiredCapabilities initBaseCapabilities(DesiredCapabilities capabilities, Platform platform, String... args)
