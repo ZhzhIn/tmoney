@@ -35,7 +35,7 @@ public class Configuration {
         URL("url", "default_url"),
 
         ENV("env", "default_env"),
-
+//        MINIPRO("minipro","minipro"),
         ENV_ARG_RESOLVER("env_arg_resolver", "default_env_arg_resolver"),
 
         BROWSER("browser", "default_browser"),

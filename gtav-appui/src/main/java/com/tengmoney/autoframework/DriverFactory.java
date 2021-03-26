@@ -27,6 +27,7 @@ public class DriverFactory {
     public static final String HTML_UNIT = "htmlunit";
     public static final String IOS = "iOS";
     public static final String ANDROID = "Android";
+    public static final String MINIPRO="minipro";
 
     /**
      * Creates diver instance for specified test.
@@ -61,8 +62,9 @@ public class DriverFactory {
                         || Configuration.isNull(Configuration.Parameter.MOBILE_VERSION)
                         || Configuration.isNull(Configuration.Parameter.MOBILE_PLATFORM)
                         || Configuration.isNull(Configuration.Parameter.MOBILE_APP)
-                        || Configuration.isNull(Configuration.Parameter.MOBILE_DEVICE)) throw new InvalidArgsException("'MOBILE_OS', 'MOBILE_DEVICE', 'MOBILE_VERSION', 'MOBILE_PLATFORM', 'MOBILE_APP' should be set!");
-
+                        || Configuration.isNull(Configuration.Parameter.MOBILE_DEVICE)) {
+                    throw new InvalidArgsException("'MOBILE_OS', 'MOBILE_DEVICE', 'MOBILE_VERSION', 'MOBILE_PLATFORM', 'MOBILE_APP' should be set!");
+                }
                 capabilities = getIphoneCapabilities(testName);
             }
             else if (ANDROID.equalsIgnoreCase(Configuration.get(Configuration.Parameter.BROWSER)))
@@ -71,10 +73,13 @@ public class DriverFactory {
                         || Configuration.isNull(Configuration.Parameter.MOBILE_PLATFORM)
                         || Configuration.isNull(Configuration.Parameter.MOBILE_PACKAGE)
                         || Configuration.isNull(Configuration.Parameter.MOBILE_ACTIVITY)
-                        || Configuration.isNull(Configuration.Parameter.MOBILE_DEVICE)) throw new InvalidArgsException("'MOBILE_APP', 'MOBILE_VERSION', 'MOBILE_PLATFORM', 'MOBILE_PACKAGE', 'MOBILE_ACTIVITY', 'MOBILE_DEVICE' should be set!");
-                capabilities = getAndroidCapabilities(testName);
+                        || Configuration.isNull(Configuration.Parameter.MOBILE_DEVICE)) {
+                    throw new InvalidArgsException("'MOBILE_APP', 'MOBILE_VERSION', 'MOBILE_PLATFORM', 'MOBILE_PACKAGE', 'MOBILE_ACTIVITY', 'MOBILE_DEVICE' should be set!");
+                }capabilities = getAndroidCapabilities(testName);
             }
-            else
+            else if(testName.equalsIgnoreCase(MINIPRO)){
+                capabilities = getMiniProCapabilities(testName);
+            }else
             {
                 capabilities = getChromeCapabilities(testName);
             }
@@ -150,6 +155,13 @@ public class DriverFactory {
         capabilities.setCapability("name", testName);
         return capabilities;
     }
+    private static DesiredCapabilities getMiniProCapabilities(String testName){
+        //todo iOS
+        DesiredCapabilities desiredCapabilities = getAndroidCapabilities(testName);
+        desiredCapabilities.setCapability("chromedriverExecutable",DriverFactory.class.getClassLoader().getResource("/chromeDriver/chromedriver_78.0.3904.11.exe"));
+        desiredCapabilities.setCapability("showChromedriverLog",true);
+        return  desiredCapabilities;
+    }
     private static DesiredCapabilities getAndroidCapabilities(String testName) {
         DesiredCapabilities desiredCapabilities = new DesiredCapabilities();
         //这里不能用.android()方法生成，会报错browsername和appactivity不能同时出现
@@ -167,7 +179,7 @@ public class DriverFactory {
 //        desiredCapabilities.setCapability("chromedriverExecutable","chromedriver_2.23");
 //        desiredCapabilities.setCapability("chromedriverExecutableDir","/chromedrivers");
 //        desiredCapabilities.setCapability("chromedriverChromeMappingFile","mapping.json");
-        desiredCapabilities.setCapability("showChromedriverLog",true);
+//        desiredCapabilities.setCapability("showChromedriverLog",true);
         return desiredCapabilities;
     }
     private static DesiredCapabilities initBaseCapabilities(DesiredCapabilities capabilities, Platform platform, String... args)

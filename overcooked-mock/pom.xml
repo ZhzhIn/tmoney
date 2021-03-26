@@ -3,13 +3,12 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <parent>
-    <artifactId>tmoney</artifactId>
     <groupId>com.appletree.autotest</groupId>
     <version>1.0-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>com.appletree.autotest</groupId>
+  <groupId>com.appletree.autotest</groupId>https://chromedriver.storage.googleapis.com/index.html?path=78.0.3904.11/
   <artifactId>overcooked-mock</artifactId>
   <version>1.0-SNAPSHOT</version>
 
