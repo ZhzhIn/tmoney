@@ -9,6 +9,7 @@ import io.appium.java_client.AppiumDriver;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.Platform;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.ie.InternetExplorerDriver;
@@ -76,10 +77,10 @@ public class DriverFactory {
                         || Configuration.isNull(Configuration.Parameter.MOBILE_DEVICE)) {
                     throw new InvalidArgsException("'MOBILE_APP', 'MOBILE_VERSION', 'MOBILE_PLATFORM', 'MOBILE_PACKAGE', 'MOBILE_ACTIVITY', 'MOBILE_DEVICE' should be set!");
                 }capabilities = getAndroidCapabilities(testName);
-            }
+            }/*
             else if(testName.equalsIgnoreCase(MINIPRO)){
                 capabilities = getMiniProCapabilities(testName);
-            }else
+            }*/else
             {
                 capabilities = getChromeCapabilities(testName);
             }
@@ -155,11 +156,20 @@ public class DriverFactory {
         capabilities.setCapability("name", testName);
         return capabilities;
     }
+    @Deprecated
     private static DesiredCapabilities getMiniProCapabilities(String testName){
         //todo iOS
+        //小程序的进程名和报名不一样，需要加上这个参数
+        ChromeOptions chromeOptions = new ChromeOptions();
+        chromeOptions.setExperimentalOption("androidProcess","com.tencent.mm:appbrand8");
         DesiredCapabilities desiredCapabilities = getAndroidCapabilities(testName);
+        desiredCapabilities.setCapability("goog:chromeOptions",chromeOptions);
+        //默认生成的browserName = chrome 的设置需要去掉
+        desiredCapabilities.setCapability("browserName","");
         desiredCapabilities.setCapability("chromedriverExecutable",DriverFactory.class.getClassLoader().getResource("/chromeDriver/chromedriver_78.0.3904.11.exe"));
         desiredCapabilities.setCapability("showChromedriverLog",true);
+        //通过自己的adb代理修复chromeDriver的bug并解决@xweb_devtools_remote的问题
+        desiredCapabilities.setCapability("adbPort","5038");
         return  desiredCapabilities;
     }
     private static DesiredCapabilities getAndroidCapabilities(String testName) {
@@ -174,12 +184,18 @@ public class DriverFactory {
         desiredCapabilities.setCapability("newCommandTimeout", Configuration.get(Parameter.MOBILE_NEW_COMMAND_TIMEOUT));
         desiredCapabilities.setCapability("name", testName);
         desiredCapabilities.setCapability("deviceName", Configuration.get(Parameter.MOBILE_DEVICE));
-//小程序测试设置
-//        desiredCapabilities.setCapability("chromedriverExecutable","chromedriver_78.0.3904.11");
-//        desiredCapabilities.setCapability("chromedriverExecutable","chromedriver_2.23");
-//        desiredCapabilities.setCapability("chromedriverExecutableDir","/chromedrivers");
-//        desiredCapabilities.setCapability("chromedriverChromeMappingFile","mapping.json");
-//        desiredCapabilities.setCapability("showChromedriverLog",true);
+        //加速
+        desiredCapabilities.setCapability("skipLogcatCapture","true");
+        //小程序相关设置
+        ChromeOptions chromeOptions = new ChromeOptions();
+        chromeOptions.setExperimentalOption("androidProcess","com.tencent.mm:appbrand8");
+        desiredCapabilities.setCapability("goog:chromeOptions",chromeOptions);
+        //默认生成的browserName = chrome 的设置需要去掉
+        desiredCapabilities.setCapability("browserName","");
+        desiredCapabilities.setCapability("chromedriverExecutable",DriverFactory.class.getClassLoader().getResource("/chromeDriver/chromedriver_78.0.3904.11.exe"));
+        desiredCapabilities.setCapability("showChromedriverLog",true);
+        //通过自己的adb代理修复chromeDriver的bug并解决@xweb_devtools_remote的问题
+        desiredCapabilities.setCapability("adbPort","5038");
         return desiredCapabilities;
     }
     private static DesiredCapabilities initBaseCapabilities(DesiredCapabilities capabilities, Platform platform, String... args)

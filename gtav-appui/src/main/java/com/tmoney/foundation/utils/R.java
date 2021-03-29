@@ -7,6 +7,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -40,11 +41,12 @@ public enum R {
         for (R resource : values()) {
             try {
                 Properties prop = new Properties();
-                prop.load(ClassLoader.getSystemResource(resource.resourceFile).openStream());
+                //通过inputStreamReader读取处理编码文本，否则会用字节流的stream
+                prop.load(new InputStreamReader(ClassLoader.getSystemResource(resource.resourceFile).openStream(),"UTF-8"));
 
                 // Ovveride properties
                 try {
-                    prop.load(ClassLoader.getSystemResource("_" + resource.resourceFile).openStream());
+                    prop.load(new InputStreamReader(ClassLoader.getSystemResource("_" + resource.resourceFile).openStream(),"UTF-8"));
                     LOGGER.info("Properties: " + resource.resourceFile + " were overriden.");
                 } catch (Exception e) {
                 }

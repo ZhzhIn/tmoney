@@ -15,12 +15,9 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 @Slf4j
 class MessagePageTest {
-    private DateTimeFormatter dtf= DateTimeFormatter.ofPattern("yyMMdd_HHmmss");
     private static Wework wework= null;
     private static String FILEPATH = "src\\main\\resources\\xiaoaojianghu.txt";
     private static MessagePage page=null;
@@ -36,16 +33,13 @@ class MessagePageTest {
     @AfterEach
     void tearDown() {
     }
-    private String currentTime(){
-        LocalDateTime localDateTime = LocalDateTime.now();
-        return  localDateTime.format(dtf);
-    }
+
     @Test
     //发送350条私聊
     void sendMessage() {
         page = page.chooseConversation("梁繁兴");
         sendMessageFromFile(FILEPATH,200);
-        page.savePic(currentTime());
+        page.screenshot();
         page.clickBack();
         Assert.assertTrue(page.isWeworkMainPage());
     }
@@ -55,7 +49,7 @@ class MessagePageTest {
     void sendMessage2() {
         page = page.chooseConversation("梁繁兴");
         sendMessageFromFile(FILEPATH,1);
-        page.savePic(currentTime());
+        page.screenshot();
         page.clickBack();
         Assert.assertTrue(page.isWeworkMainPage());
     }
@@ -64,7 +58,7 @@ class MessagePageTest {
     void sendVoiceMessage(){
         page = page.chooseConversation("梁繁兴");
         sendVoiceMessage(1);
-        page.savePic(currentTime());
+        page.screenshot();
         page.clickBack();
         Assert.assertTrue(page.isWeworkMainPage());
     }
@@ -73,7 +67,7 @@ class MessagePageTest {
     void sendPicMessage(){
         page = page.chooseConversation("梁繁兴");
         sendPicMessage(1);
-        page.savePic(currentTime());
+        page.screenshot();
         page.clickBack();
         Assert.assertTrue(page.isWeworkMainPage());
     }
@@ -81,7 +75,7 @@ class MessagePageTest {
     void sendBussinessCard(){
         page = page.chooseConversation("梁繁兴");
         page.sendBusinessCard("卢华文");
-        page.savePic(currentTime());
+        page.screenshot();
         page.clickBack();
         Assert.assertTrue(page.isWeworkMainPage());
     }

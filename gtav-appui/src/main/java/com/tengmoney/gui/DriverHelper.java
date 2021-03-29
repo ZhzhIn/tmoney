@@ -47,7 +47,9 @@ public abstract class DriverHelper {
         log.info("driverhelper init with driver ");
         this.driver = driver ;
     }
-
+    public void screenshot(){
+        log.info("screenshot in driverhelper");
+    }
     List<PageObjectModel> pages = new ArrayList<>();
 
     public UITestCase load(String path) {
@@ -155,8 +157,6 @@ public abstract class DriverHelper {
     public void click(String text) {
     }
 
-    public void savePic(String name) {
-    }
 
     public void click(By by) {
     }

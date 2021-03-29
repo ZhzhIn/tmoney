@@ -16,9 +16,9 @@ import java.time.format.DateTimeFormatter;
 @Slf4j
 class MessagePageTest {
     private DateTimeFormatter dtf= DateTimeFormatter.ofPattern("yyMMdd_HHmmss");
-    private static Wework wework;
     private static String FILEPATH = "src\\main\\resources\\xiaoaojianghu.txt";
     private static MessagePage page;
+    private static Wework wework;
     @BeforeAll
     static void beforeAll() {
         wework = new Wework();
@@ -38,7 +38,7 @@ class MessagePageTest {
     void sendMessage() {
         page = wework.jumpToMessage().chooseConversation("卢华文");
         sendMessageFromFile(FILEPATH,1);
-        page.savePic(currentTime());
+        page.screenshot();
         page.clickBack();
         Assert.assertTrue(page.hasElement(page.byText("消息")));
     }
@@ -48,7 +48,7 @@ class MessagePageTest {
     void sendMessage2() {
         page = wework.jumpToMessage().chooseConversation("梁繁兴");
         sendMessageFromFile(FILEPATH,90);
-        page.savePic(currentTime());
+        page.screenshot();
         page.clickBack();
         Assert.assertTrue(page.hasElement(page.byText("消息")));
     }
@@ -57,7 +57,7 @@ class MessagePageTest {
     void sendVoiceMessage(){
         page = wework.jumpToMessage().chooseConversation("梁繁兴");
         sendVoiceMessage(20);
-        page.savePic(currentTime());
+        page.screenshot();
         page.clickBack();
         Assert.assertTrue(page.hasElement(page.byText("消息")));
     }
@@ -66,7 +66,7 @@ class MessagePageTest {
     void sendPicMessage(){
         page = wework.jumpToMessage().chooseConversation("尹珍枝测试群聊");
         sendPicMessage(30);
-        page.savePic(currentTime());
+        page.screenshot();
         page.clickBack();
         Assert.assertTrue(page.hasElement(page.byText("消息")));
     }
@@ -74,7 +74,7 @@ class MessagePageTest {
     void sendBussinessCard(){
         page = wework.jumpToMessage().chooseConversation("尹珍枝测试群聊");
         page.sendBusinessCard("卢华文");
-        page.savePic(currentTime());
+        page.screenshot();
         page.clickBack();
         Assert.assertTrue(page.hasElement(page.byText("消息")));
     }

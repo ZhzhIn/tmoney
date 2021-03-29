@@ -17,6 +17,5 @@ public class WeworkTest {
     @Test
     void test(){
         page.jumpToMiniproPage();
-
     }
 }

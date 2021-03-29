@@ -16,23 +16,49 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import java.io.File;
 import java.io.IOException;
 import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.concurrent.TimeUnit;
 
 @Slf4j
 public abstract class AppPage extends DriverHelper {
+
     private final static int DURING_TIME = 1000;
     private static final int DEFAULT_TIME_OUT_SECOND = Configuration.getInt(Configuration.Parameter.IMPLICIT_TIMEOUT);
     protected AppiumDriver<MobileElement>driver;
     private final static String PIC_FILE_PATH = "src\\main\\resources\\resultPic\\";
-    private final static String PIC_SUFFIX = ".png";
 /*    public boolean hasElement(By by) {
         return super.hasElement(this.driver,by);
     }*/
+    @Override
+    public void screenshot(){
+        /*
+        super.savePic(picName);
+        log.info("current method is："+picName);
+        String timestamp = new Date().toString();
+        File file = new File(PIC_FILE_PATH+picName+PIC_SUFFIX);
+        log.info("pic path is :"+file);
+        File screenShotFile = driver.getScreenshotAs(OutputType.FILE);
+        try {
+            FileUtils.copyFile(screenShotFile, file);
+        }
+        catch (IOException e) {e.printStackTrace();}
+        */
+        log.info("screenshot in appPage");
+        LocalDateTime localDateTime = LocalDateTime.now();
+        DateTimeFormatter dtf= DateTimeFormatter.ofPattern("yyMMdd_HHmmss");
+        String timestamp = localDateTime.format(dtf);
+        File file = new File(String.format("%s/wx_%s.png",PIC_FILE_PATH,timestamp));
+        File screenShotFile = driver.getScreenshotAs(OutputType.FILE);
+        try {
+            FileUtils.copyFile(screenShotFile,file);
+        }
+        catch (IOException e) {e.printStackTrace();}
 
+    }
     @Override
     public void moveTo(By by ){
         int page = 0;
@@ -55,7 +81,14 @@ public abstract class AppPage extends DriverHelper {
         driver.manage().timeouts().implicitlyWait(IMPLICIT_TIMEOUT, TimeUnit.SECONDS);
         wait = new WebDriverWait(driver,EXPLICIT_TIMEOUT );
     }
-
+    public AppPage(String platform){
+        super();
+        driver = DriverFactory.create("MINIPRO");
+        //todo :应该有别的设计方法。暂时还没想到
+        super.driver = driver;
+        driver.manage().timeouts().implicitlyWait(IMPLICIT_TIMEOUT, TimeUnit.SECONDS);
+        wait = new WebDriverWait(driver,EXPLICIT_TIMEOUT );
+    }
     public AppPage(AppiumDriver<MobileElement> driver) {
         super(driver);
         log.info(driver+"");
@@ -77,19 +110,6 @@ public abstract class AppPage extends DriverHelper {
             handleAlert();
             return driver.findElement(by);
         }
-    }
-    @Override
-    public void savePic(String picName)  {
-        super.savePic(picName);
-        log.info("current method is："+picName);
-        String timestamp = new Date().toString();
-        File file = new File(PIC_FILE_PATH+picName+PIC_SUFFIX);
-        log.info("pic path is :"+file);
-        File screenShotFile = driver.getScreenshotAs(OutputType.FILE);
-        try {
-            FileUtils.copyFile(screenShotFile, file);
-        }
-        catch (IOException e) {e.printStackTrace();}
     }
 
 
