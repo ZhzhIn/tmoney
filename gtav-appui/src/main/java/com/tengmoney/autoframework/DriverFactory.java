@@ -166,10 +166,10 @@ public class DriverFactory {
         desiredCapabilities.setCapability("goog:chromeOptions",chromeOptions);
         //默认生成的browserName = chrome 的设置需要去掉
         desiredCapabilities.setCapability("browserName","");
-        desiredCapabilities.setCapability("chromedriverExecutable",DriverFactory.class.getClassLoader().getResource("/chromeDriver/chromedriver_78.0.3904.11.exe"));
+        desiredCapabilities.setCapability("chromedriverExecutable",DriverFactory.class.getClassLoader().getResource("/chromeDriver"));
         desiredCapabilities.setCapability("showChromedriverLog",true);
         //通过自己的adb代理修复chromeDriver的bug并解决@xweb_devtools_remote的问题
-        desiredCapabilities.setCapability("adbPort","5038");
+//        desiredCapabilities.setCapability("adbPort","5038");
         return  desiredCapabilities;
     }
     private static DesiredCapabilities getAndroidCapabilities(String testName) {
@@ -188,11 +188,12 @@ public class DriverFactory {
         desiredCapabilities.setCapability("skipLogcatCapture","true");
         //小程序相关设置
         ChromeOptions chromeOptions = new ChromeOptions();
-        chromeOptions.setExperimentalOption("androidProcess","com.tencent.mm:appbrand8");
+        chromeOptions.setExperimentalOption("androidProcess","com.tencent.mm:appbrand0");
+//        chromeOptions.setExperimentalOption("androidProcess","com.tencent.mm:tools");
         desiredCapabilities.setCapability("goog:chromeOptions",chromeOptions);
         //默认生成的browserName = chrome 的设置需要去掉
         desiredCapabilities.setCapability("browserName","");
-        desiredCapabilities.setCapability("chromedriverExecutable",DriverFactory.class.getClassLoader().getResource("/chromeDriver/chromedriver_78.0.3904.11.exe"));
+        desiredCapabilities.setCapability("chromedriverExecutableDir",DriverFactory.class.getClassLoader().getResource("/chromeDriver/"));
         desiredCapabilities.setCapability("showChromedriverLog",true);
         //通过自己的adb代理修复chromeDriver的bug并解决@xweb_devtools_remote的问题
         desiredCapabilities.setCapability("adbPort","5038");
