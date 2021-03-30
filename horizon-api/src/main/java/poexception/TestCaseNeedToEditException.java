@@ -1,9 +1,4 @@
 package poexception;
-
-
-import lombok.Data;
-import lombok.extern.slf4j.Slf4j;
-
 import static poexception.ErrorCodeConstant.YAML_NOT_FOUND_MSG;
 
 /**
@@ -12,8 +7,6 @@ import static poexception.ErrorCodeConstant.YAML_NOT_FOUND_MSG;
  *
  * @author zhzh.yin
  **/
-@Slf4j
-@Data
 public class TestCaseNeedToEditException extends BaseException {
     public TestCaseNeedToEditException() {
         super(YAML_NOT_FOUND_MSG);

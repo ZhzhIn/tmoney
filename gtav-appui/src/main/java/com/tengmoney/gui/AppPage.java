@@ -30,28 +30,14 @@ public abstract class AppPage extends DriverHelper {
     private static final int DEFAULT_TIME_OUT_SECOND = Configuration.getInt(Configuration.Parameter.IMPLICIT_TIMEOUT);
     protected AppiumDriver<MobileElement>driver;
     private final static String PIC_FILE_PATH = "src\\main\\resources\\resultPic\\";
-/*    public boolean hasElement(By by) {
-        return super.hasElement(this.driver,by);
-    }*/
+
     @Override
     public void screenshot(){
-        /*
-        super.savePic(picName);
-        log.info("current method is："+picName);
-        String timestamp = new Date().toString();
-        File file = new File(PIC_FILE_PATH+picName+PIC_SUFFIX);
-        log.info("pic path is :"+file);
-        File screenShotFile = driver.getScreenshotAs(OutputType.FILE);
-        try {
-            FileUtils.copyFile(screenShotFile, file);
-        }
-        catch (IOException e) {e.printStackTrace();}
-        */
         log.info("screenshot in appPage");
         LocalDateTime localDateTime = LocalDateTime.now();
         DateTimeFormatter dtf= DateTimeFormatter.ofPattern("yyMMdd_HHmmss");
         String timestamp = localDateTime.format(dtf);
-        File file = new File(String.format("%s/wx_%s.png",PIC_FILE_PATH,timestamp));
+        File file = new File(String.format("%s\\wx_%s.png",PIC_FILE_PATH,timestamp));
         File screenShotFile = driver.getScreenshotAs(OutputType.FILE);
         try {
             FileUtils.copyFile(screenShotFile,file);

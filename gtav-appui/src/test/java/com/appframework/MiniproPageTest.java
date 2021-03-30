@@ -1,6 +1,5 @@
 package com.appframework;
 
-import com.tmoney.foundation.utils.Configuration;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -19,9 +18,5 @@ public class MiniproPageTest {
     @Test
     void test(){
         page.jumpToMiniproPage().show();
-    }
-    @Test
-    void test2(){
-        System.out.println(Configuration.get(Configuration.Parameter.MINIPRONAME));
     }
 }

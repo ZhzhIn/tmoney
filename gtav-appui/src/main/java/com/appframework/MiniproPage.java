@@ -33,13 +33,16 @@ public class MiniproPage extends Wework {
             (context ->
                 System.out.println(context.toString())
             );
-        findTopWindows();
+
         String webview = driver.getContextHandles().stream()
                 .filter(
                         context->
-                                context.toString().contains("webView")
+                                context.toLowerCase().toString().contains("webview")
                 ).findFirst().get().toString();
+        System.out.println("------------");
         System.out.println(webview);
+        System.out.println("------------");
+//        System.out.println(driver.getPageSource());
         driver.context(webview);
 //        findTopWindow();
         screenshot();

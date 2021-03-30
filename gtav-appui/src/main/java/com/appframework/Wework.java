@@ -30,7 +30,6 @@ public class Wework extends AppPage {
 
     public Wework() {
         super();
-
     }
     public Wework(AppiumDriver<MobileElement> driver) {
         super(driver);
