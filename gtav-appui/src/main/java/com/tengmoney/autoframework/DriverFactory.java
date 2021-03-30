@@ -161,15 +161,15 @@ public class DriverFactory {
         //todo iOS
         //小程序的进程名和报名不一样，需要加上这个参数
         ChromeOptions chromeOptions = new ChromeOptions();
-        chromeOptions.setExperimentalOption("androidProcess","com.tencent.mm:appbrand8");
+        chromeOptions.setExperimentalOption("androidProcess","com.tencent.mm:appbrand0");
         DesiredCapabilities desiredCapabilities = getAndroidCapabilities(testName);
-        desiredCapabilities.setCapability("goog:chromeOptions",chromeOptions);
+        /*desiredCapabilities.setCapability("goog:chromeOptions",chromeOptions);
         //默认生成的browserName = chrome 的设置需要去掉
         desiredCapabilities.setCapability("browserName","");
         desiredCapabilities.setCapability("chromedriverExecutable",DriverFactory.class.getClassLoader().getResource("/chromeDriver"));
         desiredCapabilities.setCapability("showChromedriverLog",true);
         //通过自己的adb代理修复chromeDriver的bug并解决@xweb_devtools_remote的问题
-//        desiredCapabilities.setCapability("adbPort","5038");
+//        desiredCapabilities.setCapability("adbPort","5038");*/
         return  desiredCapabilities;
     }
     private static DesiredCapabilities getAndroidCapabilities(String testName) {
@@ -193,7 +193,7 @@ public class DriverFactory {
         desiredCapabilities.setCapability("goog:chromeOptions",chromeOptions);
         //默认生成的browserName = chrome 的设置需要去掉
         desiredCapabilities.setCapability("browserName","");
-        desiredCapabilities.setCapability("chromedriverExecutableDir",DriverFactory.class.getClassLoader().getResource("/chromeDriver/"));
+        desiredCapabilities.setCapability("chromedriverExecutableDir",DriverFactory.class.getClassLoader().getResource("/chromeDriver"));
         desiredCapabilities.setCapability("showChromedriverLog",true);
         //通过自己的adb代理修复chromeDriver的bug并解决@xweb_devtools_remote的问题
         desiredCapabilities.setCapability("adbPort","5038");
