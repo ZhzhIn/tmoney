@@ -169,7 +169,7 @@ public class DriverFactory {
         desiredCapabilities.setCapability("chromedriverExecutable",DriverFactory.class.getClassLoader().getResource("/chromeDriver/chromedriver_78.0.3904.11.exe"));
         desiredCapabilities.setCapability("showChromedriverLog",true);
         //通过自己的adb代理修复chromeDriver的bug并解决@xweb_devtools_remote的问题
-        desiredCapabilities.setCapability("adbPort","5038");
+//        desiredCapabilities.setCapability("adbPort","5038");
         return  desiredCapabilities;
     }
     private static DesiredCapabilities getAndroidCapabilities(String testName) {

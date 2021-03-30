@@ -15,34 +15,35 @@ import org.openqa.selenium.By;
  */
 @Slf4j
 public class MiniproPage extends Wework {
-    public MiniproPage() {
-        super();
-        log.info("miniproPage init");
-    }
-
     public MiniproPage(AppiumDriver<MobileElement> driver) {
         super(driver);
         log.info("miniproPage init");
     }
 
     public void show(){
+        //切换到context,再切换到handle中
+        //context对应top进程名
+        //handle需要遍历，找到pagesource有需要的元素的
 
-        System.out.println(this.driver.getPageSource());
-
+        try {
+            Thread.sleep(15000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         driver.getContextHandles().forEach
             (context ->
                 System.out.println(context.toString())
             );
-
         String webview = driver.getContextHandles().stream()
                 .filter(
                         context->
-                                context.toLowerCase().toString().contains("webview")
+                                context.toString().contains("WEBVIEW")
                 ).findFirst().get().toString();
         System.out.println("------------");
         System.out.println(webview);
         System.out.println("------------");
 //        System.out.println(driver.getPageSource());
+        //现切换到元素所在的context
         driver.context(webview);
 //        findTopWindow();
         screenshot();
