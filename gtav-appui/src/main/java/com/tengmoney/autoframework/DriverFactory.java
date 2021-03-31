@@ -193,10 +193,13 @@ public class DriverFactory {
         desiredCapabilities.setCapability("goog:chromeOptions",chromeOptions);
         //默认生成的browserName = chrome 的设置需要去掉
         desiredCapabilities.setCapability("browserName","");
-        desiredCapabilities.setCapability("chromedriverExecutableDir",DriverFactory.class.getClassLoader().getResource("/chromeDriver"));
+        desiredCapabilities.setCapability("chromedriverExecutable","C:\\Users\\yindo\\IdeaProjects\\tmoney\\gtav-appui\\src\\main\\resources\\miniproDriver\\chromedriver_78.0.3901.11.exe");
+//        desiredCapabilities.setCapability("chromedriverExecutableDir","C:\\Users\\yindo\\IdeaProjects\\tmoney\\gtav-appui\\src\\main\\resources\\miniproDriver\\chromedriver_78.0.3901.11.exe");
+//        desiredCapabilities.setCapability("chromedriverChromeMappingFile","C:\\Users\\yindo\\IdeaProjects\\tmoney\\gtav-appui\\src\\main\\resources\\miniproDriver\\mapping.json");
         desiredCapabilities.setCapability("showChromedriverLog",true);
         //通过自己的adb代理修复chromeDriver的bug并解决@xweb_devtools_remote的问题
         desiredCapabilities.setCapability("adbPort","5038");
+        log.info(desiredCapabilities.toString());/**/
         return desiredCapabilities;
     }
     private static DesiredCapabilities initBaseCapabilities(DesiredCapabilities capabilities, Platform platform, String... args)
