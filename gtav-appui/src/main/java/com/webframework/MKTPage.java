@@ -8,8 +8,6 @@ import com.tmoney.foundation.utils.FileChangeTime;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import io.github.bonigarcia.wdm.config.WebDriverManagerException;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.Test;
-import org.openqa.selenium.By;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -25,7 +23,7 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 @Slf4j
-public class MainPage extends WebPage {
+public class MKTPage extends WebPage {
     static String AUTH_LOGIN_URL = "https://test.tengmoney.com/caizhi_mkto/index/ty/auth.do?userId=YinZhenZhi&corpId=ww8c83d949a80b562d";
     static String OP_URL = "https://test.tengmoney.com/caizhi_op/#/";
     @FindBy(xpath = "//span[text()=\"文章管理\"]")
@@ -33,7 +31,7 @@ public class MainPage extends WebPage {
     @FindBy(xpath = "//span[text()=\"每日早报\"]")
     WebElement morningPaper;
 
-    public MainPage() {
+    public MKTPage() {
         super();
         log.info("创建MainPage");
         initDriver();
