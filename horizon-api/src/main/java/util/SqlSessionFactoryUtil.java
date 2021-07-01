@@ -5,14 +5,18 @@ import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
-import org.junit.Test;
 
 import java.io.InputStream;
-
+/**
+ * @author zhzh.yin
+ * @create 2021/3/5
+ */
 @Slf4j
 public class SqlSessionFactoryUtil {
     private static SqlSessionFactory sqlSessionFactory = null;
-    //类线程锁，避免sqlSession多线程下多次初始化造成对象不唯一
+    /**
+     * 类线程锁，避免sqlSession多线程下多次初始化造成对象不唯一
+     */
     private static final Class CLASS_LOCK = SqlSessionFactoryUtil.class;
     private SqlSessionFactoryUtil(){}
     public static SqlSessionFactory initSqlSessionFactory() {

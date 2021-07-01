@@ -10,9 +10,11 @@ import poexception.ApiNotFoundException;
 import util.DefaultConfig;
 import util.JsonTemplate;
 
-import java.util.HashMap;
+import java.io.File;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-import static api.item.Manu.JSON_FILE_NAME;
 import static io.restassured.RestAssured.given;
 import static io.restassured.http.ContentType.*;
 import static io.restassured.http.Method.GET;
@@ -31,92 +33,179 @@ import static util.DefaultConfig.getStrFromDefaultConfig;
 public class Api {
     public String url;
     public String method;
-    public HashMap<String, String> headers;
+    /**
+     * 用法
+     * vars:
+     *  paramA: abc
+     *  json:
+     *      xxx:a
+     *      yyy:b
+     * requestParam:
+     * paramA: ${paramA}
+     * json: ${json}
+     */
+    public Map<String, Object> vars;
+    public Map<String, Object> headers;
     public String connection;
     public String jsonFileName;
-    public HashMap<String, Object> requestParam;
-    private int flag = 0;
+    /**
+     * TODO ?
+     * 去掉jsonFileName字段，变成json的参数
+     * <p>
+     * 这样会不会有点多余？
+     * json:
+     * jsonFileName: xxx/xxx/xxx
+     * <p>
+     * json:
+     * ${json}
+     * jsonFileName: xxx/xxx/xxx
+     */
+    public Object json;
+    public Object requestParam;
     public String describle;
-
-    public void login() {
-        log.info("登录对应类型");
-    }
-
+    private static RequestSpecBuilder builder = new RequestSpecBuilder();
+    private static final String VAR_PREFIX = "${";
+    private static final String VAR_SUFFIX = "}";
+    private static final String CONTENT_TYPE = "Content-Type";
 
     /**
-     * 向api中传入数据，根据yaml的requestParam来传递参数，且value中包含“defaultConfig"时，
-     * 读取默认的配置，配置来自DefaultConfig。
+     * 装载所有外部传入数据
      *
-     * @param newMap
+     * 加工所有引用参数
+     */
+
+    /**
+     * 全局参数设置，用于登录权限等的验证
+     * 在所有api请求之前，都加上gloabel的返回结果
+     *
      * @return
      */
-    public synchronized Api importParam(HashMap<String, Object> newMap) {
-        log.info("importParam:" + newMap);
-        if (newMap != null) {
-            log.info("传参中有param");
-            if (this.getRequestParam() != null) {
-                loadParamFromDefaultConfig();
-                log.info("原来得requestParam:" + this.requestParam.keySet());
-                HashMap<String, Object> oldMap = this.getRequestParam();
-                oldMap.putAll(newMap);
+    public synchronized static void setGlobalCookies(File file, String yamlName, String apiName) {
+        //加载global的api文件
+        //存储该response的cookie
+        Map cookies = ApiListModel.load(file, yamlName).get(apiName).run().getCookies();
+        for (Object entry : cookies.entrySet()) {
+            log.info(entry.toString());
+        }
+        builder = builder.addCookies(cookies);
+    }
+
+    /**
+     * 装载外部传入的变量
+     *
+     * @param varsFromOutside
+     * @return
+     */
+    public synchronized Api importVars(Map<String, Object> varsFromOutside) {
+        if (varsFromOutside != null) {
+            log.info("传递外界参数到接口变量中");
+            if (this.vars != null) {
+                Map<String, Object> oldVars = this.vars;
+                oldVars.putAll(varsFromOutside);
                 //新的数据会覆盖旧的
-                log.info("最终得requestParam:" + this.requestParam.keySet());
-                this.setRequestParam(oldMap);
+                log.info("最终的vars:" + this.vars.keySet());
+                this.setVars(oldVars);
             } else {
-                log.info("当前 map参数为：" + newMap);
-                this.setRequestParam(newMap);
-            }
-            if (newMap.containsKey(JSON_FILE_NAME)) {
-                log.info("jsonFileName is " + newMap.get(JSON_FILE_NAME));
-                this.setJsonFileName(newMap.get(JSON_FILE_NAME).toString());
-            } else {
-                log.warn("没有传入jsonFileName,不用加工");
+                log.info("当前 vars没有值，直接使用外部传入的vars：" + varsFromOutside);
+                this.setVars(varsFromOutside);
             }
         } else {
-            log.warn("没有传入map值");
+            log.warn("外界传入的vars是空的");
         }
         return this;
     }
 
     /**
-     * 导入DefaultConfig的配置
-     * @return
+     * 加工数据：传入vars变量，替换默认配置项
+     * 如果是字符串，直接加工后返回：有${}的从vars中取，没有的从Deafult中取
+     * 如果是集合,遍历value，value是字符串，继续加工，不是字符串，继续遍历
+     *
+     * @param vars   变量存储集合
+     * @param object 需要加工的数据
+     * @return 加工后的数据
      */
-    public synchronized Api loadParamFromDefaultConfig() {
-        requestParam.forEach(
-                (key, values) -> {
-                    if(values!=null){
-                        String value = getStrFromDefaultConfig(values.toString());
-                        log.info("存入key-value：" + key + "," + value);
-                        requestParam.put(key, value);
-                    }});
-        return this;
+    public static <T> Object replaceVarsAndLoadConfig(T object, Map<String, Object> vars) {
+        if (object == null) {
+            return object;
+        }
+        if (object instanceof String) {
+            String objStr = (String) object;
+            //走变量逻辑
+            //提取变量，如果vars有变量，走变量逻辑
+            //如果vars没有该变量，不处理，直接返回原来得数据，并error提示
+            //如果有${}，处理后处理剩余得参数
+            while (objStr.contains(VAR_PREFIX)
+                    && objStr.contains(VAR_SUFFIX)
+                    && !objStr.endsWith(VAR_PREFIX)
+                    && !objStr.startsWith(VAR_SUFFIX)) {
+                String varName = objStr.split("\\$\\{")[1].split(VAR_SUFFIX)[0];
+                //单个${}得逻辑
+                if (objStr.length() == varName.length() + 3) {
+                    if (vars != null && vars.size() > 0 && vars.containsKey(varName)) {
+                        return replaceVarsAndLoadConfig(vars.get(varName), vars);
+                    } else {
+                        return object;
+                    }
+                } else {
+                    //可能有多个aaa${}bbb${}ccc，或为 xxx${}yyy
+                    //用字符串的方式来处理
+                    String returnStr = "";
+                    vars.forEach(
+                            (k, v) -> {
+                                if (varName.equals(k)) {
+                                    ((String) object).replace(VAR_PREFIX + k + VAR_SUFFIX, (String) v);
+                                }
+
+                            });
+                    objStr = objStr.replace(VAR_PREFIX + varName + VAR_SUFFIX, "");
+                }
+            }
+            return getStrFromDefaultConfig((String) object);
+        } else if (object instanceof Map) {
+            ((Map) object).forEach(
+                    (k, v) -> {
+                        ((Map) object).replace(k, replaceVarsAndLoadConfig(v, vars));
+                    }
+            );
+            return object;
+        } else if (object instanceof List) {
+            for (int i = 0; i < ((List) object).size(); i++) {
+                ((List) object).set(i, replaceVarsAndLoadConfig(((List) object).get(i), vars));
+            }
+            return object;
+        } else if (object instanceof Set) {
+            ((Set) object).forEach(
+                    v -> {
+                        Object v1 = replaceVarsAndLoadConfig(v, vars);
+                        ((Set) object).remove(v);
+                        ((Set) object).add(v1);
+                    }
+            );
+            return object;
+        } else {
+            //没有变量值，不是集合也不是String和基本类型，不处理
+            return object;
+        }
     }
+
     /**
      * 执行api,并返回结果。
      *
      * @return
      */
     public synchronized Response run() {
-        setApiBody();
-        return sendRequest();
+        RequestSpecification req = parseRequest();
+        return sendRequest(req);
     }
 
-    private static RequestSpecBuilder builder;
 
     /**
      * 处理host，读取默认配置。
      */
     private synchronized Api handleUrl() {
         String host = DefaultConfig.getHost();
-        log.info("当前环境配置的host是：" + host);
-        if (getUrl() != null && flag == 0) {
-            String apiHost = getUrl();
-            log.info("before handle ,the url is :" + apiHost);
-            String url = String.format("%s%s",host , apiHost);
-            setUrl(url);
-            log.info("after handle,当前api的url是：" + url);
-            flag = 1;
+        if (getUrl() != null) {
+            setUrl(String.format("%s%s", host, getUrl()));
         }
         return this;
     }
@@ -127,28 +216,61 @@ public class Api {
      *
      * @return
      */
-    public RequestSpecification setApiBody() {
+    public RequestSpecification parseRequest() {
         handleUrl();
-        log.info(this.toString());
-        String method = this.getMethod();
-        HashMap headers = this.getHeaders();
-        String jsonFileName = this.getJsonFileName();
+        this.url = (String) replaceVarsAndLoadConfig(getUrl(), vars);
+        log.info("after replace ,url is " + url);
+        requestParam = replaceVarsAndLoadConfig(requestParam, vars);
+        if (json != null) {
+            json = replaceVarsAndLoadConfig(json, vars);
+        }
+        RequestSpecification request = given();
         if (method == "" || method.equals(null)) {
             log.error("没有写入method");
+            throw new ApiNotFoundException("method 没有写");
+        } else if (method.equalsIgnoreCase(GET.name())) {
+            if (requestParam != null) {
+                request = request
+                        .queryParams((Map<String, ?>) requestParam);
+            }
         }
-        //todo 参数枚举化
-        RequestSpecification request = given();
-        log.info("查看builder有没有值");
         if (builder != null) {
-            log.info("the builder is " + builder.toString());
-            RequestSpecification requestSpec = builder.build();
-            request = request.spec(requestSpec);
+            log.info("装填全局builder");
+            request = request.spec(builder.build());
         }
         if (headers != null) {
-            request = request.headers(this.getHeaders());
-            log.info("配置header:" + headers);
-        }
+            request = request.headers((Map<String, Object>) replaceVarsAndLoadConfig(headers, vars));
 
+            if (headers.containsKey(CONTENT_TYPE)) {
+                ContentType contentType = fromContentType((String) headers.get(CONTENT_TYPE));
+                log.info("contentType is " + contentType);
+                if (JSON.matches(contentType.toString())) {
+                    request = request
+                            .contentType(JSON);
+                    //jsonFilePath不为空，传jsonFilePath
+                    if (jsonFileName != null && jsonFileName != "") {
+                        log.info("用jsonFileName填充" + jsonFileName);
+                        request = request
+                                .body(JsonTemplate.template(jsonFileName));
+                    }
+                    if (json != null) {
+                        log.info("json is :" + json);
+                        request = request
+                                .body(json);
+                    } else {
+                        request = request
+                                .body("{}");
+                    }
+                } else if (URLENC.matches(contentType.toString())) {
+                    request = request
+                            .contentType(URLENC);
+                    if (requestParam != null) {
+                        request = request
+                                .queryParams((Map<String, ?>) requestParam);
+                    }
+                }
+            }
+        }
         request = request
                 .log().all();
         return request;
@@ -160,68 +282,34 @@ public class Api {
      * @return
      * @throws ApiNotFoundException
      */
-    private synchronized Response sendRequest() {
+    private synchronized Response sendRequest(RequestSpecification request) {
         log.info("发送请求");
-        RequestSpecification request = setApiBody();
         if (GET.name().equalsIgnoreCase(method)) {
             log.info("执行get方法");
-            if (requestParam != null) {
-                request = request.params(requestParam);
-            }
-            Response response = request
+
+            return request
                     .when()
                     .get(url)
                     .then()
                     .log().all()
                     .extract()
                     .response();
-            if (null == builder) {
-                builder = new RequestSpecBuilder();
-                log.info(response.getCookies().keySet().toString());
-                builder.addCookies(response.getCookies());
-            }
-            return response;
-        } else if (POST.name().equalsIgnoreCase(method)) {
+        }
+        if (POST.name().equalsIgnoreCase(method)) {
             log.info("执行post方法");
-            if (headers != null){
-                request = request.headers(headers);
-                if(headers.containsKey("Content-Type")||headers.containsKey("content-type")){
-                    ContentType contentType = fromContentType(headers.get("Content-Type"));
-                    log.info("contentType is " + contentType);
-                    if (JSON.matches(contentType.toString())
-                            && requestParam != null) {
-                        log.info("填充param作为json");
-                        request.request().contentType(JSON);
-                        log.info("用jsonFileName填充");
-                        request = request
-                                .contentType(JSON)
-                                .body(requestParam);
-                    } else if(URLENC.matches(contentType.toString())) {
-                        request = request
-                                .formParams(requestParam);
-                    }else{
-                        request = request.formParams(requestParam);
-                    }
-                }
-            }else{
-                request = request.body(requestParam);
-            }
-            if (jsonFileName != null) {
-                log.info("用jsonFileName填充");
+            if (requestParam != null) {
                 request = request
-                        .contentType(JSON)
-                        .body(JsonTemplate.template(jsonFileName));
+                        .formParams((Map<String, ?>) requestParam);
             }
-            Response response = request.when().post(url)
+            return request
+                    .when().post(url)
                     .then()
                     .log().all()
                     .extract()
                     .response();
-            return response;
-        } else {
-            log.error("解析失败");
-            return null;
         }
+        log.error("解析失败");
+        throw new ApiNotFoundException("解析api失败，method方法不正确");
     }
 
     @Override
@@ -231,7 +319,7 @@ public class Api {
                 ", method='" + method + '\'' +
                 ", headers=" + headers +
                 ", connection='" + connection + '\'' +
-                ", jsonPath='" + jsonFileName + '\'' +
+                ", jsonFileName='" + jsonFileName + '\'' +
                 ", requestParam=" + requestParam +
                 '}';
     }

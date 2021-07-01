@@ -23,6 +23,11 @@ import java.util.HashMap;
  */
 @Slf4j
 public class JsonTemplate {
+    /**
+     * todo 待删除，这里有硬编码
+     * @param jsonName
+     * @return
+     */
     public static synchronized String template(String jsonName)   {
         File file = new File("src/test/resources/json");
         ArrayList<File>files = HandleFile.getFileList(Arrays.asList(file.listFiles()),".json",jsonName);
@@ -46,15 +51,28 @@ public class JsonTemplate {
         }
         return writer.toString();
     }
-
+    public static String template(File file){
+        Writer writer = new StringWriter();
+        DeferringMustacheFactory mf = new DeferringMustacheFactory();
+        String path = file.getPath().replace("\\","/");
+        log.info("最终读取得json位置在："+path);
+        Mustache mustache = mf.compile(path);
+        try {
+            mustache.execute(writer, new JsonTemplate())
+                    .flush();
+        }catch(MustacheNotFoundException e){
+            log.error("未找到json文件");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return writer.toString();
+    }
     /**
-     *  todo 还没想好怎么写
+     *  todo
+     *  读取file文件，并转换为json
+     *  将map中的值，替换掉json文件中{{变量}}的参数
      */
-
-    public static String template(HashMap<String,String> map) {
-
+    public static String template(File file ,HashMap<String,String> map) {
         return null;
     }
-
-
 }

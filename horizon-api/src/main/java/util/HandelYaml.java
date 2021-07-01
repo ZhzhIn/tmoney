@@ -2,12 +2,8 @@ package util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator;
 import lombok.extern.slf4j.Slf4j;
-import org.hamcrest.Matcher;
-
 import java.io.File;
 import java.io.IOException;
 
@@ -29,7 +25,7 @@ public class HandelYaml{
                     clazz);
             return t;
         }catch (IOException e) {
-            log.error("加载文件出错："+filePath);
+            log.error(filePath+"文件解析出错");
             e.printStackTrace();
         }
         return null;
@@ -43,6 +39,7 @@ public class HandelYaml{
                     clazz);
             return t;
         } catch (IOException e) {
+            log.error(file.getPath()+"解析出错");
             e.printStackTrace();
         }
         return null;

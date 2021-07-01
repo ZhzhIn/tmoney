@@ -9,7 +9,6 @@ import org.junit.jupiter.api.parallel.Execution;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 
 import static io.restassured.RestAssured.given;
@@ -22,7 +21,7 @@ import static org.junit.jupiter.api.parallel.ExecutionMode.CONCURRENT;
  * @create 2020/10/13
  */
 @Execution(CONCURRENT)
-public class TestTask {
+public class TestTopicMsg {
 
     /**
      * 时间戳
@@ -41,32 +40,23 @@ public class TestTask {
         return rtn;
     }
     String TEST_URL = "";
-    String dailyRandom(){
-        ArrayList<String> list = new ArrayList<String>();
-        list.add("EVERY_DAY");
-        list.add("NO_DUPLICATION");
-        list.add("PER_MONTH");
-        list.add("WEEKLY");
-        int random = (int)(Math.random() * (4 - 1 ) + 1);
-        String get = list.get(random);
-        return get;
-    }
-    @RepeatedTest(100)
+
+    @RepeatedTest(1)
     void test() throws ParseException {
         String nowtime = randomTimeStamp()+"";
-        Cookies cookies =given().get("")
+        Cookies cookies =given().get("https://test.tengmoney.com/caizhi_mkto/index/ty/auth.do?userId=YinZhenZhi&corpId=ww8c83d949a80b562d")
                 .getDetailedCookies();
+        System.out.println(cookies);
         given()
-                .queryParam("corpId","")
                 .cookies(cookies)
+                .body("{\"name\":\"专题消息" +
+                        +randomTimeStamp()+"\",\"msgType\":10,\"relationContents\":[{\"pic\":\"\",\"textContent\":\"\",\"relatedParam\":121}]}")
                 .when()
-                .get(TEST_URL)
+                .post(TEST_URL)
                 .then()
                 .statusCode(200)
                 .log().all()
-        ;
+                .assertThat().extract()
+                .path("ret").equals(0);
     }
-
-
-
 }

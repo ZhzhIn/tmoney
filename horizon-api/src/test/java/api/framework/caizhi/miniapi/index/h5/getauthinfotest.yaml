@@ -1,8 +1,0 @@
-name: getauthinfotest
-describle: 获取用户信息接口
-api:
-  getAuthInfo:
-    method: post
-    url: /caizhi_miniapi/index/h5/get_auth_info
-    headers:
-      Content-Type: application/json

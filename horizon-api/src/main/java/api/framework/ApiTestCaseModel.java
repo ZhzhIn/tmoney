@@ -18,6 +18,10 @@ import java.util.List;
 public class ApiTestCaseModel {
     public  List<TestCase> testCaseList;
 
+    /**
+     * @param yamlPath
+     * @return
+     */
     public static ApiTestCaseModel load(String yamlPath) {
         ApiTestCaseModel model = HandelYaml.getYamlConfig(yamlPath, ApiTestCaseModel.class);
         return model;
@@ -25,17 +29,5 @@ public class ApiTestCaseModel {
     public static ApiTestCaseModel load(File file) {
         ApiTestCaseModel model = HandelYaml.getYamlConfig(file, ApiTestCaseModel.class);
         return model;
-    }
-    public void run() {
-        testCaseList.stream().forEach(
-                testCase -> {
-                    if(null==testCase.yamlName
-                    ||null==testCase.api
-                    ||testCase.results.size()<=0){
-                        log.error("testcase元素没写完整：需要填写action，api，result字段");
-                    }
-                    testCase.run();
-                }
-        );
     }
 }
