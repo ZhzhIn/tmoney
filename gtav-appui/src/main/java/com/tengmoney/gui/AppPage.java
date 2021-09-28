@@ -23,6 +23,9 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * 封装一些app通用方法
+ */
 @Slf4j
 public abstract class AppPage extends DriverHelper {
 
@@ -67,6 +70,11 @@ public abstract class AppPage extends DriverHelper {
         driver.manage().timeouts().implicitlyWait(IMPLICIT_TIMEOUT, TimeUnit.SECONDS);
         wait = new WebDriverWait(driver,EXPLICIT_TIMEOUT );
     }
+    public void jumpToApp(String appPackage,String appActivity){
+//        driver = DriverFactory.switchTestApp();
+    }
+
+
     public AppPage(String platform){
         super();
         driver = DriverFactory.create("MINIPRO");

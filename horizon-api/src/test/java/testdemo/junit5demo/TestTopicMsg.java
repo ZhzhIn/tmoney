@@ -3,13 +3,17 @@ package testdemo.junit5demo;/**
  * @create 2020-10-13 16:10
  */
 
+import io.restassured.http.ContentType;
 import io.restassured.http.Cookies;
 import org.junit.jupiter.api.RepeatedTest;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.parallel.ExecutionMode.CONCURRENT;
@@ -39,24 +43,29 @@ public class TestTopicMsg {
         long rtn = begin + (long)(Math.random() * (last - begin));
         return rtn;
     }
-    String TEST_URL = "";
-
-    @RepeatedTest(1)
+    String TEST_URL = "https://test.tengmoney.com/caizhi_mkto/api/fund/sop/type/save";
+    @Test
+    void test1() throws ParseException {
+        System.out.println(String.valueOf(randomTimeStamp()));
+    }
+    @RepeatedTest(93)
     void test() throws ParseException {
         String nowtime = randomTimeStamp()+"";
         Cookies cookies =given().get("https://test.tengmoney.com/caizhi_mkto/index/ty/auth.do?userId=YinZhenZhi&corpId=ww8c83d949a80b562d")
                 .getDetailedCookies();
         System.out.println(cookies);
+        Map<String,String> map = new HashMap();
+        map.put("typeName",String.valueOf(randomTimeStamp()).substring(9,13));
+        map.put("typeDesc","Desc");
+        map.put("imgId","1");
         given()
                 .cookies(cookies)
-                .body("{\"name\":\"专题消息" +
-                        +randomTimeStamp()+"\",\"msgType\":10,\"relationContents\":[{\"pic\":\"\",\"textContent\":\"\",\"relatedParam\":121}]}")
+                .contentType(ContentType.JSON)
+                .body(map)
                 .when()
                 .post(TEST_URL)
                 .then()
                 .statusCode(200)
-                .log().all()
-                .assertThat().extract()
-                .path("ret").equals(0);
+                .log().all();
     }
 }

@@ -68,7 +68,7 @@ public class ManagePage extends WebPage {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        waitSecond(5);
+//        waitSecond(5);
         driver.get(OP_URL);
     }
 

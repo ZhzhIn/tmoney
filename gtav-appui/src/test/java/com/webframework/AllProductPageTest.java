@@ -17,7 +17,6 @@ public class AllProductPageTest {
         page.jumpToAllProductPage();
 //        Assert.assertNotNull(page.jumpToMorPaper().jumpToAddPaperPage().testAddPaperPage());
     }
-
     @AfterAll
     static void shutdown(){
         page.quit();
