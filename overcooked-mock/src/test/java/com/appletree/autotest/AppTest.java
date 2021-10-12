@@ -1,5 +1,6 @@
 package com.appletree.autotest;
 
+/*
 import static org.junit.Assert.assertTrue;
 
 import net.lightbody.bmp.BrowserMobProxy;
@@ -15,15 +16,7 @@ import net.lightbody.bmp.proxy.dns.AdvancedHostResolver;
 import org.junit.Test;
 import org.littleshoot.proxy.HttpFiltersSource;
 import org.littleshoot.proxy.MitmManager;
-
-import java.io.IOException;
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.util.Collection;
-import java.util.EnumSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
+*/
 
 /**
  * Unit test for simple App.
@@ -33,7 +26,7 @@ public class AppTest
     /**
      * Rigorous Test :-)
      */
-    @Test
+    /*@Test
     public void shouldAnswerWithTrue()
     {
         assertTrue( true );
@@ -45,5 +38,5 @@ public class AppTest
         int port  = proxy.getPort();
         System.in.read();
 
-    }
+    }*/
 }
