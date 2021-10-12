@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="util.PaperMapper">
+    <!--没有用这个-->
+    <select id="getPaperId" parameterType="java.lang.String" resultType="java.lang.String">
+        SELECT Fid FROM t_morning_paper_info where Fcorp_id = #{corpId} order by Fdate_published desc limit 1
+    </select>
+</mapper>

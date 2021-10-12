@@ -1,0 +1,4 @@
+name: xxx
+description: click
+steps:
+  - click: {xpath: "//*[@text='下班打卡']"}
