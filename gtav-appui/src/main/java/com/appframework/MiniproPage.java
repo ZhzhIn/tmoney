@@ -6,6 +6,7 @@ import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.MobileElement;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
 
 /**
  * 〈小程序页面〉
@@ -15,7 +16,7 @@ import org.openqa.selenium.By;
  */
 @Slf4j
 public class MiniproPage extends Wework {
-    public MiniproPage(AppiumDriver<MobileElement> driver) {
+    public MiniproPage(AppiumDriver<WebElement> driver) {
         super(driver);
         log.info("miniproPage init");
     }

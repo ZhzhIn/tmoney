@@ -6,6 +6,7 @@ import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.MobileElement;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
 
 import static com.tmoney.foundation.utils.Configuration.Parameter.*;
 
@@ -31,7 +32,7 @@ public class Wework extends AppPage {
     public Wework() {
         super();
     }
-    public Wework(AppiumDriver<MobileElement> driver) {
+    public Wework(AppiumDriver<WebElement> driver) {
         super(driver);
     }
 

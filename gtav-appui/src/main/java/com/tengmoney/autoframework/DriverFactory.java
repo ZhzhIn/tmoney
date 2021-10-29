@@ -93,16 +93,18 @@ public class DriverFactory {
                     throw new InvalidArgsException("'MOBILE_APP', 'MOBILE_VERSION', 'MOBILE_PLATFORM', 'MOBILE_PACKAGE', 'MOBILE_ACTIVITY', 'MOBILE_DEVICE' should be set!");
                 }
                 capabilities = getAndroidCapabilities(testName);
-                return  new AndroidDriver(new URL(Configuration.get(Configuration.Parameter.SELENIUM_HOST)), capabilities);
+                AppiumDriver driver = new AppiumDriver(new URL(Configuration.get(Configuration.Parameter.SELENIUM_HOST)), capabilities);
+                return  (AppiumDriver) new Augmenter().augment(driver);
             }/*
             else if(testName.equalsIgnoreCase(MINIPRO)){
                 capabilities = getMiniProCapabilities(testName);
             }*/
-            /*else
+             else
             {
                 capabilities = getChromeCapabilities(testName);
-                throw new Exception("没有该类型的driver");
-            }*/
+                return  new AppiumDriver(new URL(Configuration.get(Configuration.Parameter.SELENIUM_HOST)), capabilities);
+//                throw new Exception("没有该类型的driver");
+            }
         }
         catch (MalformedURLException e)
         {

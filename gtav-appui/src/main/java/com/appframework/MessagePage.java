@@ -7,6 +7,7 @@ import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.MobileElement;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
 
 /**
  * 〈消息tab〉
@@ -37,7 +38,7 @@ public class MessagePage extends Wework {
         log.info("messagePage init");
     }
 
-    public MessagePage(AppiumDriver<MobileElement> driver) {
+    public MessagePage(AppiumDriver<WebElement> driver) {
         super(driver);
     }
 

@@ -5,11 +5,13 @@ import com.tmoney.foundation.utils.Configuration;
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.MobileElement;
 import io.appium.java_client.TouchAction;
+import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.touch.WaitOptions;
 import io.appium.java_client.touch.offset.PointOption;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.*;
+import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -31,7 +33,7 @@ public abstract class AppPage extends DriverHelper {
 
     private final static int DURING_TIME = 1000;
     private static final int DEFAULT_TIME_OUT_SECOND = Configuration.getInt(Configuration.Parameter.IMPLICIT_TIMEOUT);
-    protected AppiumDriver<MobileElement>driver;
+    protected AppiumDriver<WebElement> driver= (AppiumDriver) DriverFactory.create(BrowserType.ANDROID);
     private final static String PIC_FILE_PATH = "src\\main\\resources\\resultPic\\";
 
     @Override
@@ -64,7 +66,7 @@ public abstract class AppPage extends DriverHelper {
     }
     public AppPage(){
         super();
-        driver = DriverFactory.create("device");
+
         //todo :应该有别的设计方法。暂时还没想到
         super.driver = driver;
         driver.manage().timeouts().implicitlyWait(IMPLICIT_TIMEOUT, TimeUnit.SECONDS);
@@ -77,13 +79,13 @@ public abstract class AppPage extends DriverHelper {
 
     public AppPage(String platform){
         super();
-        driver = DriverFactory.create("MINIPRO");
+//        driver = DriverFactory.create("MINIPRO");
         //todo :应该有别的设计方法。暂时还没想到
         super.driver = driver;
         driver.manage().timeouts().implicitlyWait(IMPLICIT_TIMEOUT, TimeUnit.SECONDS);
         wait = new WebDriverWait(driver,EXPLICIT_TIMEOUT );
     }
-    public AppPage(AppiumDriver<MobileElement> driver) {
+    public AppPage(AppiumDriver<WebElement> driver) {
         super(driver);
         log.info(driver+"");
         log.info(this.driver+"");
@@ -93,11 +95,11 @@ public abstract class AppPage extends DriverHelper {
         wait = new WebDriverWait(driver,EXPLICIT_TIMEOUT );
     }
 
-    public List<MobileElement> findElements(By by) {
+    public List<WebElement> findElements(By by) {
         return driver.findElements(by);
     }
 
-    public MobileElement findElement(By by) {
+    public WebElement findElement(By by) {
         try {
             return driver.findElement(by);
         } catch (Exception e) {
@@ -114,11 +116,11 @@ public abstract class AppPage extends DriverHelper {
 
 
 
-    public MobileElement find(By by) {
+    public WebElement find(By by) {
         return driver.findElement(by);
     }
 
-    public MobileElement find(String text) {
+    public WebElement find(String text) {
         By by = byText(text);
         wait.until(ExpectedConditions.visibilityOfElementLocated(by));
         return driver.findElement(byText(text));
@@ -157,14 +159,14 @@ public abstract class AppPage extends DriverHelper {
     //控件内部滑来滑去
     public  void innerElementSweepToLeftUp(By by) {
         //Y不变，X由大变小，y取center，x取center->locate
-        MobileElement element  = driver.findElement(by);
+        MobileElement element  = (MobileElement) driver.findElement(by);
         Point center = element.getCenter();//中心点
         Point locate = element.getLocation();//元素左上角相对于屏幕左上角的偏移量
         pointToPoint(PointOption.point(center),PointOption.point(locate),DURING_TIME);
     }
     public  void innerElementSweepToRightDown(By by) {
         //Y不变，X由大变小，y取center，x取center->locate
-        MobileElement element  = driver.findElement(by);
+        MobileElement element  = (MobileElement) driver.findElement(by);
         Point center = element.getCenter();//中心点
         Point locate = new Point(2*element.getCenter().getX()-element.getLocation().getX(),
                 2*element.getCenter().getY()-element.getLocation().getY());//元素左上角相对于屏幕左上角的偏移量
@@ -302,7 +304,7 @@ public abstract class AppPage extends DriverHelper {
         alertBoxs.add(tips);
         driver.manage().timeouts().implicitlyWait(DEFAULT_TIME_OUT_SECOND, TimeUnit.SECONDS);
         alertBoxs.forEach(alert -> {
-            List<MobileElement> ads = driver.findElements(alert);
+            List<WebElement> ads = driver.findElements(alert);
             if (alert.equals(tips)) {
                 log.info("snb_tip found");
                 Dimension size = driver.manage().window().getSize();

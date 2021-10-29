@@ -5,6 +5,7 @@ import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.MobileElement;
 import org.junit.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
 
 /**
  * 〈王者营地〉
@@ -24,7 +25,7 @@ public class KingOfGloryHome extends  AppPage {
     public KingOfGloryHome() {
         super();
     }
-    public KingOfGloryHome(AppiumDriver<MobileElement> driver) {
+    public KingOfGloryHome(AppiumDriver<WebElement> driver) {
         super(driver);
     }
 

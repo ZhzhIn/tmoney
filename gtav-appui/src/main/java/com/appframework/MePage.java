@@ -5,6 +5,7 @@ import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.MobileElement;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
 
 /**
  * 〈〉
@@ -26,7 +27,7 @@ public class MePage extends AppPage {
         log.info("mePage init");
     }
 
-    public MePage(AppiumDriver<MobileElement> driver) {
+    public MePage(AppiumDriver<WebElement> driver) {
         super(driver);
     }
     public MePage receiveBenefits(){
