@@ -6,13 +6,19 @@ import com.tmoney.foundation.utils.Configuration;
 import com.tmoney.foundation.utils.Configuration.Parameter;
 import com.tmoney.foundation.utils.R;
 import io.appium.java_client.AppiumDriver;
+import io.appium.java_client.android.AndroidDriver;
+import io.appium.java_client.ios.IOSDriver;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.Platform;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.ie.InternetExplorerDriver;
+import org.openqa.selenium.ie.InternetExplorerOptions;
 import org.openqa.selenium.remote.Augmenter;
 import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.CapabilityType;
@@ -23,16 +29,13 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Arrays;
 
+import static org.openqa.selenium.remote.BrowserType.*;
+
 /**
  * 根据平台的不同，创建不同的驱动
  */
 @Slf4j
 public class DriverFactory {
-    public static final String HTML_UNIT = "htmlunit";
-    public static final String IOS = "iOS";
-    public static final String ANDROID = "Android";
-    public static final String MINIPRO="minipro";
-    private static AppiumDriver driver = null;
     /**
      * Creates diver instance for specified test.
      *
@@ -40,27 +43,35 @@ public class DriverFactory {
      *            in which driver will be used
      * @return WebDriver instance
      */
-    public static synchronized AppiumDriver create(String testName)
+    public static synchronized WebDriver create(String testName)
     {
         log.info("DriverFactory create");
-
         DesiredCapabilities capabilities = null;
         try
         {
-            if (BrowserType.FIREFOX.equalsIgnoreCase(Configuration.get(Configuration.Parameter.BROWSER)))
+            if (FIREFOX.equalsIgnoreCase(Configuration.get(Configuration.Parameter.BROWSER)))
             {
                 capabilities = getFirefoxCapabilities(testName);
-
+                FirefoxOptions options = new FirefoxOptions(capabilities);
+                return new FirefoxDriver(options);
             }
-            else if (BrowserType.IEXPLORE.equalsIgnoreCase(Configuration.get(Configuration.Parameter.BROWSER)))
+            else if (IEXPLORE.equalsIgnoreCase(Configuration.get(Configuration.Parameter.BROWSER)))
             {
                 capabilities = getInternetExplorerCapabilities(testName);
+                InternetExplorerOptions options = new InternetExplorerOptions(capabilities);
+                return new InternetExplorerDriver(options);
             }
-            else if (HTML_UNIT.equalsIgnoreCase(Configuration.get(Configuration.Parameter.BROWSER)))
+            else if (HTMLUNIT.equalsIgnoreCase(Configuration.get(Configuration.Parameter.BROWSER)))
             {
                 capabilities = getHtmlUnitCapabilities(testName);
+                ChromeOptions options = new ChromeOptions();
+                options.merge(capabilities);
+                //设置为无头浏览器
+                options.setHeadless(true);
+                return  new ChromeDriver(options);
             }
-            else if (IOS.equalsIgnoreCase(Configuration.get(Configuration.Parameter.BROWSER)))
+            //TODO 没mac
+            else if (IPHONE.equalsIgnoreCase(Configuration.get(Configuration.Parameter.BROWSER)))
             {
                 if (Configuration.isNull(Configuration.Parameter.MOBILE_OS)
                         || Configuration.isNull(Configuration.Parameter.MOBILE_VERSION)
@@ -70,6 +81,7 @@ public class DriverFactory {
                     throw new InvalidArgsException("'MOBILE_OS', 'MOBILE_DEVICE', 'MOBILE_VERSION', 'MOBILE_PLATFORM', 'MOBILE_APP' should be set!");
                 }
                 capabilities = getIphoneCapabilities(testName);
+                return   new IOSDriver(new URL(Configuration.get(Configuration.Parameter.SELENIUM_HOST)), capabilities);
             }
             else if (ANDROID.equalsIgnoreCase(Configuration.get(Configuration.Parameter.BROWSER)))
             {
@@ -79,23 +91,26 @@ public class DriverFactory {
                         || Configuration.isNull(Configuration.Parameter.MOBILE_ACTIVITY)
                         || Configuration.isNull(Configuration.Parameter.MOBILE_DEVICE)) {
                     throw new InvalidArgsException("'MOBILE_APP', 'MOBILE_VERSION', 'MOBILE_PLATFORM', 'MOBILE_PACKAGE', 'MOBILE_ACTIVITY', 'MOBILE_DEVICE' should be set!");
-                }capabilities = getAndroidCapabilities(testName);
+                }
+                capabilities = getAndroidCapabilities(testName);
+                return  new AndroidDriver(new URL(Configuration.get(Configuration.Parameter.SELENIUM_HOST)), capabilities);
             }/*
             else if(testName.equalsIgnoreCase(MINIPRO)){
                 capabilities = getMiniProCapabilities(testName);
-            }*/else
+            }*/
+            /*else
             {
                 capabilities = getChromeCapabilities(testName);
-            }
-            driver = new AppiumDriver(new URL(Configuration.get(Configuration.Parameter.SELENIUM_HOST)), capabilities);
-            driver = (AppiumDriver) new Augmenter().augment(driver);
-
+                throw new Exception("没有该类型的driver");
+            }*/
         }
         catch (MalformedURLException e)
         {
             throw new RuntimeException("Can't connect to selenium server: " + Configuration.get(Configuration.Parameter.SELENIUM_HOST));
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        return driver;
+        return null;
     }
 /*
     public static synchronized AppiumDriver switchTestApp(){

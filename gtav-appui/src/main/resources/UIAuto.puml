@@ -1,0 +1,27 @@
+@startuml
+
+interface DriverFactory{
++WebDriver create(String testname);
+}
+
+interface Action {
+-WebDriver driver;
++Action(){default appiumDriver}
++Action(Driver androidDriver()){}
++void click();
++void input();
++void scrollUp();
++void scrollDown();
+}
+class AndroidAction{
+
+}
+Action <|..AndroidAction
+DriverFactory <|..AndroidAction
+
+class ActionCase{
++String descible(){};
++void exeAction(Action action){};
+}
+Action <|..ActionCase
+@enduml
