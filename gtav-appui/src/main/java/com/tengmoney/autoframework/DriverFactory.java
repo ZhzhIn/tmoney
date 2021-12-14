@@ -46,7 +46,7 @@ public class DriverFactory {
      */
     public static synchronized WebDriver create(String testName)
     {
-        log.info("DriverFactory create");
+        log.info("DriverFactory create webdriver");
         DesiredCapabilities capabilities = null;
         try
         {
@@ -92,14 +92,10 @@ public class DriverFactory {
                         Configuration.get(MOBILE_PACKAGE),
                         Configuration.get(MOBILE_ACTIVITY),
                         Configuration.get(MOBILE_DEVICE) )){
-                    log.error(Configuration.get(MOBILE_APP),
-                            Configuration.get(MOBILE_PLATFORM),
-                            Configuration.get(MOBILE_PACKAGE),
-                            Configuration.get(MOBILE_ACTIVITY),
-                            Configuration.get(MOBILE_DEVICE));
+                    log.error("'MOBILE_APP', 'MOBILE_VERSION', 'MOBILE_PLATFORM', 'MOBILE_PACKAGE', 'MOBILE_ACTIVITY', 'MOBILE_DEVICE' should be set!");
                     throw new InvalidArgsException("'MOBILE_APP', 'MOBILE_VERSION', 'MOBILE_PLATFORM', 'MOBILE_PACKAGE', 'MOBILE_ACTIVITY', 'MOBILE_DEVICE' should be set!");
                 }
-                log.info(Configuration.get(MOBILE_APP) +
+                log.info("driver factory init AndroidDriver :"+Configuration.get(MOBILE_APP) +
                         Configuration.get(MOBILE_PLATFORM) +
                         Configuration.get(MOBILE_PACKAGE) +
                         Configuration.get(MOBILE_ACTIVITY) +
@@ -238,7 +234,7 @@ public class DriverFactory {
         desiredCapabilities.setCapability("showChromedriverLog",true);
         //通过自己的adb代理修复chromeDriver的bug并解决@xweb_devtools_remote的问题
         //desiredCapabilities.setCapability("adbPort","5038");
-        log.info(desiredCapabilities.toString());/**/
+        log.info("init Android capabilities"+desiredCapabilities.toString());/**/
         return desiredCapabilities;
     }
     private static DesiredCapabilities initBaseCapabilities(DesiredCapabilities capabilities, Platform platform, String... args)

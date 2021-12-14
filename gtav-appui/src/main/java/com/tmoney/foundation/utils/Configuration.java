@@ -1,7 +1,10 @@
 package com.tmoney.foundation.utils;
 
+import com.mysql.fabric.xmlrpc.base.Param;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
+import sun.security.krb5.Config;
 
 import java.lang.reflect.Constructor;
 import java.util.Locale;
@@ -12,19 +15,25 @@ import java.util.Locale;
  * @author zhzh.yin
  * @create 2021/2/4
  */
+@Slf4j
 public class Configuration {
     private static final String MUST_OVERRIDE = "{must_override}";
 
     private static IEnvArgResolver envArgResolver;
 
     static {
+        log.info("init configuration");
         if (!Configuration.isNull(Parameter.ENV_ARG_RESOLVER)) {
+            String envArg= Configuration.get(Parameter.ENV_ARG_RESOLVER);
+            log.info(envArg);
             try {
-                Class<?> cl = Class.forName(Configuration.get(Parameter.ENV_ARG_RESOLVER));
+
+                Class<?> cl = Class.forName(envArg);
+//                log.info(" configuration.get(env_arg_resolver is :"+envArg);
                 Constructor<?> ct = cl.getConstructor();
                 Configuration.setEnvArgResolver((IEnvArgResolver) ct.newInstance());
             } catch (Exception e) {
-                throw new RuntimeException("Configuration failure: can not initiate EnvArgResolver - + " + Configuration.get(Parameter.ENV_ARG_RESOLVER));
+                throw new RuntimeException("Configuration failure: can not initiate EnvArgResolver - + " + envArg);
             }
         }
     }
@@ -123,7 +132,7 @@ public class Configuration {
         MOBILE_ACTIVITY("mobile_activity", "default_mobile_activity"),
         MOBILE_NEW_COMMAND_TIMEOUT("mobile_new_command_timeout", "default_mobile_new_command_timeout"),
         MINIPRONAME("minipro_name", "default_minipro_name"),
-        H5APPLICATIONNAME("h5_application_name","hhhhhh5"),
+        H5APPLICATIONNAME("h5_application_name","default_h5_application_name"),
         COMPANY("company_name","default_company_name"),
         JIRA_UPDATER("jira_updater", "default_jira_updater"),
 
@@ -136,10 +145,6 @@ public class Configuration {
         private final String key;
 
         private final String defaultKey;
-        private Parameter (String key){
-            this.key = key;
-            this.defaultKey = key;
-        }
         private Parameter(String key, String defaultKey) {
             this.key = key;
             this.defaultKey = defaultKey;
@@ -162,13 +167,10 @@ public class Configuration {
      * @return parameter value if it is found by key or default value if not.
      */
     public static String get(Parameter param) {
-        //读系统配置
+//        log.info("starts to run the get(Parameter param) method");
         String startupArg = System.getProperty(param.getKey());
-        //读默认配置
-        String defaultConfigArg = param.getDefaultKey();
-        //读config文件配置
+        String defaultConfigArg = R.CONFIG.get(param.getDefaultKey());
         String configArg = R.CONFIG.get(param.getKey());
-
         if (!StringUtils.isEmpty(startupArg)) {
             return startupArg;
         } else if (!StringUtils.isEmpty(configArg)) {
@@ -177,10 +179,14 @@ public class Configuration {
             return defaultConfigArg;
         }
     }
-    @Test
-    public void test(){
-        System.out.println(get(Parameter.H5APPLICATIONNAME));
-    }
+//    @Test
+//    public void test1(){
+//        System.out.println(R.CONFIG.get("default_env_arg_resolver"));
+//    }
+//    @Test
+//    public void test(){
+//        System.out.println(get(Parameter.H5APPLICATIONNAME));
+//    }
 
     public static int getInt(Parameter param) {
         return Integer.valueOf(get(param));
@@ -228,10 +234,10 @@ public class Configuration {
                 throw new RuntimeException("Configuration failure: parameter '" + param.getKey() + "' not specified!");
             }
         }
-//		if(!"NULL".equalsIgnoreCase(Configuration.get(Parameter.ENV)) && getEnvArg("base") == null)
-//		{
-//			throw new RuntimeException("If config arg 'evn' not null, arg 'env'.base should be set!");
-//		}
+		if(!"NULL".equalsIgnoreCase(Configuration.get(Parameter.ENV)) && getEnvArg("base") == null)
+		{
+			throw new RuntimeException("If config arg 'evn' not null, arg 'env'.base should be set!");
+		}
     }
 
     public static String getEnvArg(String key) {

@@ -33,9 +33,16 @@ public abstract class AppPage extends DriverHelper {
 
     private final static int DURING_TIME = 1000;
     private static final int DEFAULT_TIME_OUT_SECOND = Configuration.getInt(Configuration.Parameter.IMPLICIT_TIMEOUT);
-    protected AppiumDriver<WebElement> driver= (AppiumDriver) DriverFactory.create(BrowserType.ANDROID);
     private final static String PIC_FILE_PATH = "src\\main\\resources\\resultPic\\";
+    public AppPage(){
 
+        super();
+        log.info("appPage init ");
+        //TODO :应该有别的设计方法。暂时还没想到
+        this.driver =  DriverFactory.create("test");
+        driver.manage().timeouts().implicitlyWait(IMPLICIT_TIMEOUT, TimeUnit.SECONDS);
+        wait = new WebDriverWait(driver,EXPLICIT_TIMEOUT );
+    }
     @Override
     public void screenshot(){
         log.info("screenshot in appPage");
@@ -64,14 +71,7 @@ public abstract class AppPage extends DriverHelper {
             page++;
         }
     }
-    public AppPage(){
-        super();
 
-        //todo :应该有别的设计方法。暂时还没想到
-        super.driver = driver;
-        driver.manage().timeouts().implicitlyWait(IMPLICIT_TIMEOUT, TimeUnit.SECONDS);
-        wait = new WebDriverWait(driver,EXPLICIT_TIMEOUT );
-    }
     public void jumpToApp(String appPackage,String appActivity){
 //        driver = DriverFactory.switchTestApp();
     }
@@ -87,9 +87,7 @@ public abstract class AppPage extends DriverHelper {
     }
     public AppPage(AppiumDriver<WebElement> driver) {
         super(driver);
-        log.info(driver+"");
-        log.info(this.driver+"");
-        log.info(super.driver+"");
+        log.info("appPage init with driver:"+driver+"");
         this.driver = driver;
         driver.manage().timeouts().implicitlyWait(IMPLICIT_TIMEOUT, TimeUnit.SECONDS);
         wait = new WebDriverWait(driver,EXPLICIT_TIMEOUT );

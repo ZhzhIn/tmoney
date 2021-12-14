@@ -6,6 +6,7 @@ package com.tmoney.foundation.utils;/**
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
+import org.junit.Test;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -21,6 +22,7 @@ import java.util.Properties;
  */
 @Slf4j
 public enum R {
+
 //    API("api.properties"),
 
 
@@ -32,14 +34,14 @@ public enum R {
 
     //    DATABASE("database.properties"),
     CONFIG("config.properties");
-
-
-
     private String resourceFile;
-
+    R(String resourceKey) {
+        this.resourceFile = resourceKey;
+    }
     private static Map<String, Properties> propertiesKeeper = new HashMap<String, Properties>();
 
     static {
+//        log.info("init R");
         for (R resource : values()) {
             try {
                 Properties prop = new Properties();
@@ -51,7 +53,9 @@ public enum R {
                     prop.load(new InputStreamReader(ClassLoader.getSystemResource("_" + resource.resourceFile).openStream(),"UTF-8"));
                     log.info("Properties: " + resource.resourceFile + " were overriden.");
                 } catch (Exception e) {
+                    log.info("haven't found resourcefile starts with _");
                 }
+
                 propertiesKeeper.put(resource.resourceFile, prop);
             } catch (IOException e) {
                 log.error("Properties: " + resource.resourceFile + " not found initialized!");
@@ -59,9 +63,7 @@ public enum R {
         }
     }
 
-    R(String resourceKey) {
-        this.resourceFile = resourceKey;
-    }
+
 
     // Will override config property if system property is specified.
     public String get(String key) {
@@ -69,6 +71,7 @@ public enum R {
         String cnfgProperty = propertiesKeeper.get(resourceFile).getProperty(key);
         return !StringUtils.isEmpty(sysProperty) ? sysProperty : cnfgProperty;
     }
+
 
     public int getInt(String key) {
         return Integer.parseInt(get(key));

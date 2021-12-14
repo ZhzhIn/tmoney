@@ -32,9 +32,11 @@ public class Wework extends AppPage {
 
     public Wework() {
         super();
+        log.info("wework init ");
     }
     public Wework(AppiumDriver<WebElement> driver) {
         super(driver);
+        log.info("wework init with driver");
     }
 
     private final void initWework() {
@@ -80,6 +82,7 @@ public class Wework extends AppPage {
             flag = true;
         }
     }
+
     /**
      * appium不支持小程序操作
      */
