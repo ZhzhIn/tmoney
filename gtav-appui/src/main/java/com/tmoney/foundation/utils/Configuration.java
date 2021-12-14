@@ -1,6 +1,7 @@
 package com.tmoney.foundation.utils;
 
 import org.apache.commons.lang3.StringUtils;
+import org.junit.Test;
 
 import java.lang.reflect.Constructor;
 import java.util.Locale;
@@ -122,7 +123,7 @@ public class Configuration {
         MOBILE_ACTIVITY("mobile_activity", "default_mobile_activity"),
         MOBILE_NEW_COMMAND_TIMEOUT("mobile_new_command_timeout", "default_mobile_new_command_timeout"),
         MINIPRONAME("minipro_name", "default_minipro_name"),
-        H5APPLICATIONNAME("h5_application_name", "default_h5_application_name"),
+        H5APPLICATIONNAME("h5_application_name","hhhhhh5"),
         COMPANY("company_name","default_company_name"),
         JIRA_UPDATER("jira_updater", "default_jira_updater"),
 
@@ -135,7 +136,10 @@ public class Configuration {
         private final String key;
 
         private final String defaultKey;
-
+        private Parameter (String key){
+            this.key = key;
+            this.defaultKey = key;
+        }
         private Parameter(String key, String defaultKey) {
             this.key = key;
             this.defaultKey = defaultKey;
@@ -158,8 +162,11 @@ public class Configuration {
      * @return parameter value if it is found by key or default value if not.
      */
     public static String get(Parameter param) {
+        //读系统配置
         String startupArg = System.getProperty(param.getKey());
-        String defaultConfigArg = R.CONFIG.get(param.getDefaultKey());
+        //读默认配置
+        String defaultConfigArg = param.getDefaultKey();
+        //读config文件配置
         String configArg = R.CONFIG.get(param.getKey());
 
         if (!StringUtils.isEmpty(startupArg)) {
@@ -169,6 +176,10 @@ public class Configuration {
         } else {
             return defaultConfigArg;
         }
+    }
+    @Test
+    public void test(){
+        System.out.println(get(Parameter.H5APPLICATIONNAME));
     }
 
     public static int getInt(Parameter param) {

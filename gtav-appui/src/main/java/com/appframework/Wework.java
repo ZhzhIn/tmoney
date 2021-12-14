@@ -27,6 +27,7 @@ public class Wework extends AppPage {
     private By loginWithNum= By.id("com.tencent.wework:id/fop");
     private By companyName = byText(Configuration.get(COMPANY));
     private By miniproName = byText(Configuration.get(MINIPRONAME));
+    private By h5Station = byText(Configuration.get(H5APPLICATIONNAME));
     private static String phoneNum = "13242424028";
 
     public Wework() {
@@ -88,7 +89,12 @@ public class Wework extends AppPage {
         click(miniproName);
         return new MiniproPage(driver);
     }
-
+    public final H5Page jumpToH5Page() {
+        log.info("start jump to minipro");
+        click(workbench);
+        click(h5Station);
+        return new H5Page(driver);
+    }
     public final MessagePage jumpToMessage() {
         click(messageTab);
         //这里必须带上参数driver，否则会新开一个窗口

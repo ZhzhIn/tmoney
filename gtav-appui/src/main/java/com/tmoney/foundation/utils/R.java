@@ -3,6 +3,7 @@ package com.tmoney.foundation.utils;/**
  * @create 2021-02-04 13:56
  */
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
@@ -18,6 +19,7 @@ import java.util.Properties;
  * @author zhzh.yin
  * @create 2021/2/4
  */
+@Slf4j
 public enum R {
 //    API("api.properties"),
 
@@ -31,7 +33,7 @@ public enum R {
     //    DATABASE("database.properties"),
     CONFIG("config.properties");
 
-    private static final Logger LOGGER = Logger.getLogger(R.class);
+
 
     private String resourceFile;
 
@@ -47,12 +49,12 @@ public enum R {
                 // Ovveride properties
                 try {
                     prop.load(new InputStreamReader(ClassLoader.getSystemResource("_" + resource.resourceFile).openStream(),"UTF-8"));
-                    LOGGER.info("Properties: " + resource.resourceFile + " were overriden.");
+                    log.info("Properties: " + resource.resourceFile + " were overriden.");
                 } catch (Exception e) {
                 }
                 propertiesKeeper.put(resource.resourceFile, prop);
             } catch (IOException e) {
-                LOGGER.error("Properties: " + resource.resourceFile + " not found initialized!");
+                log.error("Properties: " + resource.resourceFile + " not found initialized!");
             }
         }
     }
