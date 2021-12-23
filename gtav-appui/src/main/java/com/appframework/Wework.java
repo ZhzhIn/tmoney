@@ -35,7 +35,8 @@ public class Wework extends AppPage {
         log.info("wework init ");
     }
     public Wework(AppiumDriver<WebElement> driver) {
-        super(driver);
+        super.driver = driver;
+
         log.info("wework init with driver");
     }
 
@@ -93,7 +94,7 @@ public class Wework extends AppPage {
         return new MiniproPage(driver);
     }
     public final H5Page jumpToH5Page() {
-        log.info("start jump to minipro");
+        log.info("start jump to h5Page");
         click(workbench);
         click(h5Station);
         return new H5Page(driver);

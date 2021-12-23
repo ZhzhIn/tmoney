@@ -25,7 +25,7 @@ class 日程PageTest {
     void tearDown() {
     }
 
-    @Test
+/*    @Test
     void 添加() {
         assertTrue(
                 wework.日程()
@@ -33,7 +33,7 @@ class 日程PageTest {
                         .获取日程(null)
                         .contains("上班打卡")
         );
-    }
+    }*/
 
     @Test
     void 获取日程() {

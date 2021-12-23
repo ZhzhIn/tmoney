@@ -22,14 +22,11 @@ public class Configuration {
     private static IEnvArgResolver envArgResolver;
 
     static {
-        log.info("init configuration");
         if (!Configuration.isNull(Parameter.ENV_ARG_RESOLVER)) {
             String envArg= Configuration.get(Parameter.ENV_ARG_RESOLVER);
-            log.info(envArg);
             try {
 
                 Class<?> cl = Class.forName(envArg);
-//                log.info(" configuration.get(env_arg_resolver is :"+envArg);
                 Constructor<?> ct = cl.getConstructor();
                 Configuration.setEnvArgResolver((IEnvArgResolver) ct.newInstance());
             } catch (Exception e) {
@@ -167,7 +164,6 @@ public class Configuration {
      * @return parameter value if it is found by key or default value if not.
      */
     public static String get(Parameter param) {
-//        log.info("starts to run the get(Parameter param) method");
         String startupArg = System.getProperty(param.getKey());
         String defaultConfigArg = R.CONFIG.get(param.getDefaultKey());
         String configArg = R.CONFIG.get(param.getKey());

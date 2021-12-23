@@ -23,7 +23,7 @@ public class H5Page extends AppPage {
     }
 
     public H5Page(AppiumDriver<WebElement> driver) {
-        super(driver);
+        super.driver = driver;
         log.info("H5page init with driver ");
     }
 

@@ -37,6 +37,7 @@ import static org.openqa.selenium.remote.BrowserType.*;
  */
 @Slf4j
 public class DriverFactory {
+    private final static String MINIPRO = "minipro";
     /**
      * Creates diver instance for specified test.
      *
@@ -44,9 +45,8 @@ public class DriverFactory {
      *            in which driver will be used
      * @return WebDriver instance
      */
-    public static synchronized WebDriver create(String testName)
+    public static synchronized <T extends WebDriver>T create(String testName)
     {
-        log.info("DriverFactory create webdriver");
         DesiredCapabilities capabilities = null;
         try
         {
@@ -54,13 +54,13 @@ public class DriverFactory {
             {
                 capabilities = getFirefoxCapabilities(testName);
                 FirefoxOptions options = new FirefoxOptions(capabilities);
-                return new FirefoxDriver(options);
+                return (T) new FirefoxDriver(options);
             }
             else if (IEXPLORE.equalsIgnoreCase(Configuration.get(BROWSER)))
             {
                 capabilities = getInternetExplorerCapabilities(testName);
                 InternetExplorerOptions options = new InternetExplorerOptions(capabilities);
-                return new InternetExplorerDriver(options);
+                return (T) new InternetExplorerDriver(options);
             }
             else if (HTMLUNIT.equalsIgnoreCase(Configuration.get(BROWSER)))
             {
@@ -69,7 +69,7 @@ public class DriverFactory {
                 options.merge(capabilities);
                 //设置为无头浏览器
                 options.setHeadless(true);
-                return  new ChromeDriver(options);
+                return (T) new ChromeDriver(options);
             }
             //TODO 没mac
             else if (IPHONE.equalsIgnoreCase(Configuration.get(BROWSER)))
@@ -82,7 +82,7 @@ public class DriverFactory {
                     throw new InvalidArgsException("'MOBILE_OS', 'MOBILE_DEVICE', 'MOBILE_VERSION', 'MOBILE_PLATFORM', 'MOBILE_APP' should be set!");
                 }
                 capabilities = getIphoneCapabilities(testName);
-                return   new IOSDriver(new URL(Configuration.get(SELENIUM_HOST)), capabilities);
+                return (T) new IOSDriver(new URL(Configuration.get(SELENIUM_HOST)), capabilities);
             }
             else if (ANDROID.equalsIgnoreCase(Configuration.get(BROWSER)))
             {
@@ -102,15 +102,16 @@ public class DriverFactory {
                         Configuration.get(MOBILE_DEVICE));
                 capabilities = getAndroidCapabilities(testName);
                 AppiumDriver driver = new AppiumDriver(new URL(Configuration.get(SELENIUM_HOST)), capabilities);
-                return  (AppiumDriver) new Augmenter().augment(driver);
-            }/*
-            else if(testName.equalsIgnoreCase(MINIPRO)){
+                return (T) new Augmenter().augment(driver);
+            }
+            else if(MINIPRO.equalsIgnoreCase(Configuration.get(BROWSER))){
                 capabilities = getMiniProCapabilities(testName);
-            }*/
+                return (T) new AppiumDriver(new URL(Configuration.get(SELENIUM_HOST)),capabilities);
+            }
              else
             {
                 capabilities = getChromeCapabilities(testName);
-                return  new AppiumDriver(new URL(Configuration.get(SELENIUM_HOST)), capabilities);
+                return (T) new AppiumDriver(new URL(Configuration.get(SELENIUM_HOST)), capabilities);
 //                throw new Exception("没有该类型的driver");
             }
         }

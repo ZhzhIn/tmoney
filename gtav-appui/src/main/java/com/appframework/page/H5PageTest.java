@@ -1,4 +1,4 @@
-package com.tengmoney.autoframework;
+package com.appframework.page;
 
 import com.appframework.H5Page;
 import com.appframework.Wework;

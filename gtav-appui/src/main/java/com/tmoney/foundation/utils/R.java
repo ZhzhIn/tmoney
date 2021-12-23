@@ -41,21 +41,17 @@ public enum R {
     private static Map<String, Properties> propertiesKeeper = new HashMap<String, Properties>();
 
     static {
-//        log.info("init R");
         for (R resource : values()) {
             try {
                 Properties prop = new Properties();
                 //通过inputStreamReader读取处理编码文本，否则会用字节流的stream
                 prop.load(new InputStreamReader(ClassLoader.getSystemResource(resource.resourceFile).openStream(),"UTF-8"));
-
                 // Ovveride properties
                 try {
                     prop.load(new InputStreamReader(ClassLoader.getSystemResource("_" + resource.resourceFile).openStream(),"UTF-8"));
                     log.info("Properties: " + resource.resourceFile + " were overriden.");
                 } catch (Exception e) {
-                    log.info("haven't found resourcefile starts with _");
                 }
-
                 propertiesKeeper.put(resource.resourceFile, prop);
             } catch (IOException e) {
                 log.error("Properties: " + resource.resourceFile + " not found initialized!");

@@ -34,14 +34,26 @@ public abstract class AppPage extends DriverHelper {
     private final static int DURING_TIME = 1000;
     private static final int DEFAULT_TIME_OUT_SECOND = Configuration.getInt(Configuration.Parameter.IMPLICIT_TIMEOUT);
     private final static String PIC_FILE_PATH = "src\\main\\resources\\resultPic\\";
+    //子类想用，就必须protected
+    protected AppiumDriver driver ;
     public AppPage(){
-
         super();
+
+        driver = DriverFactory.create("defaultDriver");
+        DriverHelper.driver = driver;
         log.info("appPage init ");
         //TODO :应该有别的设计方法。暂时还没想到
-        this.driver =  DriverFactory.create("test");
-        driver.manage().timeouts().implicitlyWait(IMPLICIT_TIMEOUT, TimeUnit.SECONDS);
-        wait = new WebDriverWait(driver,EXPLICIT_TIMEOUT );
+    }
+    public AppPage(String platform){
+        super();
+        //todo :应该有别的设计方法。暂时还没想到
+        driver = DriverFactory.create(platform);
+        DriverHelper.driver = driver;
+    }
+    public AppPage(AppiumDriver driver) {
+        this.driver = driver;
+        DriverHelper.driver = driver;
+        log.info("appPage init with driver:"+driver+"");
     }
     @Override
     public void screenshot(){
@@ -77,21 +89,7 @@ public abstract class AppPage extends DriverHelper {
     }
 
 
-    public AppPage(String platform){
-        super();
-//        driver = DriverFactory.create("MINIPRO");
-        //todo :应该有别的设计方法。暂时还没想到
-        super.driver = driver;
-        driver.manage().timeouts().implicitlyWait(IMPLICIT_TIMEOUT, TimeUnit.SECONDS);
-        wait = new WebDriverWait(driver,EXPLICIT_TIMEOUT );
-    }
-    public AppPage(AppiumDriver<WebElement> driver) {
-        super(driver);
-        log.info("appPage init with driver:"+driver+"");
-        this.driver = driver;
-        driver.manage().timeouts().implicitlyWait(IMPLICIT_TIMEOUT, TimeUnit.SECONDS);
-        wait = new WebDriverWait(driver,EXPLICIT_TIMEOUT );
-    }
+
 
     public List<WebElement> findElements(By by) {
         return driver.findElements(by);

@@ -22,7 +22,7 @@ public class 日程Page extends AppPage {
         return this;
     }
 
-    public List<String> 获取日程(String day){
+/*    public List<String> 获取日程(String day){
         if(day!=null){
             //todo:选择日期
         }
@@ -30,5 +30,5 @@ public class 日程Page extends AppPage {
                 .stream()
                 .map(x->x.getText())
                 .collect(Collectors.toList());
-    }
+    }*/
 }
