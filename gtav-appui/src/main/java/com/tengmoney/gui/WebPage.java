@@ -15,6 +15,11 @@ public class WebPage extends DriverHelper {
     public WebPage() {
         super();
     }
+    public WebPage(WebDriver driver) {
+        super();
+        super.driver = driver;
+    }
+
     public boolean click(WebElement element) {
         boolean flag = false;
         //todo: 异常处理

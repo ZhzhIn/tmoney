@@ -38,18 +38,35 @@ import static org.openqa.selenium.remote.BrowserType.*;
 @Slf4j
 public class DriverFactory {
     private final static String MINIPRO = "minipro";
-    /**
-     * Creates diver instance for specified test.
-     *
-     * @param testName
-     *            in which driver will be used
-     * @return WebDriver instance
-     */
-    public static synchronized <T extends WebDriver>T create(String testName)
+    private static  WebDriver driver;
+    private static DesiredCapabilities capabilities = null;
+    private static DriverFactory factory = null;
+    private DriverFactory(){
+        log.info("init a DriverFactory");
+    }
+    public static DriverFactory getDriverFactory(){
+        if(factory ==null){
+            factory = new DriverFactory();
+        }
+        return factory;
+    }
+    public  synchronized <T extends WebDriver>T create()
     {
-        DesiredCapabilities capabilities = null;
+        return  create("");
+    }
+    public  synchronized <T extends WebDriver>T create(String testName)
+    {
+        if(driver!=null){
+            log.info("沿用已有driver");
+            return (T) driver;
+        }else{
+            log.info("当前DriverFactory没有driver，创建1个");
+
+
+
         try
         {
+            log.info("try to init webdriver");
             if (FIREFOX.equalsIgnoreCase(Configuration.get(BROWSER)))
             {
                 capabilities = getFirefoxCapabilities(testName);
@@ -108,7 +125,7 @@ public class DriverFactory {
                 capabilities = getMiniProCapabilities(testName);
                 return (T) new AppiumDriver(new URL(Configuration.get(SELENIUM_HOST)),capabilities);
             }
-             else
+            else
             {
                 capabilities = getChromeCapabilities(testName);
                 return (T) new AppiumDriver(new URL(Configuration.get(SELENIUM_HOST)), capabilities);
@@ -122,6 +139,7 @@ public class DriverFactory {
             e.printStackTrace();
         }
         return null;
+        }
     }
 /*
     public static synchronized AppiumDriver switchTestApp(){
@@ -135,6 +153,9 @@ public class DriverFactory {
 
     private static DesiredCapabilities getFirefoxCapabilities(String testName) throws MalformedURLException
     {
+        if(capabilities !=null){
+            return capabilities;
+        }
         DesiredCapabilities capabilities = DesiredCapabilities.firefox();
         capabilities = initBaseCapabilities(capabilities, Platform.WINDOWS, Configuration.get(BROWSER),
                 R.CONFIG.get("firefox_version"), "name", testName);
@@ -160,6 +181,9 @@ public class DriverFactory {
 
     private static DesiredCapabilities getChromeCapabilities(String testName) throws MalformedURLException
     {
+        if(capabilities !=null){
+            return capabilities;
+        }
         DesiredCapabilities capabilities = new DesiredCapabilities();
         capabilities = initBaseCapabilities(capabilities, Platform.WINDOWS, Configuration.get(BROWSER),
                 R.CONFIG.get("chrome_version"), "name", testName);
@@ -171,6 +195,9 @@ public class DriverFactory {
 
     private static DesiredCapabilities getHtmlUnitCapabilities(String testName) throws MalformedURLException
     {
+        if(capabilities !=null){
+            return capabilities;
+        }
         DesiredCapabilities capabilities = DesiredCapabilities.htmlUnit();
         capabilities.setPlatform(Platform.WINDOWS);
         capabilities.setJavascriptEnabled(true);
@@ -179,6 +206,9 @@ public class DriverFactory {
 
     private static DesiredCapabilities getIphoneCapabilities(String testName) throws MalformedURLException
     {
+        if(capabilities !=null){
+            return capabilities;
+        }
         DesiredCapabilities capabilities = DesiredCapabilities.iphone();
         capabilities.setCapability(CapabilityType.BROWSER_NAME, Configuration.get(Configuration.Parameter.MOBILE_OS));
         capabilities.setCapability("device", Configuration.get(Configuration.Parameter.MOBILE_DEVICE));
@@ -195,6 +225,9 @@ public class DriverFactory {
     @Deprecated
     private static DesiredCapabilities getMiniProCapabilities(String testName){
         //todo iOS
+        if(capabilities !=null){
+            return capabilities;
+        }
         //小程序的进程名和报名不一样，需要加上这个参数
         ChromeOptions chromeOptions = new ChromeOptions();
         chromeOptions.setExperimentalOption("androidProcess","com.tencent.mm:appbrand0");
@@ -209,6 +242,9 @@ public class DriverFactory {
         return  desiredCapabilities;
     }
     private static DesiredCapabilities getAndroidCapabilities(String testName) {
+        if(capabilities !=null){
+            return capabilities;
+        }
         DesiredCapabilities desiredCapabilities = new DesiredCapabilities();
         //这里不能用.android()方法生成，会报错browsername和appactivity不能同时出现
         desiredCapabilities.setCapability("device", Configuration.get(Parameter.MOBILE_DEVICE));
@@ -240,6 +276,9 @@ public class DriverFactory {
     }
     private static DesiredCapabilities initBaseCapabilities(DesiredCapabilities capabilities, Platform platform, String... args)
     {
+        if(capabilities !=null){
+            return capabilities;
+        }
         capabilities.setPlatform(platform);
         capabilities.setBrowserName(args[0]);
         capabilities.setVersion(args[1]);

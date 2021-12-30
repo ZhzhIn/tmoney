@@ -1,7 +1,9 @@
 package com.tengmoney.gui;
 
+import com.appframework.foundation.exception.NotSupportedOperationException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import com.tengmoney.autoframework.DriverFactory;
 import com.tengmoney.autoframework.PageObjectModel;
 import com.tengmoney.autoframework.Screenshot;
 import com.tengmoney.autoframework.UITestCase;
@@ -44,7 +46,9 @@ public abstract class DriverHelper {
     protected static final long IMPLICIT_TIMEOUT = Configuration.getLong(Configuration.Parameter.IMPLICIT_TIMEOUT);
     protected static final long EXPLICIT_TIMEOUT = Configuration.getLong(Configuration.Parameter.EXPLICIT_TIMEOUT);
     protected static final long RETRY_TIME = Configuration.getLong(Configuration.Parameter.RETRY_TIMEOUT);
-    protected static Wait<WebDriver> wait;
+
+    //todo wait初始化？
+    protected static Wait<WebDriver> wait  ;
     protected WebDriver driver ;
     protected TestLogHelper summary;
     //todo don't know the usage
@@ -53,17 +57,26 @@ public abstract class DriverHelper {
     protected CryptoTool cryptoTool;
     protected static Pattern CRYPTO_PATTERN = Pattern.compile(SpecialKeywords.CRYPT);
 
-    //    public WebDriver getDriver(){
-//        return driver;
-//    }
-    public DriverHelper() {
+
+    public DriverHelper( ) {
         log.info("driver helper init ");
         //生成日志id序列，用于追踪日志
         summary = new TestLogHelper(UUID.randomUUID().toString());
+        if(driver == null){
+            log.info("do not have a driver ,init");
+            driver = DriverFactory.getDriverFactory().create();
+            wait= new WebDriverWait(driver, EXPLICIT_TIMEOUT, RETRY_TIME);
+        }
     }
     public DriverHelper (WebDriver driver){
-        log.info("driver helper init with driver");
+        if(this.driver !=null){
+            log.error("There exsit a driver!");
+            throw new NotSupportedOperationException("There exsit a driver!");
+        }
+        log.info("init driver helper with a driver; have no driver ,init one");
         this.driver = driver;
+        //生成日志id序列，用于追踪日志
+        summary = new TestLogHelper(UUID.randomUUID().toString());
         driver.manage().timeouts().implicitlyWait(IMPLICIT_TIMEOUT,TimeUnit.SECONDS);
         //传入driver的sessionid,用于追踪日志
         initSummary(driver);

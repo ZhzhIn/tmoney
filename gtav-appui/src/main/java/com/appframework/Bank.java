@@ -13,11 +13,9 @@ public class Bank extends AppPage {
     private By hotIcon = byText("热门活动");
     private static boolean flag = false;
 
+
     public Bank() {
         super();
-    }
-    public Bank(AppiumDriver<WebElement> driver) {
-        super(driver);
     }
 
     private final void initWework() throws InterruptedException {

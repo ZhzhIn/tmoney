@@ -15,6 +15,10 @@ public class 日程Page extends AppPage {
     private final By taskList = By.id("gg_");
     private By add =By.id("gq0");
 
+    public 日程Page(AppiumDriver driver) {
+        super(driver);
+    }
+
     public 日程Page 添加(String name, String time){
         click(add);
         sendKeys(taskName, name);

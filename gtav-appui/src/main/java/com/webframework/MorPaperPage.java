@@ -26,12 +26,12 @@ public class MorPaperPage extends WebPage {
         if(!click(新增今日早报) ){
             click(编辑今日早报);
         }
-        return new AddPaperPage();
+        return new AddPaperPage(driver);
     }
 
 
     public MorPaperPage(WebDriver driver) {
-        super();
+        super(driver);
         PageFactory.initElements(driver, this);
     }
 

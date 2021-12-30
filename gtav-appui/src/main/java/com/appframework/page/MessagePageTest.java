@@ -17,6 +17,7 @@ import java.io.FileInputStream;
 import java.io.InputStreamReader;
 
 @Slf4j
+public
 class MessagePageTest {
     private static Wework wework= null;
     private static String FILEPATH = "src\\main\\resources\\xiaoaojianghu.txt";

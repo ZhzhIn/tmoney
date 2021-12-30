@@ -22,10 +22,6 @@ public class MePage extends AppPage {
     private final By launchGame = byText("启动游戏");
 
 
-    public MePage() {
-        super();
-        log.info("mePage init");
-    }
 
     public MePage(AppiumDriver<WebElement> driver) {
         super(driver);

@@ -1,5 +1,6 @@
 package com.appframework;
 
+import com.tengmoney.autoframework.DriverFactory;
 import com.tengmoney.gui.AppPage;
 import com.tmoney.foundation.utils.Configuration;
 import io.appium.java_client.AppiumDriver;
@@ -7,6 +8,8 @@ import io.appium.java_client.MobileElement;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
+
+import java.sql.Driver;
 
 import static com.tmoney.foundation.utils.Configuration.Parameter.*;
 
@@ -29,13 +32,12 @@ public class Wework extends AppPage {
     private By miniproName = byText(Configuration.get(MINIPRONAME));
     private By h5Station = byText(Configuration.get(H5APPLICATIONNAME));
     private static String phoneNum = "13242424028";
-
-    public Wework() {
-        super();
-        log.info("wework init ");
+    public Wework(){
+       super();
     }
+
     public Wework(AppiumDriver<WebElement> driver) {
-        super.driver = driver;
+        super(driver);
 
         log.info("wework init with driver");
     }
@@ -107,7 +109,7 @@ public class Wework extends AppPage {
 
     public final 日程Page 日程() {
         click(By.xpath("//*[@text='日程']"));
-        return new 日程Page();
+        return new 日程Page(driver);
     }
 
     public Boolean isWeworkMainPage() {

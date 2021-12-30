@@ -35,26 +35,18 @@ public abstract class AppPage extends DriverHelper {
     private static final int DEFAULT_TIME_OUT_SECOND = Configuration.getInt(Configuration.Parameter.IMPLICIT_TIMEOUT);
     private final static String PIC_FILE_PATH = "src\\main\\resources\\resultPic\\";
     //子类想用，就必须protected
-    protected AppiumDriver driver ;
-    public AppPage(){
+    protected AppiumDriver driver = DriverFactory.getDriverFactory().create("default_driver");
+    public AppPage( ){
         super();
+    }
 
-        driver = DriverFactory.create("defaultDriver");
-        DriverHelper.driver = driver;
-        log.info("appPage init ");
-        //TODO :应该有别的设计方法。暂时还没想到
-    }
-    public AppPage(String platform){
-        super();
-        //todo :应该有别的设计方法。暂时还没想到
-        driver = DriverFactory.create(platform);
-        DriverHelper.driver = driver;
-    }
     public AppPage(AppiumDriver driver) {
-        this.driver = driver;
-        DriverHelper.driver = driver;
+        super(driver);
         log.info("appPage init with driver:"+driver+"");
     }
+
+
+
     @Override
     public void screenshot(){
         log.info("screenshot in appPage");

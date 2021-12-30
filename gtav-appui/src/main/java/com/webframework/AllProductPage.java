@@ -21,7 +21,7 @@ public class AllProductPage extends WebPage {
     WebElement morningPaper;
 
     public AllProductPage(WebDriver driver) {
-        super();
+        super(driver);
         log.info("创建AllProductPage");
         PageFactory.initElements(driver, this);
     }

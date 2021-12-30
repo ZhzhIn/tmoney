@@ -4,6 +4,7 @@ package com.webframework;/**
  */
 
 import com.tengmoney.gui.WebPage;
+import io.appium.java_client.AppiumDriver;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -32,8 +33,8 @@ public class AddPaperPage extends WebPage {
         add("https://mp.weixin.qq.com/s/5C1pa86dm3-CjpIFNmmwHw");
     }};
 
-    public AddPaperPage() {
-        super();
+    public AddPaperPage(WebDriver driver) {
+        super(driver);
         PageFactory.initElements(driver, this);
     }
 
@@ -96,7 +97,7 @@ public class AddPaperPage extends WebPage {
         private WebElement 确定;
 
         public AddNewsPage(WebDriver driver) {
-            super();
+            super(driver);
             PageFactory.initElements(driver, this);
         }
 

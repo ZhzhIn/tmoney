@@ -7,6 +7,7 @@ import com.tengmoney.gui.AppPage;
 import io.appium.java_client.AppiumDriver;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
 /**
@@ -17,13 +18,10 @@ import org.openqa.selenium.WebElement;
 @Slf4j
 public class H5Page extends AppPage {
     private final String stationName = "云工作室";
-    public H5Page() {
-        super();
-        log.info("H5page init");
-    }
 
-    public H5Page(AppiumDriver<WebElement> driver) {
-        super.driver = driver;
+
+    public H5Page(AppiumDriver driver) {
+        super(driver);
         log.info("H5page init with driver ");
     }
 

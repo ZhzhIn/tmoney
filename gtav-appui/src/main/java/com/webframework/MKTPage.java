@@ -9,6 +9,7 @@ import io.github.bonigarcia.wdm.WebDriverManager;
 import io.github.bonigarcia.wdm.config.WebDriverManagerException;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.Cookie;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.FindBy;
@@ -30,9 +31,11 @@ public class MKTPage extends WebPage {
     WebElement newsManage;
     @FindBy(xpath = "//span[text()=\"每日早报\"]")
     WebElement morningPaper;
-
-    public MKTPage() {
+    public MKTPage(){
         super();
+    }
+    public MKTPage(WebDriver driver) {
+        super(driver);
         log.info("创建MainPage");
         initDriver();
         this.beforeAll();
