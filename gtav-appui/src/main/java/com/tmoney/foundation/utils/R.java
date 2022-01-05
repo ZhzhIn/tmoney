@@ -22,22 +22,18 @@ import java.util.Properties;
  */
 @Slf4j
 public enum R {
-
-//    API("api.properties"),
-
-
+    //    API("api.properties"),
 //    TESTDATA("testdata.properties"),
-
-//    EMAIL("email.properties"),
-
-//    REPORT("report.properties"),
-
+    EMAIL("email.properties"),
+    REPORT("report.properties"),
     //    DATABASE("database.properties"),
     CONFIG("config.properties");
     private String resourceFile;
+
     R(String resourceKey) {
         this.resourceFile = resourceKey;
     }
+
     private static Map<String, Properties> propertiesKeeper = new HashMap<String, Properties>();
 
     static {
@@ -45,10 +41,10 @@ public enum R {
             try {
                 Properties prop = new Properties();
                 //通过inputStreamReader读取处理编码文本，否则会用字节流的stream
-                prop.load(new InputStreamReader(ClassLoader.getSystemResource(resource.resourceFile).openStream(),"UTF-8"));
+                prop.load(new InputStreamReader(ClassLoader.getSystemResource(resource.resourceFile).openStream(), "UTF-8"));
                 // Ovveride properties
                 try {
-                    prop.load(new InputStreamReader(ClassLoader.getSystemResource("_" + resource.resourceFile).openStream(),"UTF-8"));
+                    prop.load(new InputStreamReader(ClassLoader.getSystemResource("_" + resource.resourceFile).openStream(), "UTF-8"));
                     log.info("Properties: " + resource.resourceFile + " were overriden.");
                 } catch (Exception e) {
                 }
@@ -59,15 +55,12 @@ public enum R {
         }
     }
 
-
-
     // Will override config property if system property is specified.
     public String get(String key) {
         String sysProperty = System.getProperty(key);
         String cnfgProperty = propertiesKeeper.get(resourceFile).getProperty(key);
         return !StringUtils.isEmpty(sysProperty) ? sysProperty : cnfgProperty;
     }
-
 
     public int getInt(String key) {
         return Integer.parseInt(get(key));

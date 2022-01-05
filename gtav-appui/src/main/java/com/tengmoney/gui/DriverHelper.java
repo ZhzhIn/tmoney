@@ -1,22 +1,21 @@
 package com.tengmoney.gui;
 
-import com.appframework.foundation.exception.NotSupportedOperationException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-import com.tengmoney.autoframework.DriverFactory;
-import com.tengmoney.autoframework.PageObjectModel;
-import com.tengmoney.autoframework.Screenshot;
-import com.tengmoney.autoframework.UITestCase;
+import com.tengmoney.autoframework.*;
 import com.tengmoney.foundation.crypto.CryptoTool;
+import com.tengmoney.foundation.exception.NotSupportedOperationException;
+import com.tengmoney.foundation.log.GlobalTestLog;
 import com.tengmoney.foundation.log.TestLogCollector;
 import com.tengmoney.foundation.log.TestLogHelper;
+import com.tengmoney.foundation.report.*;
 import com.tengmoney.foundation.webdriver.decorator.ExtendedWebElement;
-import com.tmoney.foundation.utils.Configuration;
+import com.tmoney.foundation.utils.*;
 import com.tmoney.foundation.utils.Configuration.Parameter;
-import com.tmoney.foundation.utils.LogicUtils;
-import com.tmoney.foundation.utils.Messager;
-import com.tmoney.foundation.utils.SpecialKeywords;
+import io.restassured.RestAssured;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.PropertyConfigurator;
 import org.hamcrest.BaseMatcher;
 import org.junit.Assert;
 import org.mozilla.javascript.JavaScriptException;
@@ -27,11 +26,17 @@ import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.interactions.Locatable;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.*;
+import org.testng.ITestContext;
+import org.testng.ITestResult;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.AfterSuite;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.BeforeSuite;
+import org.testng.xml.XmlTest;
 import util.HandelYaml;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FilenameFilter;
-import java.io.IOException;
+
+import java.io.*;
+import java.lang.reflect.Method;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
@@ -40,9 +45,160 @@ import java.util.stream.Stream;
 
 @Slf4j
 /**
- *  将所有page放入集合，按照用例步骤进行page的调用和执行
+ *  todo 将所有page放入集合，按照用例步骤进行page的调用和执行
  */
-public abstract class DriverHelper {
+public  class DriverHelper {
+    //    protected abstract boolean isUITest();
+
+    protected static final String CLASS_TITLE = "%s: %s - %s (%s)";
+    protected static final String XML_TITLE = "%s: %s (%s) - %s (%s)";
+    public DriverHelper() {
+        log.info("abstracttest init ");
+        summary = new TestLogHelper(UUID.randomUUID().toString());
+
+    }
+
+    public DriverHelper(WebDriver driver) {
+        //生成日志id序列，用于追踪日志
+        this();
+        initSummary(driver);
+    }
+
+        @BeforeSuite(alwaysRun = true)
+    public void executeBeforeSuite(ITestContext context) {
+        try {
+            // Set log4j properties
+            PropertyConfigurator.configure(ClassLoader.getSystemResource("log4j.properties"));
+            // Set SoapUI log4j properties
+            System.setProperty("soapui.log4j.config", "./src/main/resources/soapui-log4j.xml");
+
+            log.info(Configuration.asString());
+            Configuration.validateConfiguration();
+
+            ReportContext.removeOldReports();
+            context.getCurrentXmlTest().getSuite().setThreadCount(Configuration.getInt(Configuration.Parameter.THREAD_COUNT));
+
+            if (!Configuration.isNull(Configuration.Parameter.URL)) {
+                RestAssured.baseURI = Configuration.get(Configuration.Parameter.URL);
+            }
+        } catch (Exception e) {
+            log.error("Exception in executeBeforeSuite");
+            e.printStackTrace();
+        }
+
+    }
+
+    private void printExecutionSummary(List<TestResultItem> tris) {
+        Messager.INROMATION.info("**************** Test execution summary ****************");
+        int num = 1;
+        for (TestResultItem tri : tris) {
+            String reportLinks = !StringUtils.isEmpty(tri.getLinkToScreenshots()) ? "screenshots=" + tri.getLinkToScreenshots() + " | " : "";
+            reportLinks += !StringUtils.isEmpty(tri.getLinkToLog()) ? "log=" + tri.getLinkToLog() : "";
+            Messager.TEST_RESULT.info(String.valueOf(num++), tri.getTest(), tri.getResult().toString(), reportLinks);
+        }
+    }
+
+        @BeforeMethod(alwaysRun = true)
+    public void executeBeforeTestMethod(XmlTest xmlTest, Method testMethod, ITestContext context) {
+        try {
+            xmlTest.addParameter(SpecialKeywords.TEST_LOG_ID, UUID.randomUUID().toString());
+//            if (isUITest())
+//            {
+            driver = DriverFactory.createDriver(TestNamingUtil.getCanonicalTestNameBeforeTest(xmlTest, testMethod));
+            xmlTest.addParameter("sessionId", DriverPool.registerDriverSession(driver));
+            initSummary(driver);
+//            }
+        } catch (Exception e) {
+            log.error("Exception in executeBeforeTestMethod");
+            e.printStackTrace();
+        }
+    }
+
+        @AfterMethod(alwaysRun = true)
+    public void executeAfterTestMethod(ITestResult result) throws IOException {
+        try {
+            GlobalTestLog glblLog = ((GlobalTestLog) result.getAttribute(GlobalTestLog.KEY));
+
+            String test = TestNamingUtil.getCanonicalTestName(result);
+            File testLogFile = new File(ReportContext.getTestDir(test) + "/test.log");
+            // File soapuiLogFile = new File(ReportContext.getTestDir(test) +
+            // "/soapui.log");
+            if (!testLogFile.exists()) {
+                testLogFile.createNewFile();
+            }
+            FileWriter fw = new FileWriter(testLogFile);
+
+            if (/*isUITest() && */driver != null) {
+                fw.append("\r\n**************************** UI logs ****************************\r\n\r\n");
+                fw.append(TestLogHelper.getSessionLogs(test));
+                try {
+                    driver.quit();
+                } catch (Exception e) {
+                    log.error(e.getMessage());
+                }
+            }
+
+            if (!StringUtils.isEmpty(glblLog.readLog(GlobalTestLog.Type.SOAP))) {
+                fw.append("\r\n************************** SoapUI logs **************************\r\n\r\n");
+                fw.append(glblLog.readLog(GlobalTestLog.Type.SOAP));
+            }
+
+
+            if (!StringUtils.isEmpty(glblLog.readLog(GlobalTestLog.Type.COMMON))) {
+                fw.append("\r\n************************** Common logs **************************\r\n\r\n");
+                fw.append(glblLog.readLog(GlobalTestLog.Type.COMMON));
+            }
+
+
+        } catch (Exception e) {
+            log.error("Exception in executeAfterTestMethod");
+            e.printStackTrace();
+        }
+    }
+
+        @AfterSuite(alwaysRun = true)
+    public void executeAfterSuite(ITestContext context) {
+        try {
+            HtmlReportGenerator.generate(ReportContext.getBaseDir().getAbsolutePath());
+
+            String env = !Configuration.isNull(Parameter.ENV) ? Configuration.get(Parameter.ENV) : Configuration.get(Parameter.URL);
+
+            String eTitle = null;
+            if (context.getSuite().getXmlSuite() != null && !"Default suite".equals(context.getSuite().getXmlSuite().getName())) {
+                String suiteName = Configuration.isNull(Parameter.SUITE_NAME) ? context.getSuite().getXmlSuite().getName() : Configuration
+                        .get(Parameter.SUITE_NAME);
+                String xmlFile = !StringUtils.isEmpty(System.getProperty("suite")) ? System.getProperty("suite") + ".xml" : StringUtils
+                        .substringAfterLast(context.getSuite().getXmlSuite().getFileName(), "\\");
+                eTitle = String.format(XML_TITLE, EmailReportGenerator.getSuiteResult(EmailReportItemCollector.getTestResults()).name(), suiteName,
+                        xmlFile, env, Configuration.get(Parameter.BROWSER));
+            } else {
+                String suiteName = Configuration.isNull(Parameter.SUITE_NAME) ? R.EMAIL.get("title") : Configuration.get(Parameter.SUITE_NAME);
+                eTitle = String.format(CLASS_TITLE, EmailReportGenerator.getSuiteResult(EmailReportItemCollector.getTestResults()).name(), suiteName,
+                        env, Configuration.get(Parameter.BROWSER));
+            }
+            ReportContext.getTempDir().delete();
+
+
+            // Generate email report
+            EmailReportGenerator report = new EmailReportGenerator(eTitle, env, Configuration.get(Parameter.APP_VERSION),
+                    Configuration.get(Parameter.BROWSER), DateUtils.now(), getCIJobReference(), EmailReportItemCollector.getTestResults(),
+                    EmailReportItemCollector.getCreatedItems());
+
+            // Send report for specified emails
+            EmailManager.send(eTitle, report.getEmailBody(), Configuration.get(Parameter.EMAIL_LIST), Configuration.get(Parameter.SENDER_EMAIL),
+                    Configuration.get(Parameter.SENDER_PASSWORD));
+
+            printExecutionSummary(EmailReportItemCollector.getTestResults());
+        } catch (Exception e) {
+            log.error("Exception in executeAfterSuite");
+            e.printStackTrace();
+        }
+    }
+
+    private String getCIJobReference() {
+        String ciTestJob = "ciTestJob";
+        return ciTestJob;
+    }
     protected static final long IMPLICIT_TIMEOUT = Configuration.getLong(Configuration.Parameter.IMPLICIT_TIMEOUT);
     protected static final long EXPLICIT_TIMEOUT = Configuration.getLong(Configuration.Parameter.EXPLICIT_TIMEOUT);
     protected static final long RETRY_TIME = Configuration.getLong(Configuration.Parameter.RETRY_TIMEOUT);
@@ -58,29 +214,7 @@ public abstract class DriverHelper {
     protected static Pattern CRYPTO_PATTERN = Pattern.compile(SpecialKeywords.CRYPT);
 
 
-    public DriverHelper( ) {
-        log.info("driver helper init ");
-        //生成日志id序列，用于追踪日志
-        summary = new TestLogHelper(UUID.randomUUID().toString());
-        if(driver == null){
-            log.info("do not have a driver ,init");
-            driver = DriverFactory.getDriverFactory().create();
-            wait= new WebDriverWait(driver, EXPLICIT_TIMEOUT, RETRY_TIME);
-        }
-    }
-    public DriverHelper (WebDriver driver){
-        if(this.driver !=null){
-            log.error("There exsit a driver!");
-            throw new NotSupportedOperationException("There exsit a driver!");
-        }
-        log.info("init driver helper with a driver; have no driver ,init one");
-        this.driver = driver;
-        //生成日志id序列，用于追踪日志
-        summary = new TestLogHelper(UUID.randomUUID().toString());
-        driver.manage().timeouts().implicitlyWait(IMPLICIT_TIMEOUT,TimeUnit.SECONDS);
-        //传入driver的sessionid,用于追踪日志
-        initSummary(driver);
-    }
+
 
     /**
      * 给webdriver实例添加日志
@@ -182,6 +316,7 @@ public abstract class DriverHelper {
         {
             wait.until(new ExpectedCondition<Boolean>()
             {
+                @Override
                 public Boolean apply(WebDriver dr)
                 {
                     try
@@ -1300,6 +1435,9 @@ public abstract class DriverHelper {
     }
 
     public void screenshot(){
+        log.info("screenshot in driverhelper");
+    }
+    public void screenshot(String name,String path){
         log.info("screenshot in driverhelper");
     }
     List<PageObjectModel> pages = new ArrayList<>();

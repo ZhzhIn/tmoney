@@ -1,5 +1,6 @@
 package com.tengmoney.gui;
 
+import com.tengmoney.autoframework.AppiumDriverFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
@@ -14,10 +15,14 @@ public class WebPage extends DriverHelper {
     protected WebDriverWait wait;
     public WebPage() {
         super();
+        if (driver == null) {
+            log.info("do not have a driver ,init");
+            driver = AppiumDriverFactory.createDriver();
+            wait = new WebDriverWait(driver, EXPLICIT_TIMEOUT, RETRY_TIME);
+        }
     }
     public WebPage(WebDriver driver) {
-        super();
-        super.driver = driver;
+        super(driver);
     }
 
     public boolean click(WebElement element) {

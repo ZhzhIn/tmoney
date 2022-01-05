@@ -1,6 +1,5 @@
 package com.tengmoney.autoframework;
 
-import com.appframework.page.MessagePageTest;
 import org.junit.platform.launcher.Launcher;
 import org.junit.platform.launcher.LauncherDiscoveryRequest;
 import org.junit.platform.launcher.core.LauncherDiscoveryRequestBuilder;
@@ -16,8 +15,8 @@ public class Main {
     public static void main(String[] args){
         LauncherDiscoveryRequest request = LauncherDiscoveryRequestBuilder.request()
                 .selectors(
-                        selectPackage("com.appframework"),
-                        selectClass(MessagePageTest.class)
+                        selectPackage("com.appframework")
+//                        selectClass(MessagePageTest.class)
                 )
                 .filters(
                         includeClassNamePatterns(".*")

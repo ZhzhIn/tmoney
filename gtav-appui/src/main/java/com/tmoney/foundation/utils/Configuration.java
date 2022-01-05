@@ -46,7 +46,7 @@ public class Configuration {
         ENV_ARG_RESOLVER("env_arg_resolver", "default_env_arg_resolver"),
 
         BROWSER("browser", "default_browser"),
-
+        ANDROID_HOST("android_host","default_android_host"),
         SELENIUM_HOST("selenium_host", "default_selenium_host"),
 
         APP_VERSION("app_version", "default_app_version"),

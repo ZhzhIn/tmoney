@@ -1,17 +1,18 @@
 package com.tengmoney.gui;
 
+import com.tengmoney.autoframework.AppiumDriverFactory;
 import com.tengmoney.autoframework.DriverFactory;
+import com.tengmoney.foundation.exception.NotSupportedOperationException;
+import com.tengmoney.foundation.log.TestLogHelper;
 import com.tmoney.foundation.utils.Configuration;
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.MobileElement;
 import io.appium.java_client.TouchAction;
-import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.touch.WaitOptions;
 import io.appium.java_client.touch.offset.PointOption;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.*;
-import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -23,6 +24,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -30,36 +32,47 @@ import java.util.concurrent.TimeUnit;
  */
 @Slf4j
 public abstract class AppPage extends DriverHelper {
-
     private final static int DURING_TIME = 1000;
     private static final int DEFAULT_TIME_OUT_SECOND = Configuration.getInt(Configuration.Parameter.IMPLICIT_TIMEOUT);
-    private final static String PIC_FILE_PATH = "src\\main\\resources\\resultPic\\";
+
     //子类想用，就必须protected
-    protected AppiumDriver driver = DriverFactory.getDriverFactory().create("default_driver");
+    protected AppiumDriver driver = DriverFactory.createDriver();
     public AppPage( ){
         super();
+        if (driver == null) {
+            log.info("do not have a driver ,init");
+            driver = AppiumDriverFactory.createDriver();
+            log.info(driver==null? "null":"not null");
+            wait = new WebDriverWait(driver, EXPLICIT_TIMEOUT, RETRY_TIME);
+        }
     }
 
     public AppPage(AppiumDriver driver) {
         super(driver);
-        log.info("appPage init with driver:"+driver+"");
+        if (this.driver != null) {
+            log.info("There exsit a driver!");
+            throw new NotSupportedOperationException("There exsit a driver!");
+        }
+        log.info("init driver helper with a driver; have no driver ,init one");
+        this.driver = driver;
+        driver.manage().timeouts().implicitlyWait(IMPLICIT_TIMEOUT, TimeUnit.SECONDS);
     }
 
 
 
+
     @Override
-    public void screenshot(){
+    public void screenshot(String name,String path){
         log.info("screenshot in appPage");
         LocalDateTime localDateTime = LocalDateTime.now();
         DateTimeFormatter dtf= DateTimeFormatter.ofPattern("yyMMdd_HHmmss");
         String timestamp = localDateTime.format(dtf);
-        File file = new File(String.format("%s\\wx_%s.png",PIC_FILE_PATH,timestamp));
+        File file = new File(String.format("%s\\%s_%s.png",path,name,timestamp));
         File screenShotFile = driver.getScreenshotAs(OutputType.FILE);
         try {
             FileUtils.copyFile(screenShotFile,file);
         }
         catch (IOException e) {e.printStackTrace();}
-
     }
     @Override
     public void moveTo(By by ){
@@ -119,6 +132,7 @@ public abstract class AppPage extends DriverHelper {
 
     public void click(By by) {
         try {
+            wait.until(ExpectedConditions.visibilityOfElementLocated(by));
             moveTo(by);
             driver.findElement(by).click();
         }catch (NoSuchElementException e) {
