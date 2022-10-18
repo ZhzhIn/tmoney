@@ -1,6 +1,6 @@
 name: 基本接口
 describle: 登录
-api:
+--api:
   h5:
     url: /caizhi_miniapi/index/ty/auth.do
     method: get
