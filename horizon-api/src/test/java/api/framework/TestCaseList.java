@@ -51,7 +51,7 @@ public class TestCaseList {
      * 用例读取testResource文件夹下，以testcase.yaml为后缀的文件
      * api读取resource/common/api固定文件夹下的.yaml文件
      */
-    @ParameterizedTest(name = "接口：{0}-{index}")
+    //@ParameterizedTest(name = "接口：{0}-{index}")
     @MethodSource("apiTestCase")
     @Story("一大堆接口")
     public void runTestCas2(TestCase testCase) {
